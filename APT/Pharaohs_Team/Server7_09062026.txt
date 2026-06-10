@@ -1,3 +1,9 @@
+[FAST CHECK]
+
+Con TLD .cl - 189 registros.
+
+*************************************************
+
 clinicadentalbless.cl
 clubinversiones.cl
 saludalamedida.cl
