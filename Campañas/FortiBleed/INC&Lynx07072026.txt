@@ -1,0 +1,274 @@
+================================================================================
+  FORTIBLEED UNMASKED - INDICADORES DE COMPROMISO (IOCs)
+  Fuente: SOCRadar Threat Research Unit (STRU) - Volume II
+  Campaña: Lynx & INC Ransomware / Operador TOXMAN
+  TLP: CLEAR
+================================================================================
+
+--------------------------------------------------------------------------------
+1. DIRECCIONES IP
+--------------------------------------------------------------------------------
+
+[Operador / Infraestructura]
+188.127.246.183   - Estación de trabajo del operador / Sniffer (Windows) [TOXMAN]
+213.171.17.74     - Sniffer (Windows)
+85.11.187.8       - IP primaria / Nodo sniffer / Agregador inicial (LXC Farm)
+85.11.187.12      - Infraestructura PENTEST LAB (Docker targets)
+
+[C2 - Servidores de Mando y Control]
+149.50.108.150    - Nodo maestro del clúster CyberStrike
+62.60.131.246     - C2 - Fortigate Harvest Grid
+91.214.78.252     - C2 - Fortigate Harvest Grid
+193.221.200.2     - C2
+195.10.205.233    - C2
+
+[IPs del Operador (acceso RDP)]
+91.148.237.63     - IP del operador (vía RDP - PrivadoVPN)
+109.205.211.139   - IP del operador (vía RDP)
+213.21.239.65     - IP del operador (vía RDP)
+
+[Directorio abierto con artefactos INC Ransom]
+217.144.189.136   - Puerto 8080 - Open directory INC Ransom artifacts
+
+[Rangos de infraestructura (Diamond Model)]
+85.11.187.0/24    (AS211486 / AS20637)
+193.8.187.0/24    (AS20637)
+188.127.246.0/24  (AS62212)
+194.113.39.0/24   (varias)
+77.91.122.0/24    (varias)
+179.43.166.0/24   (AS51852)
+192.253.248.42    (AS213790)
+99.9.111.82       (AS70118)
+213.171.17.74     (AS58694)
+62.60.131.246     (AS208137)
+
+[Banner Hash (Validin pivot)]
+18172f4b3bea31fd484375403709d39e
+
+--------------------------------------------------------------------------------
+2. INDICADORES DE RANSOMWARE
+--------------------------------------------------------------------------------
+
+[Paneles de Gestión - Onion]
+Lynx Panel:  lynxad2seqpyu52lr5v7il4idasv23535a46s4bj65b3v7t5y6u5daqd[.]onion
+INC Panel:   incbacg6bfwtrlzwdbqc55gsfl763s3twdtwhp27dzuik6s6rwdcityd[.]onion
+
+[Wallet Bitcoin]
+BTC (TOXMAN): 3A2THXCdqeeuBeDZEKTcwqykYABZsVoJxq
+
+[TOX ID]
+MET (operador): D0C12DAC4797FFBD31A0BB57E227E141A39FA1F5A3A3FD4C3F15C02D7801DC5ED8C1BF08ACFD
+
+--------------------------------------------------------------------------------
+3. IDENTIFICADORES DE ACTORES DE AMENAZA
+--------------------------------------------------------------------------------
+
+Alias principal:    TOXMAN / TOXFOX
+Foro underground:   Greenprawn100 (Exploit.in / Exploit.im)
+Telegram (admin):   @clarksome  (bot @hashfinderr_bot - cracking GPU Hashcat)
+Telegram (recon):   @prosto100  (vinculado a token API Shodan)
+SSH key comment:    cyberstrike@pentestlab
+OS del workstation: WIN-94EP0J4D3GI - Windows Server 2019 DC
+
+--------------------------------------------------------------------------------
+4. HASHES DE ARCHIVOS MALICIOSOS (SHA-256)
+--------------------------------------------------------------------------------
+
+[Binarios / Checkers]
+08561b4778eddf654c7ac7de4e7ad2a7178173c68ca3bf4777de1c06a05eda4b
+  -> mssql.bin  | MSSQL credential checker/scanner
+
+3c86b25c5a9e638701975a7079f23aa99cac17039f822bd35951f00e863215fd
+  -> ssh.bin  | SSH credential checking tool
+
+b82ec17c3d33607131350dd925116578c19f30fbdb74706f0ae9c73d03945a37
+  -> rdchecker.bin / rdweb-checker.bin  | Microsoft RD Web Access credential checking
+
+aa40be12da0fd1e98f3e91188dfee49dd8fd01ff171d4a15e88e506da9730880
+  -> checker4.bin / forti-checker.bin  | FortiGate checker
+
+928e1773514e54106a816c5576d07b1d07c097f309c72fc4a5af96163bbeb11b
+  -> web_response_checker_windows_amd64.exe  | Mass web response validation / target checking
+  -> go_creds_cycle_tester_windows_amd64.exe | Credential cycle/rotation tester (mismo hash)
+
+373f3d26fe6416e95e27b47a78f2a4b7414f8c93cee7ab80821a942928046569
+  -> forti-panel.exe  | FortiGate Harvest Panel
+
+[Scripts Python]
+38353f95fff270f4e3a9d7add8c64666020dd668ce66e15969a736ec48cadc59
+  -> ad_enum.py  | LDAP AD enumeration - Domain Admins / Kerberoasting
+
+874bcb1c3d050a5b5b333a2198f504fcb27927c2abdd43b07440188a380c52d5
+  -> ad_full_audit.py  | BloodHound-lite AD auditor (AS-REP Roasting, Kerberoasting, LAPS, GPOs...)
+
+e583abf71169f2c7ae2c4e371f2e4774fc1de07c828eedb6491de2f14248a45c
+  -> backup.py  | Descarga configuración y metadata de FortiGate
+
+7c322680bcb71bee0c2796bda54321285b7384c6678f4540cd86df2a3da46bd6
+  -> backup_dfs.py  | Exfiltración vía Impacket + SMB + SSH (sin escritura en disco)
+
+61deeae307f630628c2b6550b3846609bdf8d0faba09e459b7d709e26f42619f
+  -> bot.py  | Bot Telegram para cracking GPU (Vast.ai / Hashcat) - admin @clarksome
+
+326a911d793e8ce27b77e335ef957e9f2d0a0c58ebe958f97f41f0f83093fd3d
+  -> build_report.py  | Genera informe de dominios no comprometidos ordenados por revenue
+
+33e8cd263bfe68580fbd3548e59ce5104381852d8f8f061bbdab92d9dd1a9ab8
+  -> clean_brute.py  | Limpia credenciales de brute-force propio del sniffer
+
+2fe4711ffe7f010b628b17302c5303fa1bbcdad33a94d2a700b65b433fcf214d
+  -> clean_brute2.py  | Idem (variante 2)
+
+8e3f0c6044be7f9b01d7616540dbc0438343cbf8571af06b0b64cdcb558b2522
+  -> console_ui.py  | PCAP Toolkit - output consola con tablas de credenciales/hashes
+
+dbf2663cae5f39d6116a73360764f63d9518673d5b3c12471b3f779333f866d2
+  -> file_extractor.py  | PCAP Toolkit - extrae archivos con tshark/foremost/binwalk
+
+2e1b5ad44723cca12340a663c30041d568993701333a9d44ca4afa3d1ed649c8
+  -> find_uno.py  | Reconocimiento AD - mapeo Domain Admins y servidores backend
+
+a77381fc373a18571196dfb3b9959e19f47035b610c79922e1e41f78e0ca7a8b
+  -> forti_audit.py  | Scanner de portales SSL VPN FortiGate
+
+7822990c1dd89e73dce409d01f5f7a0f4a97515d5386cacb9oe58ec5b205ae4d
+  -> harv.py  | Extracción de credenciales de capturas PCAP (NTLM, Kerberos, RADIUS, LDAP, FTP, SMTP, IMAP, POP3...)
+
+7df7e3f3cb7af9147c8703893fddceb979cbc96a0ca21cd8287c8dd606cf422e
+  -> leakcheck_domains.py  | Enriquecimiento de dominios víctima vía LeakCheck.io API
+
+350ba5e95edadaf9fda830c15f0d9dae1666054217533ce783c7761e0e080e32
+  -> notes_app.py  | App Flask tipo Pastebin clone (coordinación interna)
+
+e0a3f0bae16fe0c3937d2a78afef62d4237f6d29f4ed99e0336396be7952c66f
+  -> orchestrator.py  | Orquestador del pipeline de análisis PCAP
+
+2d3421d55dd7de4792d6ccc54f23c32ae81e424a1b96bf06f47d37f11300379a
+  -> pcap_analyzer.py  | Orquestador principal PCAP Deep Analysis Toolkit v5.0 (+20 módulos)
+
+7b5e37edda6ec7b2f7b0ed2c3f944558b75d912a3eba34e3250efc366bea0ba6
+  -> report_generator.py  | PCAP Toolkit - generador de informes HTML por ciclo
+
+0f148a2bd47674b5e16f54faab658bc4613d345361fee659ecac2b4ba6922c8d
+  -> smb_test.py  | Enumeración de shares SMB con Impacket (C$, D$)
+
+3c6a1352401c78222a0eaffb16c2b3c13d2e5b082f9b147634e9d5612d769e0f
+  -> spider.py  | Búsqueda de credenciales hardcodeadas en shares SMB
+
+c695335896a3465a34aa623aa955632e2c25ffd7b8494b9994b9a5572a70e33d
+  -> spray_da.py  | Validador Kerberos (password spraying silencioso - TGTs)
+
+--------------------------------------------------------------------------------
+5. CVEs REFERENCIADOS / ESCANEADOS
+--------------------------------------------------------------------------------
+
+[Fortinet / FortiGate]
+CVE-2018-13379  - Path traversal (FortiOS SSL VPN)
+CVE-2019-5591   - Default configuration LDAP
+CVE-2022-40684  - Auth bypass via trusted access
+CVE-2022-42475  - Heap overflow en SSL VPN (RCE pre-auth)
+CVE-2023-27997  - Heap overflow (pre-auth RCE)
+CVE-2023-33308  - Stack overflow DEEP INSPECTION proxy
+CVE-2023-48788  - FortiClient EMS SQLi
+CVE-2024-21762  - Out-of-bounds write, pre-auth RCE en SSL VPN
+CVE-2024-23108  - Command injection FortiSIEM
+CVE-2024-23109  - Command injection FortiSIEM
+
+[Active Directory / Windows]
+CVE-2017-0143   - MS17-010 (EternalBlue)
+CVE-2020-1472   - Zerologon
+CVE-2021-1675   - PrintNightmare
+CVE-2021-34527  - PrintNightmare (variante)
+CVE-2021-36942  - PetitPotam
+CVE-2021-42278  - NoPac (sAMAccountName spoofing)
+CVE-2021-42287  - NoPac (privilege escalation)
+CVE-2022-26923  - Certifried (AD CS)
+
+[VMware / ESXi]
+CVE-2021-21974  - ESXi OpenSLP heap overflow (RCE)
+CVE-2021-21985  - vCenter RCE
+CVE-2021-22005  - vCenter arbitrary file upload
+CVE-2022-31699  - ESXi heap overflow
+
+[QNAP / NAS]
+CVE-2019-7192   - QNAP NAS privilege escalation
+CVE-2019-7193   - QNAP NAS improper access control
+CVE-2019-7194   - QNAP NAS path traversal
+CVE-2019-7195   - QNAP NAS path traversal
+CVE-2021-28799  - QNAP HBS 3 improper authorization
+CVE-2022-27593  - QNAP Photo Station externally controlled reference
+CVE-2022-27596  - QNAP SQL injection
+CVE-2023-50358  - QNAP OS command injection
+
+[HP / iLO / Embedded]
+CVE-2013-4784   - HP iLO authentication bypass
+CVE-2014-9222   - Misfortune Cookie (RomPager)
+CVE-2021-39238  - HP iLO RCE
+
+[Web / Server (exploit pool)]
+CVE-2014-0160   - Heartbleed (OpenSSL)
+CVE-2017-7494   - SambaCry
+CVE-2019-0708   - BlueKeep (RDP RCE)
+CVE-2020-0796   - SMBGhost
+CVE-2021-3156   - Baron Samedit (sudo heap overflow)
+CVE-2021-4034   - PwnKit (polkit)
+CVE-2021-44228  - Log4Shell
+CVE-2022-0847   - DirtyPipe (Linux kernel)
+CVE-2022-22965  - Spring4Shell
+CVE-2023-22527  - Confluence OGNL injection (RCE)
+
+--------------------------------------------------------------------------------
+6. CREDENCIALES / CUENTAS DE BACKDOOR DOCUMENTADAS
+--------------------------------------------------------------------------------
+
+Cuenta backdoor FortiGate:  super_admin / adminin
+Cuenta persistencia SSL VPN: pentest : P3ntest2026!
+Credenciales de prueba (laboratorio): admin:admin (default FortiGate)
+
+--------------------------------------------------------------------------------
+7. TTPS - MITRE ATT&CK
+--------------------------------------------------------------------------------
+
+T1595.002  Reconnaissance         - Active Scanning: Vulnerability Scanning
+T1583.003  Resource Development   - Acquire Infrastructure: VPS
+T1587.001  Resource Development   - Develop Capabilities: Malware (CyberStrike)
+T1588.002  Resource Development   - Obtain Capabilities: Tool (OpenRouter/Claude/DeepSeek)
+T1650      Resource Development   - Acquire Access (Hybrid IAB)
+T1059.006  Execution              - Command & Scripting: Python
+T1069.002  Discovery              - Permission Groups: Domain Groups
+T1018      Discovery              - Remote System Discovery
+T1543      Persistence            - Create or Modify System Process
+T1136.001  Persistence            - Create Account: Local Account (backdoor FortiGate)
+T1021.002  Lateral Movement       - Remote Services: SMB/Windows Admin Shares
+T1021.004  Lateral Movement       - Remote Services: SSH
+T1572      Lateral Movement       - Protocol Tunneling (openfortivpn / openconnect)
+T1114.002  Collection             - Email Collection: Remote (SMTP/IMAP/POP3 via fg_sniffer)
+T1552.001  Collection             - Credentials from Files (spider.py)
+T1090      Command & Control      - Proxy (39 IPs / 29 ASNs)
+T1048      Exfiltration           - Exfiltration Over Alternative Protocol (SMB→SSH)
+T1486      Impact                 - Data Encrypted for Impact (INC/Lynx ransomware)
+T1489      Impact                 - Service Stop (Veeam, SQL, backup services)
+T1657      Impact                 - Financial Theft (IAB + extorsión)
+
+--------------------------------------------------------------------------------
+8. HERRAMIENTAS DEL ARSENAL (sin hash)
+--------------------------------------------------------------------------------
+
+FortigateSniffer     - Sniffer basado en Go para captura de tráfico FortiOS
+fg_sniffer           - Interfaz de gestión del sniffer (en ruso)
+FortiChecker         - Validador de credenciales FortiGate
+CyberStrike          - Framework IA para pentesting automatizado
+PENTEST LAB          - Framework multi-agente Docker + CyberStrike + OpenRouter
+mpbrute2             - Bruteforce (empaquetado con Nuitka)
+shodan_recon         - Herramienta de reconocimiento vía API Shodan
+syno_checker.exe     - Checker de sistemas Synology NAS
+SSHlogger            - Logger SSH (.NET)
+Impacket suite       - Movimiento lateral (Python)
+Hashtopolis/Hashcat  - Cracking de hashes (GPU)
+rclone               - Exfiltración / movimiento de archivos en cloud
+Bitvise SSH Client   - Cliente SSH para acceso a servidores comprometidos
+FileZilla            - Transferencia FTP/SFTP
+
+--------------------------------------------------------------------------------
+FIN DEL DOCUMENTO - FortiBleed IOCs 
+================================================================================
