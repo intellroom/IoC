@@ -1,6 +1,5 @@
 ====================================================================
 IOCs — ClickFix Cluster (BlueVoyant "Lorem Ipsum" / Supper / Vanilla Tempest)
-Fuente: Field Effect — "ClickFix cluster: observed activity in recent campaigns"
 Ventana observada: mediados de junio a julio 2026
 Extraído: 2026-08-25 | Formato: DEFANGED (no clickeable)
 ====================================================================
