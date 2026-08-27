@@ -1,0 +1,214 @@
+{
+  "type": "bundle",
+  "id": "bundle--3f7c2e91-5a4d-4b6e-9c18-2d7e4a1b8f03",
+  "objects": [
+    {
+      "type": "identity",
+      "spec_version": "2.1",
+      "id": "identity--8b1c4d2e-7f39-4a52-b6c8-1e9d3a7f2c45",
+      "created": "2026-08-27T13:48:00.000Z",
+      "modified": "2026-08-27T13:48:00.000Z",
+      "name": "Intellroom SpA - Threat Intelligence",
+      "identity_class": "organization"
+    },
+    {
+      "type": "vulnerability",
+      "spec_version": "2.1",
+      "id": "vulnerability--a1d5f832-4c67-4e19-8b23-7f0a9c4d6e18",
+      "created": "2026-08-27T13:48:00.000Z",
+      "modified": "2026-08-27T13:48:00.000Z",
+      "name": "CVE-2026-55040",
+      "description": "Microsoft SharePoint JWT token validation authentication bypass. CVSS v3.1 9.1. CWE-1390.",
+      "external_references": [
+        {
+          "source_name": "cve",
+          "external_id": "CVE-2026-55040",
+          "url": "https://www.cve.org/CVERecord?id=CVE-2026-55040"
+        }
+      ]
+    },
+    {
+      "type": "vulnerability",
+      "spec_version": "2.1",
+      "id": "vulnerability--c4e91a05-8d3b-4f27-a516-9b2c8e0d4f73",
+      "created": "2026-08-27T13:48:00.000Z",
+      "modified": "2026-08-27T13:48:00.000Z",
+      "name": "CVE-2026-63520",
+      "description": "Microsoft SharePoint Business Data Connectivity unsafe .NET type instantiation leading to remote code execution. CVSS v3.1 8.1.",
+      "external_references": [
+        {
+          "source_name": "cve",
+          "external_id": "CVE-2026-63520"
+        }
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--5e8f2b47-1a93-4c60-8d75-3f6b1e9a2d84",
+      "created": "2026-08-27T13:48:00.000Z",
+      "modified": "2026-08-27T13:48:00.000Z",
+      "name": "Origen de explotacion CVE-2026-55040 observado en honeypots Defused",
+      "description": "Sharepoint baddies in the honeypots at @DefusedCyber coming in from: 205.147.17.6 abusing the vulnerability from CVE-2026-55040",
+      "pattern": "[ipv4-addr:value = '205.147.17.6']",
+      "pattern_type": "stix",
+      "pattern_version": "2.1",
+      "valid_from": "2026-08-25T00:00:00.000Z",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "confidence": 40,
+      "labels": [
+        "single-source",
+        "unverified",
+        "scanning"
+      ],
+      "kill_chain_phases": [
+        {
+          "kill_chain_name": "lockheed-martin-cyber-kill-chain",
+          "phase_name": "exploitation"
+        }
+      ],
+      "external_references": [
+        {
+          "source_name": "BleepingComputer",
+          "description": "Hackers target Microsoft SharePoint RCE chain with PoC exploit",
+          "url": "https://www.bleepingcomputer.com/news/security/hackers-target-microsoft-sharepoint-rce-chain-with-poc-exploit/"
+        }
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--9c3a7d61-4b28-4e95-b70f-2a8d5c1e6f39",
+      "created": "2026-08-27T13:48:00.000Z",
+      "modified": "2026-08-27T13:48:00.000Z",
+      "name": "Carga de modelo BDCM a BusinessDataMetadataCatalog",
+      "description": "POST /_api/web/GetFolderByServerRelativeUrl('BusinessDataMetadataCatalog')/Files/add - Upload malicious BDCM file",
+      "pattern": "[url:value LIKE '%BusinessDataMetadataCatalog%Files/add%']",
+      "pattern_type": "stix",
+      "pattern_version": "2.1",
+      "valid_from": "2026-08-24T00:00:00.000Z",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "confidence": 75,
+      "labels": [
+        "legitimate-api-abuse",
+        "monitor-only"
+      ],
+      "kill_chain_phases": [
+        {
+          "kill_chain_name": "mitre-attack",
+          "phase_name": "execution"
+        }
+      ],
+      "external_references": [
+        {
+          "source_name": "VulnCheck",
+          "description": "Exploiting SharePoint: CVE-2026-55040 and CVE-2026-63520 RCE Chain",
+          "url": "https://www.vulncheck.com/blog/cve-2026-63520-sharepoint-unsafe-type-rce"
+        },
+        {
+          "source_name": "mitre-attack",
+          "external_id": "T1505",
+          "url": "https://attack.mitre.org/techniques/T1505/"
+        }
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--2f6b8e14-7c50-4a39-9d82-4e1a6b3c7d05",
+      "created": "2026-08-27T13:48:00.000Z",
+      "modified": "2026-08-27T13:48:00.000Z",
+      "name": "Registro de lista externa DotNetAssembly via ProcessQuery",
+      "description": "POST /_vti_bin/client.svc/ProcessQuery - Register external list",
+      "pattern": "[url:value LIKE '%/_vti_bin/client.svc/ProcessQuery%']",
+      "pattern_type": "stix",
+      "pattern_version": "2.1",
+      "valid_from": "2026-08-24T00:00:00.000Z",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "confidence": 30,
+      "labels": [
+        "legitimate-api-abuse",
+        "monitor-only",
+        "high-false-positive"
+      ],
+      "kill_chain_phases": [
+        {
+          "kill_chain_name": "mitre-attack",
+          "phase_name": "execution"
+        }
+      ],
+      "external_references": [
+        {
+          "source_name": "VulnCheck",
+          "description": "Exploiting SharePoint: CVE-2026-55040 and CVE-2026-63520 RCE Chain",
+          "url": "https://www.vulncheck.com/blog/cve-2026-63520-sharepoint-unsafe-type-rce"
+        }
+      ]
+    },
+    {
+      "type": "attack-pattern",
+      "spec_version": "2.1",
+      "id": "attack-pattern--7a4d1c68-3e92-4b57-8f06-5c2b9d4e1a73",
+      "created": "2026-08-27T13:48:00.000Z",
+      "modified": "2026-08-27T13:48:00.000Z",
+      "name": "Exploit Public-Facing Application",
+      "external_references": [
+        {
+          "source_name": "mitre-attack",
+          "external_id": "T1190",
+          "url": "https://attack.mitre.org/techniques/T1190/"
+        }
+      ]
+    },
+    {
+      "type": "course-of-action",
+      "spec_version": "2.1",
+      "id": "course-of-action--6d2e9f37-8b41-4c05-a729-1f3c7b5e8d42",
+      "created": "2026-08-27T13:48:00.000Z",
+      "modified": "2026-08-27T13:48:00.000Z",
+      "name": "Aplicar CU de agosto 2026 de SharePoint Server",
+      "description": "KB5002893 (Subscription Edition 16.0.19725.20522), KB5002894/KB5002896 (Server 2019 16.0.10417.20198), KB5002905/KB5002906 (Enterprise Server 2016 16.0.5565.1001). El parche de julio (KB5002882/KB5002883/KB5002891) corrige unicamente CVE-2026-55040."
+    },
+    {
+      "type": "relationship",
+      "spec_version": "2.1",
+      "id": "relationship--4b7c3a19-5f86-4d20-b391-8e6a2c4f9d17",
+      "created": "2026-08-27T13:48:00.000Z",
+      "modified": "2026-08-27T13:48:00.000Z",
+      "relationship_type": "mitigates",
+      "source_ref": "course-of-action--6d2e9f37-8b41-4c05-a729-1f3c7b5e8d42",
+      "target_ref": "vulnerability--c4e91a05-8d3b-4f27-a516-9b2c8e0d4f73"
+    },
+    {
+      "type": "attack-pattern",
+      "spec_version": "2.1",
+      "id": "attack-pattern--1c9e5f38-6a24-4b71-8e03-7d5f2a9c4b16",
+      "created": "2026-08-27T13:48:00.000Z",
+      "modified": "2026-08-27T13:48:00.000Z",
+      "name": "Use Alternate Authentication Material: Application Access Token",
+      "external_references": [
+        {
+          "source_name": "mitre-attack",
+          "external_id": "T1550.001",
+          "url": "https://attack.mitre.org/techniques/T1550/001/"
+        }
+      ]
+    },
+    {
+      "type": "relationship",
+      "spec_version": "2.1",
+      "id": "relationship--8e1f5b26-9c34-4a78-b052-3d7a6e1c4f80",
+      "created": "2026-08-27T13:48:00.000Z",
+      "modified": "2026-08-27T13:48:00.000Z",
+      "relationship_type": "indicates",
+      "source_ref": "indicator--9c3a7d61-4b28-4e95-b70f-2a8d5c1e6f39",
+      "target_ref": "attack-pattern--7a4d1c68-3e92-4b57-8f06-5c2b9d4e1a73"
+    }
+  ]
+}
