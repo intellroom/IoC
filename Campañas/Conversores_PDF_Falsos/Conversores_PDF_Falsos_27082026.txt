@@ -1,0 +1,521 @@
+================================================================================
+  CONVERSORES DE PDF FALSOS -> CLICKFIX -> INFOSTEALERS
+  Suplantacion de servicios de conversion de documentos en linea
+  Fecha: 27-08-2026 | TLP: CLEAR
+  Fuentes: FBI Denver, CloudSEK, BleepingComputer, Microsoft, Malwarebytes
+================================================================================
+
+RESUMEN
+--------------------------------------------------------------------------------
+Familia de campanas que suplanta servicios legitimos de conversion de PDF
+(iLovePDF, PDFCandy, Smallpdf y similares) para entregar infostealers y
+cargadores. El senuelo funciona porque la victima BUSCA activamente la
+herramienta: llega por resultados de busqueda o anuncios, no por un correo
+no solicitado, asi que llega con la guardia baja y con un archivo propio en
+la mano.
+
+Dos mitades que conviene no confundir:
+
+  MITAD 1 - MALWARE
+  Sitios clonados que entregan malware por ClickFix (T1204.004) o por
+  descarga directa de binario. IOCs publicos, accionables, en seccion 2.
+
+  MITAD 2 - FUGA DE DATOS
+  El servicio LEGITIMO tambien es un problema, por razones que no tienen
+  nada que ver con malware. Ver seccion 7. Esa mitad no produce IOCs y
+  no debe tratarse como tal.
+
+El FBI advirtio que estos sitios SI entregan el archivo convertido -por eso
+nadie sospecha- mientras extraen del documento subido nombres, numeros de
+identificacion, credenciales bancarias, contrasenas y frases semilla de
+billeteras de criptomonedas.
+
+LINEA DE TIEMPO
+--------------------------------------------------------------------------------
+mar-2025     FBI Denver emite alerta publica por conversores de documentos
+             gratuitos usados como vector de infeccion.
+18-03-2025   MITRE crea T1204.004 (Malicious Copy and Paste) para ClickFix.
+23-03-2025   BleepingComputer verifica la alerta con dominios y binarios
+             reales: docu-flex[.]com, pdfixers[.]com -> Gootloader.
+abr-2025     CloudSEK documenta la cadena completa candyxpdf[.]com ->
+             ClickFix -> ArechClient2 (SectopRAT).
+may-2026     Microsoft confirma expansion de ClickFix a utilidades macOS.
+jul-2026     Malwarebytes documenta ClickFix con verificaciones falsas de
+             Google y Cloudflare entregando multiples familias.
+
+--------------------------------------------------------------------------------
+1. LO QUE **NO** ES UN IOC  (leer antes que las tablas)
+--------------------------------------------------------------------------------
+
+  ilovepdf[.]com   smallpdf[.]com   pdfcandy[.]com   pdf2go[.]com
+
+*** NO SON INDICADORES DE COMPROMISO. SON LAS VICTIMAS DE LA SUPLANTACION. ***
+
+Son servicios reales y operativos. ILOVEPDF, S.L. esta constituida en
+Barcelona, Espana, declara borrado de archivos a las dos horas y mantiene
+certificacion ISO/IEC 27001. Listarlos como IOC es un error de hecho y
+contamina cualquier feed que consuma este archivo.
+
+Existen razones solidas para BLOQUEARLOS en un entorno corporativo, pero son
+de gobernanza de datos, no de malware. Estan en la seccion 7, separadas a
+proposito.
+
+  adobe.zip        audiobit.exe        "Security Code: 8352"
+
+Son los nombres que uso UNA muestra concreta. El atacante los cambia
+escribiendo dos palabras. Una regla construida sobre esos strings da
+sensacion de cobertura y no cubre nada. La deteccion va por COMPORTAMIENTO
+(seccion 5), no por nombre de archivo.
+
+  Windows + R
+
+No es un IOC: es un componente estandar del sistema operativo. Lo detectable
+no es el dialogo Ejecutar sino QUE SE EJECUTA DESDE EL, y su rastro forense
+persistente esta en RunMRU (seccion 3, artefacto A-01).
+
+--------------------------------------------------------------------------------
+2. INDICADORES DE RED
+--------------------------------------------------------------------------------
+
+[Clones de PDFCandy - cadena ArechClient2, CloudSEK abr-2025]
+candyxpdf[.]com
+candyconverterpdf[.]com
+bind-new-connect[.]click          - infraestructura asociada
+
+[Conversores falsos - campana verificada por BleepingComputer mar-2025]
+docu-flex[.]com                   - entrega DocuFlex.exe
+pdfixers[.]com                    - entrega Pdfixers.exe
+
+[Typosquat de iLovePDF]
+lovepdf[.]cc                      - reportado por victimas en foros publicos
+
+  *** CONFIANZA MEDIA-BAJA: single-source, reporte de usuario en foro de
+      soporte sin analisis de muestra ni verificacion independiente.
+      MONITOREAR, NO BLOQUEAR CIEGAMENTE. Corroborar contra VirusTotal /
+      urlscan antes de accionar. ***
+
+[Infraestructura de descarga]
+172[.]86[.]115[.]43               - hospeda adobe.zip (segunda etapa)
+
+  *** Verificar vigencia antes de usar. IOC de abril de 2025: una IP de
+      hosting rota de operador. Bloquear una IP reasignada genera falsos
+      positivos contra un tercero inocente. ***
+
+[Senuelos con tematica de documentos - cluster ClickFix jun/jul-2026]
+  Ya recolectados en este repositorio, ver:
+    Campanas/Amenazas_LATAM/ClickFix/ClickFix_25082026.txt
+  (cluster BlueVoyant "Lorem Ipsum" / Supper / Vanilla Tempest)
+
+  Dos dominios de ese conjunto usan explicitamente el senuelo documental:
+    editdocumentfree[.]com
+    opendocumentonline[.]com
+
+  *** Confirma que el senuelo "edita/convierte tu documento gratis" sigue
+      en uso operativo en 2026 y no es solo historia de 2025. NO se
+      reproducen aqui el resto de los IOCs de ese cluster: viven en su
+      propio archivo y duplicarlos genera dos fuentes que se desincronizan. ***
+
+--------------------------------------------------------------------------------
+3. ARTEFACTOS DE ALTA FIDELIDAD  (esto es lo que si sirve)
+--------------------------------------------------------------------------------
+
+[A-01] Clave de registro RunMRU con comando de interprete.
+       HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU
+       Fidelidad: MUY ALTA - ES EL MEJOR ARTEFACTO FORENSE DE CLICKFIX.
+       El dialogo Ejecutar conserva historial. Un usuario normal escribe
+       ahi "cmd", "notepad", "\\servidor\share"; no pega una linea de
+       PowerShell de 400 caracteres codificada en base64.
+       Sobrevive al reinicio y permite caza retroactiva sin EDR.
+
+[A-02] powershell.exe o cmd.exe con proceso padre explorer.exe.
+       Fidelidad: MUY ALTA cuando ademas lleva -enc / -e / -ep bypass.
+       explorer.exe como padre significa dialogo Ejecutar o doble clic;
+       combinado con ejecucion codificada no tiene caso de uso legitimo.
+
+[A-03] MSBuild.exe iniciado por un proceso que no es un entorno de
+       desarrollo (Visual Studio, agente de CI).
+       Fidelidad: ALTA - proxy de ejecucion, T1127.001.
+       En un equipo de usuario final que no compila software, MSBuild.exe
+       ejecutandose es anomalo por si solo.
+
+[A-04] Descarga de archivo comprimido o ejecutable inmediatamente despues
+       de navegar a un dominio de conversion de archivos.
+       Fidelidad: MEDIA-ALTA - la salida esperada de un conversor es un
+       documento, nunca un .exe, .msi, .zip, .js o .hta.
+
+[A-05] Archivo con doble extension entregado como resultado de conversion.
+       documento.pdf.exe / factura.pdf.htm / informe.pdf.js
+       Fidelidad: ALTA.
+
+[A-06] Peticion saliente a dominio recien registrado cuyo nombre contiene
+       terminos de conversion (pdf, convert, converter, merge, compress)
+       y NO esta en la lista de servicios conocidos de la organizacion.
+       Fidelidad: MEDIA - requiere enriquecimiento con edad del dominio.
+
+--------------------------------------------------------------------------------
+4. SECUENCIA DE EXPLOTACION
+--------------------------------------------------------------------------------
+
+ 0. Usuario busca "convertir word a pdf gratis"
+    -> llega por SEO poisoning (T1608.006) o anuncio (T1583.008)
+
+ 1. Sitio clonado con interfaz identica al servicio legitimo:
+    animacion de carga, CAPTCHA, todo el atrezzo.
+
+ 2. El usuario sube su documento.
+    *** EN ESTE PUNTO EL DOCUMENTO YA SALIO. Aunque la cadena de malware
+        se interrumpa despues, el archivo ya esta en manos del atacante. ***
+
+ 3. Verificacion falsa que instruye:
+    "presione Windows + R y pegue este codigo para completar"
+    -> ClickFix, T1204.004
+
+ 4. powershell -win 1 -ep bypass -noni -enc <base64>
+    -> ventana oculta, politica de ejecucion evadida, sin perfil,
+       comando codificado
+
+ 5. Descarga de segunda etapa (adobe.zip) y ejecucion (audiobit.exe)
+
+ 6. audiobit.exe invoca MSBuild.exe para cargar el payload
+    -> living-off-the-land, T1127.001
+
+ 7. ArechClient2 (familia SectopRAT, activa desde 2019) roba:
+    credenciales de navegador, billeteras de criptomonedas, GUID de
+    maquina, nombre de equipo, idiomas soportados, contrasenas guardadas.
+
+ VARIANTE SIN CLICKFIX: docu-flex[.]com y pdfixers[.]com entregan
+ directamente un binario (DocuFlex.exe / Pdfixers.exe) que despliega
+ Gootloader. La cadena 3-6 no aplica ahi; los artefactos A-04 y A-05 si.
+
+--------------------------------------------------------------------------------
+5. DETECCION
+--------------------------------------------------------------------------------
+
+*** TODAS LAS REGLAS DE ESTA SECCION SON ASISTIDAS POR IA Y NO FUERON PROBADAS
+    CONTRA TRAFICO REAL. VALIDAR EN ENTORNO DE PRUEBA ANTES DE DESPLEGAR. ***
+
+[SIGMA] Interprete de comandos lanzado desde el dialogo Ejecutar
+        (la mas valiosa: no depende de dominios ni de nombres de archivo,
+         sobrevive al cambio completo de infraestructura del atacante)
+
+title: Interprete de comandos codificado lanzado desde explorer.exe (ClickFix)
+id: 7c3d9e18-4b62-4f05-a927-1d8e5b3f0a46
+status: experimental
+author: Intellroom CTI (AI-assisted - VALIDAR ANTES DE DESPLEGAR)
+date: 2026-08-27
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_padre:
+    ParentImage|endswith: '\explorer.exe'
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+      - '\cmd.exe'
+      - '\mshta.exe'
+  selection_sospecha:
+    CommandLine|contains:
+      - ' -enc'
+      - ' -e '
+      - ' -ep bypass'
+      - ' -ExecutionPolicy Bypass'
+      - ' -w hidden'
+      - ' -win 1'
+      - ' -noni'
+      - 'FromBase64String'
+      - 'DownloadString'
+      - 'Invoke-Expression'
+      - 'curl '
+      - 'iwr '
+  condition: selection_padre and selection_sospecha
+falsepositives:
+  - Administradores de sistemas que ejecutan scripts desde el dialogo Ejecutar
+  - Herramientas de despliegue de software mal integradas
+  - MEDIR LA LINEA BASE DEL ENTORNO ANTES DE HABILITAR EN BLOQUEO
+level: high
+tags:
+  - attack.t1204.004
+  - attack.t1059.001
+  - attack.t1027.010
+
+
+[SIGMA] MSBuild como proxy de ejecucion fuera de un entorno de desarrollo
+
+title: MSBuild.exe iniciado por proceso ajeno a entorno de desarrollo
+id: 2a6f8c04-9d71-4e33-b158-7c0a4e2d9f65
+status: experimental
+author: Intellroom CTI (AI-assisted - VALIDAR ANTES DE DESPLEGAR)
+date: 2026-08-27
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\MSBuild.exe'
+  filtro_dev:
+    ParentImage|endswith:
+      - '\devenv.exe'
+      - '\VSIXInstaller.exe'
+      - '\dotnet.exe'
+      - '\Agent.Worker.exe'
+      - '\Runner.Worker.exe'
+  condition: selection and not filtro_dev
+falsepositives:
+  - Estaciones de desarrollo con cadenas de compilacion no listadas
+  - EXCLUIR POR GRUPO DE EQUIPOS, no ampliando el filtro de proceso padre
+level: high
+tags:
+  - attack.t1127.001
+
+
+[KQL] Microsoft Sentinel / Defender XDR - ClickFix por proceso padre
+
+DeviceProcessEvents
+| where InitiatingProcessFileName =~ "explorer.exe"
+| where FileName in~ ("powershell.exe","pwsh.exe","cmd.exe","mshta.exe")
+| where ProcessCommandLine has_any ("-enc","-ep bypass","-ExecutionPolicy Bypass",
+                                    "-w hidden","-win 1","-noni",
+                                    "FromBase64String","DownloadString",
+                                    "Invoke-Expression")
+| project Timestamp, DeviceName, AccountName, FileName, ProcessCommandLine
+| order by Timestamp desc
+
+
+[KQL] Caza sobre RunMRU - el artefacto que sobrevive al reinicio
+
+DeviceRegistryEvents
+| where RegistryKey has @"CurrentVersion\Explorer\RunMRU"
+| where RegistryValueData has_any ("powershell","cmd.exe","mshta","curl",
+                                   "iwr","FromBase64String","-enc","bitsadmin")
+| project Timestamp, DeviceName, InitiatingProcessAccountName,
+          RegistryValueName, RegistryValueData
+| order by Timestamp desc
+
+
+[KQL] Navegacion a conversor seguida de descarga ejecutable (ventana 10 min)
+      La SECUENCIA discrimina; cada mitad por separado es trafico normal.
+
+let ventana = 10m;
+let navegacion = DeviceNetworkEvents
+  | where RemoteUrl has_any ("convert","converter","pdf","merge","compress")
+  | project Tiempo=Timestamp, Dispositivo=DeviceName, Url=RemoteUrl;
+let descarga = DeviceFileEvents
+  | where FileName endswith ".exe" or FileName endswith ".zip"
+       or FileName endswith ".msi" or FileName endswith ".hta"
+  | where InitiatingProcessFileName in~ ("chrome.exe","msedge.exe","firefox.exe")
+  | project TiempoDesc=Timestamp, Dispositivo=DeviceName, Archivo=FileName;
+navegacion
+| join kind=inner descarga on Dispositivo
+| where TiempoDesc between (Tiempo .. Tiempo + ventana)
+| project Tiempo, Dispositivo, Url, Archivo, TiempoDesc
+| order by Tiempo desc
+
+
+[SPL] Splunk - ClickFix por proceso padre
+
+index=windows sourcetype=WinEventLog:Sysmon EventCode=1
+  parent_process_name="explorer.exe"
+  process_name IN ("powershell.exe","pwsh.exe","cmd.exe","mshta.exe")
+  (process="*-enc*" OR process="*-ep bypass*" OR process="*-w hidden*"
+   OR process="*-win 1*" OR process="*FromBase64String*"
+   OR process="*DownloadString*")
+| table _time host user parent_process_name process_name process
+| sort - _time
+
+
+[SPL] Splunk - MSBuild fuera de entorno de desarrollo
+
+index=windows sourcetype=WinEventLog:Sysmon EventCode=1
+  process_name="MSBuild.exe"
+  NOT parent_process_name IN ("devenv.exe","dotnet.exe","VSIXInstaller.exe")
+| stats count min(_time) as primero by host user parent_process_name process
+| convert ctime(primero)
+
+--------------------------------------------------------------------------------
+6. CAZA RETROACTIVA
+--------------------------------------------------------------------------------
+
+ H-1  RunMRU con comandos de interprete en todo el parque
+      -> es la consulta de mayor rendimiento y no necesita EDR:
+         reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU"
+      *** SI DA POSITIVO: el usuario ejecuto algo desde el dialogo Ejecutar.
+          Recuperar la cadena completa antes de tocar el equipo. ***
+
+ H-2  powershell.exe / cmd.exe con padre explorer.exe y linea codificada
+      -> EDR / Sysmon EventID 1
+
+ H-3  MSBuild.exe en equipos que no son de desarrollo
+      -> inventario de procesos + grupo del equipo
+
+ H-4  Descargas de .exe/.zip/.msi originadas en navegador dentro de los
+      10 minutos posteriores a navegar a un dominio de conversion
+      -> proxy + telemetria de archivos
+
+ H-5  Logs de proxy: peticiones a dominios de conversion de archivos
+      -> ESTA CONSULTA NO BUSCA MALWARE, BUSCA FUGA DE DATOS.
+         Dimensiona cuantos documentos salieron y desde que cuentas.
+         Ver seccion 7.
+
+ SI H-1 O H-2 DAN POSITIVO: asumir robo de credenciales. Rotar las
+ credenciales del usuario y revisar sesiones activas ANTES de reimagen;
+ un infostealer exfiltra en segundos y las cookies de sesion sobreviven
+ al cambio de contrasena.
+
+--------------------------------------------------------------------------------
+7. EL RIESGO QUE NO ES MALWARE  (y no produce IOCs)
+--------------------------------------------------------------------------------
+
+Esta seccion existe porque la mitad de la exposicion real de esta categoria
+no se resuelve con una regla de deteccion, y tratarla como problema de
+malware lleva a una conclusion equivocada: "el sitio es legitimo, entonces
+no hay problema".
+
+  EL ARCHIVO SALE DE LA ORGANIZACION AUNQUE EL SITIO SEA LEGITIMO.
+
+Subir un documento a un servicio en linea no es usar una herramienta: es
+entregarle el archivo a un tercero para que lo procese.
+
+[Marco chileno - Ley 21.719]
+  El proveedor es ENCARGADO DE TRATAMIENTO. El Art. 15 bis exige contrato
+  de encargo escrito con instrucciones documentadas. No existe con ninguno
+  de estos servicios en uso no autorizado.
+
+  El procesamiento ocurre fuera de Chile -> TRANSFERENCIA INTERNACIONAL,
+  Titulo V, Arts. 27 a 29. Sin mecanismo habilitante:
+
+    Grave      Art. 34 ter m      hasta 10.000 UTM
+    Gravisima  Art. 34 quater h   hasta 20.000 UTM  (si es a sabiendas)
+
+  Agravante practico: como la carga ocurre fuera de todo canal autorizado,
+  el tratamiento NO figura en el Registro de Actividades de Tratamiento.
+  Ante fiscalizacion o solicitud de acceso de un titular, la organizacion
+  no puede decir donde esta ese dato ni quien lo tiene.
+
+  Si ya salieron documentos con datos personales, corre la evaluacion del
+  Art. 14 sexies, y el plazo empieza al TOMAR CONOCIMIENTO. La consulta
+  H-5 de la seccion 6 es lo que produce ese conocimiento.
+
+[Precedente: por que "es un proveedor serio" no cierra el riesgo]
+  Nitro PDF, 2020. Servicio legitimo, marca conocida. ShinyHunters filtro
+  77.159.696 registros y puso a la venta 1 TB de documentos de usuarios
+  por USD 80.000. Entre las cuentas afectadas habia correos corporativos
+  de Google, Apple y Microsoft; entre los documentos, propuestas de
+  fusiones y adquisiciones, reportes financieros y planes de lanzamiento.
+
+  Ninguno de esos documentos era sensible cuando alguien lo subio.
+  Lo fue cuando se filtro.
+
+[Recomendacion de bloqueo]
+  Bloquear la CATEGORIA completa de conversion y edicion de archivos en
+  linea, no dominios sueltos. Dos razones:
+
+   1. Gobernanza: ningun servicio de la categoria tiene contrato de
+      encargo ni mecanismo de transferencia.
+   2. Indistinguibilidad: frente a decenas de clones y typosquats, el
+      usuario no puede diferenciar en el momento cual es el real, y el
+      proxy no puede autorizar "el bueno" sin abrir el patron completo.
+
+  *** La pagina de bloqueo debe indicar la alternativa nativa
+      (Guardar como PDF / Microsoft Print to PDF / Vista Previa en macOS),
+      no un error generico. Un bloqueo sin alternativa empuja al usuario
+      al telefono personal, y ahi no hay control ni telemetria. ***
+
+--------------------------------------------------------------------------------
+8. MITRE ATT&CK
+--------------------------------------------------------------------------------
+
+ T1608.006   Stage Capabilities: SEO Poisoning
+             (posicionamiento del clon en resultados de busqueda)
+ T1583.008   Acquire Infrastructure: Malvertising
+             (anuncios pagados sobre terminos de conversion)
+ T1204.004   User Execution: Malicious Copy and Paste
+             (ClickFix - la victima pega el comando en Windows+R)
+ T1059.001   Command and Scripting Interpreter: PowerShell
+ T1027.010   Obfuscated Files or Information: Command Obfuscation
+             (-enc, base64)
+ T1127.001   Trusted Developer Utilities Proxy Execution: MSBuild
+ T1555.003   Credentials from Password Stores: Credentials from Web Browsers
+ T1005       Data from Local System
+             (el documento que la victima sube voluntariamente)
+
+ NOTA DE METODO: las fuentes no asignan todos estos IDs explicitamente.
+ Fueron mapeados por Intellroom y VERIFICADOS uno a uno contra
+ attack.mitre.org el 27-08-2026. T1204.004 fue creada el 18-03-2025 y su
+ descripcion nombra ClickFix de forma explicita, incluyendo el patron de
+ CAPTCHA falso y dialogo Ejecutar; no es una asignacion por analogia.
+
+ Se descarto T1566 (Phishing) porque la entrega no es por mensaje no
+ solicitado: la victima llega por busqueda propia. Esa diferencia importa
+ para la deteccion -los controles de correo no ven nada de esto- y para
+ la capacitacion, porque el usuario no esta "cayendo en un correo raro".
+
+--------------------------------------------------------------------------------
+9. NIVEL DE CONFIANZA (ICD 203)
+--------------------------------------------------------------------------------
+
+CASI SEGURO   que las campanas existen y operan como se describe: alerta de
+              autoridad federal (FBI), dos investigaciones de proveedores
+              independientes con muestras analizadas, IOCs publicados.
+
+MUY PROBABLE  que la tecnica siga activa hoy: Microsoft y Malwarebytes
+              documentan expansion de ClickFix a nuevos senuelos durante
+              2026, con familias distintas sobre la misma mecanica.
+
+PROBABLE      que la infraestructura de 2025 listada en seccion 2 este
+              parcial o totalmente rotada. Los IOCs sirven para caza
+              retroactiva; para bloqueo perimetral valen los artefactos
+              de comportamiento de seccion 3.
+
+CORROBORADO:    existencia y mecanica de las campanas; la cadena tecnica
+                completa; la vigencia de ClickFix en 2026.
+SINGLE-SOURCE:  el typosquat lovepdf[.]cc (reporte de usuario en foro).
+SIN CORROBORAR: cualquier cifra de victimas en Chile o LATAM. Las fuentes
+                consultadas NO documentan targeting regional para este
+                senuelo especifico. No afirmar lo contrario.
+
+--------------------------------------------------------------------------------
+10. FUENTES
+--------------------------------------------------------------------------------
+
+[Alerta de autoridad]
+  FBI Denver - Warns of Online File Converter Scam (mar-2025):
+    https://www.fbi.gov/contact-us/field-offices/denver/news/fbi-denver-warns-of-online-file-converter-scam
+
+[Analisis tecnico - fuentes primarias]
+  CloudSEK - Byte Bandits: How Fake PDF Converters Are Stealing More Than
+  Just Your Documents (abr-2025):
+    https://www.cloudsek.com/blog/byte-bandits-how-fake-pdf-converters-are-stealing-more-than-just-your-documents
+  BleepingComputer - FBI warnings are true, fake file converters do push
+  malware (23-03-2025):
+    https://www.bleepingcomputer.com/news/security/fbi-warnings-are-true-fake-file-converters-do-push-malware/
+
+[Vigencia de la tecnica en 2026]
+  Microsoft Security - ClickFix campaign uses fake macOS utilities lures
+  to deliver infostealers (06-05-2026):
+    https://www.microsoft.com/en-us/security/blog/2026/05/06/clickfix-campaign-uses-fake-macos-utilities-lures-deliver-infostealers/
+  Malwarebytes - Fake Google and Cloudflare verification pages spread
+  multiple malware families (jul-2026):
+    https://www.malwarebytes.com/blog/threat-intel/2026/07/fake-google-and-cloudflare-verification-pages-spread-multiple-malware-families
+
+[Contexto de fuga de datos]
+  Tarlogic - PDF converters, playing with fire:
+    https://www.tarlogic.com/blog/pdf-converters-playing-with-fire/
+  UpGuard - 77 million PDF user records published online (brecha Nitro PDF):
+    https://www.upguard.com/news/nitro-data-breach
+
+[Referencia tecnica]
+  MITRE ATT&CK T1204.004 - Malicious Copy and Paste:
+    https://attack.mitre.org/techniques/T1204/004/
+
+*** NOTA DE MANEJO: los dominios de la seccion 2 fueron maliciosos en el
+    momento de su publicacion por las fuentes citadas. Verificar vigencia
+    antes de accionar. Los servicios nombrados en la seccion 1 son
+    legitimos y no deben incorporarse a ninguna lista de bloqueo por
+    reputacion de malware. ***
+
+================================================================================
+  Intellroom - Threat Intelligence | 27-08-2026
+  Bundle STIX 2.1 importable: Conversores_PDF_Falsos_27082026.json
+  Relacionado: Campanas/Amenazas_LATAM/ClickFix/ (IOCs ClickFix 2025-2026)
+================================================================================

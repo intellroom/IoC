@@ -1,0 +1,474 @@
+{
+  "type": "bundle",
+  "id": "bundle--e7d3a920-5f18-4b64-a039-1c8e6b2d4f75",
+  "objects": [
+    {
+      "type": "identity",
+      "spec_version": "2.1",
+      "id": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "name": "Intellroom SpA - Threat Intelligence",
+      "identity_class": "organization"
+    },
+    {
+      "type": "campaign",
+      "spec_version": "2.1",
+      "id": "campaign--b48e2d15-9f07-4a63-8c21-5d9a0e7b3f16",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "name": "Conversores de PDF falsos - ClickFix",
+      "description": "Familia de campanas que suplanta servicios legitimos de conversion de PDF (iLovePDF, PDFCandy, Smallpdf) mediante clones, typosquatting, SEO poisoning y malvertising. La victima llega por busqueda propia y no por correo no solicitado. Entrega infostealers via ClickFix (T1204.004) o por descarga directa de binario. El documento subido por la victima queda en poder del atacante con independencia de que la cadena de malware se complete.",
+      "first_seen": "2025-03-01T00:00:00.000Z",
+      "labels": [
+        "clickfix",
+        "fake-converter",
+        "infostealer",
+        "seo-poisoning"
+      ]
+    },
+    {
+      "type": "malware",
+      "spec_version": "2.1",
+      "id": "malware--3d7b1e94-5c62-4f08-a7d3-1b6e9f2c4a85",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "name": "ArechClient2",
+      "is_family": true,
+      "malware_types": [
+        "spyware"
+      ],
+      "description": "Variante de la familia SectopRAT, activa desde 2019. Roba credenciales de navegador, datos de billeteras de criptomonedas, GUID de maquina, nombre de equipo, idiomas soportados y contrasenas guardadas. Cargado via MSBuild.exe (T1127.001)."
+    },
+    {
+      "type": "malware",
+      "spec_version": "2.1",
+      "id": "malware--8f2c5a71-4e39-4b17-9d06-2a8f3e1c7b59",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "name": "Gootloader",
+      "is_family": true,
+      "malware_types": [
+        "downloader",
+        "dropper"
+      ],
+      "description": "Cargador entregado por los conversores falsos docu-flex[.]com y pdfixers[.]com. Despliega troyanos bancarios, infostealers y herramientas de post-explotacion."
+    },
+    {
+      "type": "attack-pattern",
+      "spec_version": "2.1",
+      "id": "attack-pattern--1f9e4b28-7d53-4c06-8a91-3e5f2b7d1c48",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "name": "User Execution: Malicious Copy and Paste",
+      "description": "La victima pega el comando en el dialogo Ejecutar tras un CAPTCHA falso. Tecnica creada por MITRE el 18-03-2025.",
+      "external_references": [
+        {
+          "source_name": "mitre-attack",
+          "external_id": "T1204.004",
+          "url": "https://attack.mitre.org/techniques/T1204/004/"
+        }
+      ]
+    },
+    {
+      "type": "attack-pattern",
+      "spec_version": "2.1",
+      "id": "attack-pattern--5c8a3f60-2b17-4e94-b7d5-9f1c6a4e2d83",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "name": "Stage Capabilities: SEO Poisoning",
+      "description": "Posicionamiento del sitio clonado en resultados de busqueda.",
+      "external_references": [
+        {
+          "source_name": "mitre-attack",
+          "external_id": "T1608.006",
+          "url": "https://attack.mitre.org/techniques/T1608/006/"
+        }
+      ]
+    },
+    {
+      "type": "attack-pattern",
+      "spec_version": "2.1",
+      "id": "attack-pattern--9b4d7e02-6f81-4a35-8c19-2d7b5f3a9e64",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "name": "Acquire Infrastructure: Malvertising",
+      "description": "Anuncios pagados sobre terminos de conversion de archivos.",
+      "external_references": [
+        {
+          "source_name": "mitre-attack",
+          "external_id": "T1583.008",
+          "url": "https://attack.mitre.org/techniques/T1583/008/"
+        }
+      ]
+    },
+    {
+      "type": "attack-pattern",
+      "spec_version": "2.1",
+      "id": "attack-pattern--4e1c8b95-3a76-4d20-9f68-7b2e5c1d4a09",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "name": "Trusted Developer Utilities Proxy Execution: MSBuild",
+      "description": "audiobit.exe invoca MSBuild.exe para cargar el payload (living-off-the-land).",
+      "external_references": [
+        {
+          "source_name": "mitre-attack",
+          "external_id": "T1127.001",
+          "url": "https://attack.mitre.org/techniques/T1127/001/"
+        }
+      ]
+    },
+    {
+      "type": "attack-pattern",
+      "spec_version": "2.1",
+      "id": "attack-pattern--7a5f2d18-8c40-4b63-a5e7-1f9d3b6c2e75",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "name": "Command and Scripting Interpreter: PowerShell",
+      "description": "powershell -win 1 -ep bypass -noni -enc",
+      "external_references": [
+        {
+          "source_name": "mitre-attack",
+          "external_id": "T1059.001",
+          "url": "https://attack.mitre.org/techniques/T1059/001/"
+        }
+      ]
+    },
+    {
+      "type": "attack-pattern",
+      "spec_version": "2.1",
+      "id": "attack-pattern--2d9b6c43-1e57-4f82-b016-8a4e7d5f3c91",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "name": "Credentials from Password Stores: Credentials from Web Browsers",
+      "description": "ArechClient2 extrae credenciales almacenadas en navegadores.",
+      "external_references": [
+        {
+          "source_name": "mitre-attack",
+          "external_id": "T1555.003",
+          "url": "https://attack.mitre.org/techniques/T1555/003/"
+        }
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--0c7e3f81-4b29-4d56-9a13-6e8f2c5b7d40",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "name": "Clon de PDFCandy - cadena ArechClient2",
+      "description": "Sitio clonado documentado por CloudSEK. Verificar vigencia antes de accionar.",
+      "pattern": "[domain-name:value = 'candyxpdf.com']",
+      "pattern_type": "stix",
+      "pattern_version": "2.1",
+      "valid_from": "2025-04-16T00:00:00.000Z",
+      "confidence": 70,
+      "indicator_types": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--6b2d9a54-8f13-4e07-b628-3c5a1d7f9e26",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "name": "Clon de PDFCandy - cadena ArechClient2",
+      "description": "Sitio clonado documentado por CloudSEK. Verificar vigencia antes de accionar.",
+      "pattern": "[domain-name:value = 'candyconverterpdf.com']",
+      "pattern_type": "stix",
+      "pattern_version": "2.1",
+      "valid_from": "2025-04-16T00:00:00.000Z",
+      "confidence": 70,
+      "indicator_types": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--3f8c1b70-5d46-4a92-8e35-9b7d2f4c6a18",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "name": "Infraestructura asociada a la cadena ArechClient2",
+      "description": "Infraestructura asociada reportada por CloudSEK.",
+      "pattern": "[domain-name:value = 'bind-new-connect.click']",
+      "pattern_type": "stix",
+      "pattern_version": "2.1",
+      "valid_from": "2025-04-16T00:00:00.000Z",
+      "confidence": 60,
+      "indicator_types": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--8d4a2e69-1c75-4b38-9f04-5e2b8c6d3a71",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "name": "Conversor falso que entrega DocuFlex.exe (Gootloader)",
+      "description": "Verificado por BleepingComputer tras la alerta del FBI.",
+      "pattern": "[domain-name:value = 'docu-flex.com']",
+      "pattern_type": "stix",
+      "pattern_version": "2.1",
+      "valid_from": "2025-03-23T00:00:00.000Z",
+      "confidence": 70,
+      "indicator_types": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--5e9b7c34-2a68-4d15-b493-7f1c6e8a2d50",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "name": "Conversor falso que entrega Pdfixers.exe",
+      "description": "Verificado por BleepingComputer tras la alerta del FBI.",
+      "pattern": "[domain-name:value = 'pdfixers.com']",
+      "pattern_type": "stix",
+      "pattern_version": "2.1",
+      "valid_from": "2025-03-23T00:00:00.000Z",
+      "confidence": 70,
+      "indicator_types": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--1a6f4d83-9e27-4c60-8b51-4d3a7f2e9c65",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "name": "Typosquat de iLovePDF",
+      "description": "CONFIANZA BAJA: single-source, reporte de usuario en foro publico sin analisis de muestra ni verificacion independiente. Monitorear, no bloquear ciegamente.",
+      "pattern": "[domain-name:value = 'lovepdf.cc']",
+      "pattern_type": "stix",
+      "pattern_version": "2.1",
+      "valid_from": "2026-08-27T00:00:00.000Z",
+      "confidence": 40,
+      "indicator_types": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--7c3e8b16-4f52-4a09-9d78-2b6c5a1e4f83",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "name": "Infraestructura de descarga de segunda etapa (adobe.zip)",
+      "description": "IOC de abril de 2025. Una IP de hosting rota de operador: bloquear una IP reasignada genera falsos positivos contra un tercero inocente.",
+      "pattern": "[ipv4-addr:value = '172.86.115.43']",
+      "pattern_type": "stix",
+      "pattern_version": "2.1",
+      "valid_from": "2025-04-16T00:00:00.000Z",
+      "confidence": 55,
+      "indicator_types": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "note",
+      "spec_version": "2.1",
+      "id": "note--4b8d1f27-6a93-4e50-b715-8c2f9d5a3e64",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "abstract": "ADVERTENCIA: dominios legitimos suplantados - NO son IOCs",
+      "content": "ilovepdf.com, smallpdf.com, pdfcandy.com y pdf2go.com NO son indicadores de compromiso: son los servicios legitimos suplantados por esta campana. ILOVEPDF, S.L. esta constituida en Barcelona, Espana, declara borrado de archivos a las dos horas y mantiene certificacion ISO/IEC 27001. Incorporarlos a una lista de bloqueo por reputacion de malware es un error de hecho. Existen razones solidas para restringirlos en un entorno corporativo, pero son de gobernanza de datos (encargado de tratamiento sin contrato y transferencia internacional sin mecanismo habilitante), no de malware. Los nombres adobe.zip y audiobit.exe corresponden a una muestra concreta y son arbitrarios: detectar por comportamiento, no por nombre de archivo.",
+      "object_refs": [
+        "campaign--b48e2d15-9f07-4a63-8c21-5d9a0e7b3f16",
+        "indicator--0c7e3f81-4b29-4d56-9a13-6e8f2c5b7d40",
+        "indicator--6b2d9a54-8f13-4e07-b628-3c5a1d7f9e26",
+        "indicator--3f8c1b70-5d46-4a92-8e35-9b7d2f4c6a18",
+        "indicator--8d4a2e69-1c75-4b38-9f04-5e2b8c6d3a71",
+        "indicator--5e9b7c34-2a68-4d15-b493-7f1c6e8a2d50",
+        "indicator--1a6f4d83-9e27-4c60-8b51-4d3a7f2e9c65",
+        "indicator--7c3e8b16-4f52-4a09-9d78-2b6c5a1e4f83"
+      ]
+    },
+    {
+      "type": "relationship",
+      "spec_version": "2.1",
+      "id": "relationship--a1b2c3d4-1111-4a01-8f01-000000000001",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "relationship_type": "uses",
+      "source_ref": "campaign--b48e2d15-9f07-4a63-8c21-5d9a0e7b3f16",
+      "target_ref": "malware--3d7b1e94-5c62-4f08-a7d3-1b6e9f2c4a85"
+    },
+    {
+      "type": "relationship",
+      "spec_version": "2.1",
+      "id": "relationship--a1b2c3d4-1111-4a01-8f01-000000000002",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "relationship_type": "uses",
+      "source_ref": "campaign--b48e2d15-9f07-4a63-8c21-5d9a0e7b3f16",
+      "target_ref": "malware--8f2c5a71-4e39-4b17-9d06-2a8f3e1c7b59"
+    },
+    {
+      "type": "relationship",
+      "spec_version": "2.1",
+      "id": "relationship--a1b2c3d4-1111-4a01-8f01-000000000003",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "relationship_type": "uses",
+      "source_ref": "campaign--b48e2d15-9f07-4a63-8c21-5d9a0e7b3f16",
+      "target_ref": "attack-pattern--1f9e4b28-7d53-4c06-8a91-3e5f2b7d1c48"
+    },
+    {
+      "type": "relationship",
+      "spec_version": "2.1",
+      "id": "relationship--a1b2c3d4-1111-4a01-8f01-000000000004",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "relationship_type": "uses",
+      "source_ref": "campaign--b48e2d15-9f07-4a63-8c21-5d9a0e7b3f16",
+      "target_ref": "attack-pattern--5c8a3f60-2b17-4e94-b7d5-9f1c6a4e2d83"
+    },
+    {
+      "type": "relationship",
+      "spec_version": "2.1",
+      "id": "relationship--a1b2c3d4-1111-4a01-8f01-000000000005",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "relationship_type": "uses",
+      "source_ref": "campaign--b48e2d15-9f07-4a63-8c21-5d9a0e7b3f16",
+      "target_ref": "attack-pattern--9b4d7e02-6f81-4a35-8c19-2d7b5f3a9e64"
+    },
+    {
+      "type": "relationship",
+      "spec_version": "2.1",
+      "id": "relationship--a1b2c3d4-1111-4a01-8f01-000000000006",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "relationship_type": "uses",
+      "source_ref": "campaign--b48e2d15-9f07-4a63-8c21-5d9a0e7b3f16",
+      "target_ref": "attack-pattern--4e1c8b95-3a76-4d20-9f68-7b2e5c1d4a09"
+    },
+    {
+      "type": "relationship",
+      "spec_version": "2.1",
+      "id": "relationship--a1b2c3d4-1111-4a01-8f01-000000000007",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "relationship_type": "uses",
+      "source_ref": "campaign--b48e2d15-9f07-4a63-8c21-5d9a0e7b3f16",
+      "target_ref": "attack-pattern--7a5f2d18-8c40-4b63-a5e7-1f9d3b6c2e75"
+    },
+    {
+      "type": "relationship",
+      "spec_version": "2.1",
+      "id": "relationship--a1b2c3d4-1111-4a01-8f01-000000000008",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "relationship_type": "uses",
+      "source_ref": "campaign--b48e2d15-9f07-4a63-8c21-5d9a0e7b3f16",
+      "target_ref": "attack-pattern--2d9b6c43-1e57-4f82-b016-8a4e7d5f3c91"
+    },
+    {
+      "type": "relationship",
+      "spec_version": "2.1",
+      "id": "relationship--a1b2c3d4-1111-4a01-8f01-000000000020",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "relationship_type": "indicates",
+      "source_ref": "indicator--0c7e3f81-4b29-4d56-9a13-6e8f2c5b7d40",
+      "target_ref": "campaign--b48e2d15-9f07-4a63-8c21-5d9a0e7b3f16"
+    },
+    {
+      "type": "relationship",
+      "spec_version": "2.1",
+      "id": "relationship--a1b2c3d4-1111-4a01-8f01-000000000021",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "relationship_type": "indicates",
+      "source_ref": "indicator--6b2d9a54-8f13-4e07-b628-3c5a1d7f9e26",
+      "target_ref": "campaign--b48e2d15-9f07-4a63-8c21-5d9a0e7b3f16"
+    },
+    {
+      "type": "relationship",
+      "spec_version": "2.1",
+      "id": "relationship--a1b2c3d4-1111-4a01-8f01-000000000022",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "relationship_type": "indicates",
+      "source_ref": "indicator--3f8c1b70-5d46-4a92-8e35-9b7d2f4c6a18",
+      "target_ref": "campaign--b48e2d15-9f07-4a63-8c21-5d9a0e7b3f16"
+    },
+    {
+      "type": "relationship",
+      "spec_version": "2.1",
+      "id": "relationship--a1b2c3d4-1111-4a01-8f01-000000000023",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "relationship_type": "indicates",
+      "source_ref": "indicator--8d4a2e69-1c75-4b38-9f04-5e2b8c6d3a71",
+      "target_ref": "campaign--b48e2d15-9f07-4a63-8c21-5d9a0e7b3f16"
+    },
+    {
+      "type": "relationship",
+      "spec_version": "2.1",
+      "id": "relationship--a1b2c3d4-1111-4a01-8f01-000000000024",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "relationship_type": "indicates",
+      "source_ref": "indicator--5e9b7c34-2a68-4d15-b493-7f1c6e8a2d50",
+      "target_ref": "campaign--b48e2d15-9f07-4a63-8c21-5d9a0e7b3f16"
+    },
+    {
+      "type": "relationship",
+      "spec_version": "2.1",
+      "id": "relationship--a1b2c3d4-1111-4a01-8f01-000000000025",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "relationship_type": "indicates",
+      "source_ref": "indicator--1a6f4d83-9e27-4c60-8b51-4d3a7f2e9c65",
+      "target_ref": "campaign--b48e2d15-9f07-4a63-8c21-5d9a0e7b3f16"
+    },
+    {
+      "type": "relationship",
+      "spec_version": "2.1",
+      "id": "relationship--a1b2c3d4-1111-4a01-8f01-000000000026",
+      "created": "2026-08-27T00:00:00.000Z",
+      "modified": "2026-08-27T00:00:00.000Z",
+      "created_by_ref": "identity--6a1f9c37-2e84-4d51-b0a9-7c3e5f1d8b42",
+      "relationship_type": "indicates",
+      "source_ref": "indicator--7c3e8b16-4f52-4a09-9d78-2b6c5a1e4f83",
+      "target_ref": "campaign--b48e2d15-9f07-4a63-8c21-5d9a0e7b3f16"
+    }
+  ]
+}
