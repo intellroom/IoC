@@ -1,0 +1,413 @@
+================================================================================
+  MICROSOFT SHAREPOINT - CADENA DE RCE NO AUTENTICADA
+  CVE-2026-55040 (bypass JWT) + CVE-2026-63520 (RCE via BCS)
+  Fecha: 27-08-2026 | TLP: CLEAR
+  Fuentes: Rapid7, VulnCheck, CISA KEV, Defused, Shadowserver
+================================================================================
+
+RESUMEN
+--------------------------------------------------------------------------------
+Cadena publica que lleva de "sin credenciales" a ejecucion de codigo en
+Microsoft SharePoint Server ON-PREMISE. Las dos mitades tienen PoC publicado.
+
+  CVE-2026-55040  CVSS 9.1  Bypass de autenticacion por forja de token JWT
+                            Componente: SPJsonWebSecurityTokenHandlerV2
+                            CWE-1390 (Weak Authentication)
+                            CISA KEV: 18-08-2026 (plazo 21-08-2026)
+
+  CVE-2026-63520  CVSS 8.1  Instanciacion insegura de tipos .NET en
+                            Business Data Connectivity (BCS/BDC)
+                            Metodo: DbTypeReflector.ResolveDotNetType()
+                            -> Type.GetType() sobre TypeName controlado
+
+Origen: Pwn2Own Berlin 2026.
+
+*** SHAREPOINT ONLINE / MICROSOFT 365 NO ESTA AFECTADO. Solo on-premise. ***
+
+LINEA DE TIEMPO
+--------------------------------------------------------------------------------
+14-07-2026   Divulgacion publica CVE-2026-55040 (parche de julio)
+11-08-2026   PoC publico CVE-2026-55040 (Stephen Fewer / Rapid7)
+12-08-2026   Weaponizacion observada en honeypots -- UN DIA DESPUES
+18-08-2026   CISA agrega CVE-2026-55040 a KEV
+24-08-2026   PoC publico CVE-2026-63520 (Jonathan Peterson / VulnCheck)
+25-08-2026   Encadenamiento observado en honeypots: bypass JWT + enumeracion
+             masiva de administradores + sondeo del sink BCS.
+             Defused reporta: "No code execution observed yet"
+
+--------------------------------------------------------------------------------
+1. LO QUE **NO** ES UN IOC  (leer antes que las tablas)
+--------------------------------------------------------------------------------
+
+  "blahlist"  y  "blah.bdcm"   ->  NO SON INDICADORES DE COMPROMISO
+
+Son las cadenas literales que usa el PoC de VulnCheck en su demostracion.
+El atacante las cambia escribiendo dos palabras. Una regla construida sobre
+esos strings da sensacion de cobertura y no cubre nada.
+
+  /_api/web/lists
+  /_vti_bin/client.svc/ProcessQuery
+  /_api/web/GetFolderByServerRelativeUrl(...)
+
+Son API LEGITIMA y de alto uso de SharePoint. Bloquearlas rompe el producto.
+La deteccion tiene que ser por SECUENCIA y por CONTENIDO, no por endpoint.
+
+--------------------------------------------------------------------------------
+2. INDICADORES DE RED
+--------------------------------------------------------------------------------
+
+[Origen de explotacion observado en honeypots]
+205[.]147[.]17[.]6   - Abuso de CVE-2026-55040 (reportado por Defused)
+
+  *** CONFIANZA BAJA: single-source, via post en red social, sin verificacion
+      independiente ni contexto de infraestructura. MONITOREAR, NO BLOQUEAR
+      CIEGAMENTE en un perimetro productivo. Corroborar antes contra
+      GreyNoise / AbuseIPDB / Shodan. ***
+
+--------------------------------------------------------------------------------
+3. ARTEFACTOS DE ALTA FIDELIDAD  (esto es lo que si sirve)
+--------------------------------------------------------------------------------
+
+[A-01] Biblioteca de documentos "BusinessDataMetadataCatalog" (template type 101)
+       creada por via API en un sitio que no usa BCS.
+       Fidelidad: ALTA - anomala por si sola.
+
+[A-02] Archivo con extension .bdcm subido a esa biblioteca.
+       Fidelidad: ALTA - un modelo BDC casi nunca se sube por API REST.
+
+[A-03] Registro de lista externa con tipo "DotNetAssembly" via ProcessQuery.
+       Fidelidad: ALTA - combinacion especifica de la explotacion.
+
+[A-04] PROCESO HIJO DE w3wp.exe  (cmd.exe, powershell.exe, calc.exe, cualquiera)
+       Fidelidad: MUY ALTA - el application pool de SharePoint no debe generar
+       procesos hijo interactivos. ES LA SEÑAL MAS FUERTE DE LA CADENA.
+
+[A-05] Referencias dentro de un modelo BDC a:
+         System.Web.UI.LosFormatter
+         TypeConfuseDelegate
+         ObjectDataProvider
+       Fidelidad: ALTA.
+       *** Existen MULTIPLES cadenas de gadgets. VulnCheck documento
+           LosFormatter/TypeConfuseDelegate; Rapid7 documento ObjectDataProvider.
+           Una deteccion que busque solo una FALLA contra la otra. ***
+
+[A-06] Payload base64 embebido en el campo "DefaultValue" de un BDCM.
+       Fidelidad: ALTA.
+
+[A-07] Enumeracion masiva de administradores tras acceso sin autenticacion
+       previa exitosa. Fidelidad: MEDIA - patron observado el 25-08-2026.
+
+[A-08] Consultas SMB / LSARPC de descubrimiento de SID contra el DC desde
+       origen externo. Fidelidad: MEDIA - el PoC lo usa para resolver
+       identidades (necesita SID o UPN valido del objetivo).
+
+--------------------------------------------------------------------------------
+4. SECUENCIA DE EXPLOTACION
+--------------------------------------------------------------------------------
+
+ 0. (JWT forjado)                                    -> bypass CVE-2026-55040
+ 1. POST /_api/web/lists   |   POST /_api/web/folders
+                             -> crea BusinessDataMetadataCatalog (tipo 101)
+ 2. POST /_api/web/GetFolderByServerRelativeUrl('BusinessDataMetadataCatalog')/Files/add
+                             -> sube el modelo .bdcm malicioso
+ 3. POST /_vti_bin/client.svc/ProcessQuery
+                             -> registra lista externa (tipo DotNetAssembly)
+ 4. GET  /_api/web/lists/getbytitle('<lista>')/items
+                             -> dispara ejecucion via Finder (FindSpecificDefault)
+
+ Resultado: proceso hijo bajo w3wp.exe.
+
+ NOTA: VulnCheck describe el paso 1 contra /_api/web/lists y Rapid7 contra
+ /_api/web/folders. Cubrir AMBAS rutas, no elegir una.
+
+--------------------------------------------------------------------------------
+5. DETECCION
+--------------------------------------------------------------------------------
+
+*** TODAS LAS REGLAS DE ESTA SECCION SON ASISTIDAS POR IA Y NO FUERON PROBADAS
+    CONTRA TRAFICO REAL. VALIDAR EN ENTORNO DE PRUEBA ANTES DE DESPLEGAR. ***
+
+[SIGMA] Proceso hijo desde el app pool de SharePoint
+        (la mas valiosa: no depende de strings del PoC, sobrevive al renombre)
+
+title: Proceso hijo sospechoso desde el app pool de SharePoint (w3wp.exe)
+id: 4f2a8b91-6c37-4e50-9d18-2a5f7c3e1b64
+status: experimental
+author: Intellroom CTI (AI-assisted - VALIDAR ANTES DE DESPLEGAR)
+date: 2026-08-27
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith: '\w3wp.exe'
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\pwsh.exe'
+      - '\cscript.exe'
+      - '\wscript.exe'
+      - '\mshta.exe'
+      - '\rundll32.exe'
+      - '\regsvr32.exe'
+      - '\certutil.exe'
+      - '\bitsadmin.exe'
+      - '\curl.exe'
+      - '\calc.exe'
+  condition: selection
+falsepositives:
+  - Timer jobs de SharePoint y tareas de mantenimiento
+  - Agentes de respaldo o monitoreo que corren bajo el app pool
+  - MEDIR LA LINEA BASE DEL ENTORNO ANTES DE HABILITAR EN BLOQUEO
+level: high
+tags:
+  - attack.t1190
+  - attack.t1505
+  - cve.2026-63520
+
+
+[SIGMA] Carga de modelo BDCM
+        (NO filtra por "blah.bdcm" a proposito: ese nombre es arbitrario)
+
+title: Carga de modelo BDCM a BusinessDataMetadataCatalog via API REST
+id: 9d5e2f74-1b83-4a26-8c07-6f3a9d1e5b28
+status: experimental
+author: Intellroom CTI (AI-assisted - VALIDAR ANTES DE DESPLEGAR)
+date: 2026-08-27
+logsource:
+  category: webserver
+detection:
+  selection:
+    cs-method: 'POST'
+    cs-uri-stem|contains: 'BusinessDataMetadataCatalog'
+    cs-uri-stem|contains: 'Files/add'
+  condition: selection
+falsepositives:
+  - Administracion legitima de modelos BCS (poco frecuente, siempre desde
+    cuentas administrativas conocidas: verificar el usuario antes de escalar)
+level: high
+tags:
+  - cve.2026-63520
+
+
+[KQL] Microsoft Sentinel / Defender XDR - ejecucion desde el app pool
+
+DeviceProcessEvents
+| where InitiatingProcessFileName =~ "w3wp.exe"
+| where FileName in~ ("cmd.exe","powershell.exe","pwsh.exe","cscript.exe",
+                     "wscript.exe","mshta.exe","rundll32.exe","regsvr32.exe",
+                     "certutil.exe","bitsadmin.exe","curl.exe","calc.exe")
+| project Timestamp, DeviceName, AccountName, FileName, ProcessCommandLine,
+          InitiatingProcessCommandLine, ReportId
+| order by Timestamp desc
+
+
+[KQL] Secuencia de la cadena en logs de IIS (ventana de 30 min por IP)
+      La secuencia es lo que discrimina; los endpoints sueltos son trafico normal.
+
+let ventana = 30m;
+let paso_catalogo = W3CIISLog
+  | where csMethod == "POST"
+  | where csUriStem has_any ("/_api/web/lists", "/_api/web/folders")
+  | project Tiempo=TimeGenerated, IP=cIP, Paso="1-crear-catalogo";
+let paso_bdcm = W3CIISLog
+  | where csMethod == "POST"
+  | where csUriStem has "BusinessDataMetadataCatalog"
+  | project Tiempo=TimeGenerated, IP=cIP, Paso="2-subir-bdcm";
+let paso_processquery = W3CIISLog
+  | where csMethod == "POST"
+  | where csUriStem has "/_vti_bin/client.svc/ProcessQuery"
+  | project Tiempo=TimeGenerated, IP=cIP, Paso="3-registrar-lista";
+union paso_catalogo, paso_bdcm, paso_processquery
+| summarize Pasos=make_set(Paso), Primero=min(Tiempo), Ultimo=max(Tiempo)
+          by IP, bin(Tiempo, ventana)
+| where array_length(Pasos) >= 2 and set_has_element(Pasos, "2-subir-bdcm")
+| order by Primero desc
+
+
+[SPL] Splunk - proceso hijo desde w3wp.exe
+
+index=windows sourcetype=WinEventLog:Sysmon EventCode=1
+  parent_process_name="w3wp.exe"
+  process_name IN ("cmd.exe","powershell.exe","pwsh.exe","cscript.exe",
+                   "wscript.exe","mshta.exe","rundll32.exe","regsvr32.exe",
+                   "certutil.exe","bitsadmin.exe","curl.exe","calc.exe")
+| table _time host user parent_process_name process_name process
+| sort - _time
+
+
+[SPL] Splunk - secuencia en IIS
+
+index=iis (cs_method=POST)
+  (cs_uri_stem="*BusinessDataMetadataCatalog*" OR cs_uri_stem="*client.svc/ProcessQuery*")
+| stats values(cs_uri_stem) as endpoints dc(cs_uri_stem) as n_endpoints
+         min(_time) as primero max(_time) as ultimo by c_ip
+| where n_endpoints >= 2
+| convert ctime(primero) ctime(ultimo)
+
+--------------------------------------------------------------------------------
+6. CAZA RETROACTIVA
+--------------------------------------------------------------------------------
+
+VENTANA A BARRER: desde el 11-08-2026 (primer PoC publico).
+Si la organizacion parcho despues del 12-08-2026, la caza NO es opcional:
+el parche no expulsa a quien ya entro.
+
+ H-1  Biblioteca BusinessDataMetadataCatalog creada en sitio que no usa BCS
+      -> inventario de bibliotecas por sitio (template 101) + fecha de creacion
+ H-2  Archivo .bdcm subido por API en el periodo
+      -> contenido de la biblioteca + Created By + Created
+ H-3  w3wp.exe genero procesos hijo desde el 11-08-2026
+      -> EDR / Sysmon EventID 1        *** CONFIRMA RCE EFECTIVA ***
+ H-4  Autenticaciones exitosas sin evento previo de autenticacion valida
+      -> logs IIS + ULS de SharePoint (bypass JWT ejercido)
+ H-5  Enumeracion masiva de administradores desde origen externo
+      -> logs IIS (patron observado por Defused el 25-08-2026)
+ H-6  Lista externa registrada con tipo DotNetAssembly
+      -> configuracion de BCS
+
+ SI H-3 DA POSITIVO: deja de ser gestion de vulnerabilidades y pasa a
+ respuesta a incidentes. NO cerrar el ticket parchando.
+
+--------------------------------------------------------------------------------
+7. PARCHES Y VERSIONES
+--------------------------------------------------------------------------------
+
+*** PARCHAR SOLO CVE-2026-55040 NO CIERRA EL PROBLEMA. ***
+CVE-2026-63520 exige la CU de AGOSTO 2026. Un servidor con el parche de julio
+y sin el de agosto sigue explotable por cualquier usuario autenticado con
+permisos de escritura.
+
+[CVE-2026-55040 - parche de julio 2026]
+  KB5002882   SharePoint Server Subscription Edition
+  KB5002883   SharePoint Server 2019
+  KB5002891   SharePoint Enterprise Server 2016
+
+  Versiones vulnerables reportadas:
+  Subscription Edition   16.0.19725.20434
+  Server 2019            16.0.10417.20175
+  Enterprise Server 2016 16.0.5561.1001
+
+[CVE-2026-63520 - CU de agosto 2026]  <- LA QUE CIERRA LA CADENA
+  KB5002893   Subscription Edition     -> build corregido 16.0.19725.20522
+  KB5002894   Server 2019              -> build corregido 16.0.10417.20198
+  KB5002896   Server 2019              -> build corregido 16.0.10417.20198
+  KB5002905   Enterprise Server 2016   -> build corregido 16.0.5565.1001
+  KB5002906   Enterprise Server 2016   -> build corregido 16.0.5565.1001
+
+  Afecta a TODAS las versiones soportadas de SharePoint Server.
+
+VERIFICAR EL BUILD DESPUES DE APLICAR, no el nombre de version.
+
+--------------------------------------------------------------------------------
+8. MITRE ATT&CK
+--------------------------------------------------------------------------------
+
+ T1190       Exploit Public-Facing Application
+ T1550.001   Use Alternate Authentication Material: Application Access Token
+             (forja del token JWT - CVE-2026-55040)
+ T1505       Server Software Component
+             (modelo BDC malicioso persistente en la biblioteca)
+
+ NOTA DE METODO: ninguna de las fuentes asigna estos IDs explicitamente.
+ Fueron mapeados por Intellroom y VERIFICADOS uno a uno contra
+ attack.mitre.org el 27-08-2026. Se descarto T1505.003 (Web Shell) porque
+ esa tecnica exige especificamente un script web ("a Web script placed on an
+ openly accessible Web server") y un modelo BDCM no lo es.
+
+ Precedente regional: campana ToolShell (CVE-2025-53770), MITRE ATT&CK C0058,
+ comprometio organizaciones en Medio Oriente, SUDAMERICA, EE.UU. y Africa,
+ incluyendo agencias de gobierno sudamericanas. Sectores: gobierno, finanzas,
+ manufactura, forestal y agricultura.
+
+--------------------------------------------------------------------------------
+9. EXPOSICION - LO MEDIDO Y LO QUE NO SE PUEDE AFIRMAR
+--------------------------------------------------------------------------------
+
+MEDIDO:
+  Shadowserver rastrea mas de 8.700 servidores SharePoint expuestos a internet
+  (cifra GLOBAL, agosto 2026, via BleepingComputer). No distingue version
+  parchada de vulnerable ni desglosa por pais.
+
+  CISA tiene nueve vulnerabilidades de SharePoint en KEV, tres asociadas a
+  ToolShell. SharePoint on-premise es superficie recurrente, no un caso aislado.
+
+NO SE PUEDE AFIRMAR:
+  No existe, en las fuentes consultadas, cifra verificable de servidores
+  SharePoint on-premise vulnerables por pais en LATAM.
+
+  Se descarto una afirmacion de "miles de instancias vulnerables en Mexico,
+  Colombia, Chile y Argentina" porque provenia de una fuente secundaria que en
+  el mismo articulo atribuye la campana a CVE-2026-20963, identificador que NO
+  corresponde a esta cadena.
+
+  Para obtener el dato real: dashboard publico de Shadowserver filtrado por
+  pais, o consulta Shodan/Censys correlacionada contra el build (un banner NO
+  prueba version vulnerable).
+
+--------------------------------------------------------------------------------
+10. NIVEL DE CONFIANZA (ICD 203)
+--------------------------------------------------------------------------------
+
+CASI SEGURO   que la cadena existe y es explotable: PoC publico auditable de
+              dos firmas independientes, parche del fabricante y confirmacion
+              de explotacion por autoridad gubernamental (CISA KEV).
+
+MUY PROBABLE  que los intentos de encadenamiento contra objetivos reales esten
+              ocurriendo hoy: el patron observado en honeypots corresponde a
+              escaneo oportunista masivo, no a targeting dirigido.
+
+PROBABILIDAD  que ya haya ocurrido RCE exitosa sin reportarse. El unico sensor
+PAREJA        que declara "sin ejecucion observada" son honeypots de un solo
+              proveedor, y un honeypot no representa un servidor productivo.
+
+CORROBORADO:    existencia y mecanica de ambos CVE; explotacion activa del
+                eslabon 1; disponibilidad publica de las PoC.
+SINGLE-SOURCE:  toda la telemetria de encadenamiento; el indicador de red; la
+                afirmacion de que aun no hay RCE.
+SIN CORROBORAR: cualquier cifra de exposicion especifica de Chile o LATAM.
+
+--------------------------------------------------------------------------------
+11. FUENTES
+--------------------------------------------------------------------------------
+
+[PoC y analisis tecnico - fuentes primarias]
+  PoC CVE-2026-55040 (Python, Rapid7):
+    https://github.com/sfewer-r7/CVE-2026-55040
+  Rapid7 - analisis CVE-2026-55040:
+    https://www.rapid7.com/blog/post/ve-cve-2026-55040-microsoft-sharepoint-jwt-token-authentication-bypass-fixed/
+  VulnCheck - cadena completa 55040 + 63520:
+    https://www.vulncheck.com/blog/cve-2026-63520-sharepoint-unsafe-type-rce
+  VulnCheck - Initial Access Intelligence:
+    https://docs.vulncheck.com/initial-access/2026-08-21
+  Rapid7 - analisis tecnico CVE-2026-63520 (DbTypeReflector):
+    https://www.rapid7.com/blog/post/ra-microsoft-sharepoint-remote-code-execution-cve-2026-63520/
+  Rapid7 - ETR CVE-2026-63520 (versiones y KB):
+    https://www.rapid7.com/blog/post/etr-cve-2026-63520-microsoft-sharepoint-remote-code-execution-fixed/
+
+[Advisories y registro]
+  CVE.org - CVE-2026-55040:
+    https://www.cve.org/CVERecord?id=CVE-2026-55040
+  CISA KEV (18-08-2026):
+    https://www.cisa.gov/news-events/alerts/2026/08/18/cisa-adds-four-known-exploited-vulnerabilities-catalog
+  CISA - hardening de SharePoint:
+    https://www.cisa.gov/news-events/alerts/2026/07/14/cisa-urges-sharepoint-hardening-after-new-exploitations
+
+[Contexto y precedente]
+  BleepingComputer - Hackers target Microsoft SharePoint RCE chain with PoC:
+    https://www.bleepingcomputer.com/news/security/hackers-target-microsoft-sharepoint-rce-chain-with-poc-exploit/
+  MITRE ATT&CK - Campana C0058 (ToolShell):
+    https://attack.mitre.org/campaigns/C0058/
+  BleepingComputer - ToolShell targeted orgs across four continents:
+    https://www.bleepingcomputer.com/news/security/sharepoint-toolshell-attacks-targeted-orgs-across-four-continents/
+
+*** ADVERTENCIA DE MANEJO: el repositorio de Rapid7 contiene un exploit
+    funcional. Ejecutarlo contra infraestructura ajena es delito en Chile
+    (Ley 21.459, Art. 1 y Art. 2). Solo contra infraestructura propia o con
+    autorizacion escrita y alcance definido. ***
+
+================================================================================
+  Intellroom - Threat Intelligence | 27-08-2026
+  Bundle STIX 2.1 importable: SharePoint_RCE_Chain_27082026.json
+  (validado con stix2 3.0.2 en modo estricto, allow_custom=False)
+================================================================================
