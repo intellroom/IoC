@@ -1,0 +1,47 @@
+Campaña: Phishing "Factura Vencida" — suplantación de CrediGestión (cobranza)
+Detección: 2026-08-27 | Región: Chile | Tipo: Robo de credenciales (credential harvesting)
+Nota de privacidad: se OMITE la identidad de la organización receptora (víctima).
+
+Marca suplantada:
+CrediGestion (falsa entidad de cobranza)
+
+Asunto del correo (lure):
+"Factura CrediGestión Vencida"
+
+Dominio (sitio LEGÍTIMO comprometido):
+nitrollanta[.]com
+
+URL (landing de robo — offline al análisis, HTTP 404):
+hxxps://nitrollanta[.]com//CrediGestion/FactVencida/regularice/?hash=<email_victima>
+
+Ruta del kit:
+/CrediGestion/FactVencida/regularice/
+
+Parámetro de segmentación:
+?hash=<email_victima>   (email de la víctima en texto plano; pre-rellena el login y rastrea al objetivo)
+
+IP de hosting:
+68.66.216.8
+
+Hostname / hosting:
+mi3-tr105.supercp.com   (supercp.com — hosting compartido cPanel)
+
+Servidor:
+LiteSpeed / PHP 8.3.33
+
+Estado de la infraestructura (al análisis):
+/CrediGestion/                    -> 403 (directorio existe)
+/CrediGestion/FactVencida/        -> 403 (directorio existe)
+/CrediGestion/FactVencida/regularice/ -> 404 (payload removido)
+
+Notas de atribución:
+- NO es troyano bancario: no entrega ejecutable/ZIP. Hipótesis Grandoreiro NO confirmada.
+- nitrollanta[.]com es un negocio legítimo (llantería) comprometido; el kit reside en un subdirectorio.
+
+MITRE ATT&CK:
+T1566.002 - Phishing: Spearphishing Link
+T1656     - Impersonation (abuso de marca "CrediGestión")
+T1585/T1656 - Establecer identidad falsa de cobranza
+T1584.004 - Compromise Infrastructure: Server (sitio legítimo comprometido)
+T1608.005 - Stage Capabilities: Link Target (kit alojado)
+T1078     - Valid Accounts (post-robo: toma de cuenta / BEC)
