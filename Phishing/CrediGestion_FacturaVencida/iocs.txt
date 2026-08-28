@@ -1,0 +1,21 @@
+================================================================================
+  IOCs PARA BLOQUEO -- Phishing "Factura Vencida" (suplantacion CrediGestion)
+  Fecha: 2026-08-27  |  TLP:CLEAR  |  Fuente: Intellroom CTI (intellroom/IoC)
+  Defanged: reemplazar  [.] -> .   y   hxxp -> http   al aplicar.
+  Organizacion receptora: REDACTADA. Analisis completo en 28082026.txt / README.md
+================================================================================
+
+[BLOQUEAR -- alta confianza]  URL filter / proxy / WAF
+hxxps://nitrollanta[.]com//CrediGestion/FactVencida/regularice/
+/CrediGestion/FactVencida/regularice/
+
+[VIGILAR -- NO bloquear en bloque]  dominio de sitio LEGITIMO comprometido
+nitrollanta[.]com        # llanteria real hackeada; bloquear el dominio afecta a un tercero legitimo
+
+[NO BLOQUEAR]  IP de hosting COMPARTIDO (colateral masivo)
+68[.]66.216.8            # supercp.com / mi3-tr105.supercp.com -- cientos de sitios legitimos en la misma IP
+
+[CORREO -- regla anti-phishing]
+asunto:  Factura CrediGestion Vencida
+marca:   CrediGestion
+param:   ?hash=<email_victima>      # segmentacion; el kit pre-rellena el login con el correo objetivo

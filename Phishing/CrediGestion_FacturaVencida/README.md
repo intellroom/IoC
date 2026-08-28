@@ -34,4 +34,5 @@ no hay base para atribuir a una campaña nombrada.
   y sesiones activas.
 
 ## Indicadores
-Ver [`28082026.txt`](28082026.txt).
+- Bloqueo rapido (solo IOCs): [`iocs.txt`](iocs.txt)
+- Ficha completa (formato repo + MITRE): [`28082026.txt`](28082026.txt)
