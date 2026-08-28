@@ -1,0 +1,27 @@
+================================================================================
+  IOCs / ACCIONES -- SharePoint on-premise: cadena de RCE no autenticada
+  CVE-2026-55040 (bypass JWT) + CVE-2026-63520 (RCE via BCS)
+  Fecha: 2026-08-27  |  TLP:CLEAR  |  Fuente: Intellroom CTI (intellroom/IoC)
+  Ficha completa: SharePoint_RCE_Chain_27082026.txt
+  *** SharePoint Online / Microsoft 365 NO afectado. Solo on-premise. ***
+================================================================================
+
+[PARCHEAR -- accion primaria; esta cadena NO tiene blocklist util]
+CVE-2026-55040   # bypass de auth por forja de token JWT (CISA KEV 18-08-2026)
+CVE-2026-63520   # RCE por instanciacion insegura de tipos .NET en BCS/BDC
+
+[VIGILAR -- NO bloquear ciegamente]  unica IP, baja confianza
+205[.]147[.]17[.]6           # origen de explotacion en honeypots (single-source); corroborar en GreyNoise/AbuseIPDB/Shodan
+
+[DETECTAR -- alta fidelidad; por SECUENCIA y CONTENIDO, no por endpoint]
+Proceso hijo de w3wp.exe (cmd/powershell/calc/etc.)   # senal mas fuerte de la cadena
+Biblioteca "BusinessDataMetadataCatalog" (template 101) creada via API en sitio sin BCS
+Archivo .bdcm subido por API REST a esa biblioteca
+Lista externa tipo "DotNetAssembly" via ProcessQuery
+Modelo BDC con LosFormatter/TypeConfuseDelegate O ObjectDataProvider  # multiples cadenas de gadgets: cubrir ambas
+Payload base64 en el campo DefaultValue de un BDCM
+
+[NO ES IOC -- NO crear reglas sobre esto]
+"blahlist" , "blah.bdcm"     # strings del PoC de VulnCheck; el atacante los cambia en dos palabras
+/_api/web/lists , /_vti_bin/client.svc/ProcessQuery , /_api/web/GetFolderByServerRelativeUrl(...)
+                             # API LEGITIMA de alto uso; bloquearla rompe SharePoint. Detectar por SECUENCIA.

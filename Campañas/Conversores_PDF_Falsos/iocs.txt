@@ -1,0 +1,29 @@
+================================================================================
+  IOCs PARA BLOQUEO -- Conversores de PDF falsos -> ClickFix -> Infostealers
+  Fecha: 2026-08-27  |  TLP:CLEAR  |  Fuente: Intellroom CTI (intellroom/IoC)
+  Defanged: reemplazar  [.] -> .  al aplicar.
+  Ficha completa: Conversores_PDF_Falsos_27082026.txt
+================================================================================
+
+[BLOQUEAR -- verificados]  DNS / proxy / URL filter
+candyxpdf[.]com
+candyconverterpdf[.]com
+bind-new-connect[.]click
+docu-flex[.]com              # entrega DocuFlex.exe
+pdfixers[.]com               # entrega Pdfixers.exe
+editdocumentfree[.]com       # cluster ClickFix, senuelo documental (confirmar vigencia 2026)
+opendocumentonline[.]com     # idem
+
+[VIGILAR -- NO bloquear ciegamente]  baja confianza / posible colateral
+lovepdf[.]cc                 # typosquat single-source (foro); corroborar en VT/urlscan antes de accionar
+172[.]86[.]115[.]43          # IP de hosting abr-2025; puede estar reasignada -> falsos positivos contra terceros
+
+[NO ES IOC -- NO bloquear]  servicios LEGITIMOS suplantados (son las victimas)
+ilovepdf[.]com   smallpdf[.]com   pdfcandy[.]com   pdf2go[.]com
+
+[DETECTAR -- artefacto de host/EDR, no valor de red]
+RunMRU: HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU con comando de interprete
+powershell.exe / cmd.exe con proceso padre explorer.exe + (-enc | -e | -ep bypass)
+
+Nota: el resto del cluster ClickFix vive en
+Campanas/Amenazas_LATAM/ClickFix/ClickFix_25082026.txt (no se duplica aqui).
