@@ -1,0 +1,43 @@
+================================================================================
+  IOCs PARA BLOQUEO -- CrediGestion "Factura Vencida" via Kali365 PhaaS (Power BI)
+  Fecha: 2026-08-28  |  TLP:CLEAR  |  Fuente: Intellroom CTI (intellroom/IoC)
+  Analisis forense original: Kurosaki (@kur0s4k1)
+    github.com/kur0s4k1/IoC-PowerBI-Docusign-Phishing
+  Atribucion Kali365 PhaaS: Unit 42, Crimson7, Todyl, Huntress, Arctic Wolf.
+  Defanged: [.] -> .   ·   Sin datos de victima (solo infraestructura del actor).
+  Relacion: mismo lure que Phishing/CrediGestion_FacturaVencida, OTRO vector.
+================================================================================
+
+[BLOQUEAR -- dominios del actor]  DNS / proxy / URL filter
+asianrnarine[.]com
+k5k33e9k7r[.]asianrnarine[.]com
+alyamunadensons-ae[.]com
+mcole830ej[.]alyamunadensons-ae[.]com
+83hslinka7[.]alyamunadensons-ae[.]com
+gomfar32a[.]alyamunadensons-ae[.]com
+vericlick[.]cc
+edge[.]vericlick[.]cc
+
+[BLOQUEAR -- IP del actor (redirector dedicado)]
+82[.]221[.]101[.]187          # FlokiNET ehf (IS) -- redirector Caddy del actor (infra dedicada)
+
+[VIGILAR -- NO bloquear en bloque]  Cloudflare anycast (colateral masivo)
+104[.]21[.]92[.]137           # Cloudflare anycast (fronting); compartido por millones de sitios
+172[.]67[.]194[.]135          # idem
+
+[VIGILAR / ALERTAR -- NO bloquear]  servicios LEGITIMOS abusados
+app[.]powerbi[.]com           # ALERTAR publish-to-web (?r=...) desde correo externo; NO bloquear Power BI
+mibc-fr-04[.]mailinblack[.]com  # gateway MailinBlack legitimo abusado
+20[.]199[.]104[.]10           # MailinBlack
+
+[HUNT / DETECTAR -- identificadores de campana]
+PowerBI reportId:   7059f420-53d6-4296-aaf2-4970de5973ec
+PowerBI tenant:     e9d310e7-75cd-4824-ba89-78a11e0b2536
+Turnstile sitekey:  0x4AAAAAAEaMG8dpijvxbfNI
+Patron URL:         /l/<token> (landing)   ·   /login (panel C2)
+Panel fingerprint:  titulo "Panel" · boton "[ ACCESS ]" · footer "AUTHORIZED PERSONNEL ONLY"
+
+[RETIRADOS -- referencia historica, sin DNS]
+gosergio[.]alyamunadensons-ae[.]com
+r7a73ejhs[.]alyamunadensons-ae[.]com
+go823ska[.]alyamunadensons-ae[.]com
