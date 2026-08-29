@@ -1,0 +1,114 @@
+================================================================================
+  CrediGestion "Factura Vencida" -> Kali365 PhaaS (Power BI + MailinBlack)
+  Phishing de robo de credenciales / device-code (Microsoft 365)
+  Fecha: 2026-08-28 | TLP:CLEAR | Region: Chile (lure en espanol)
+================================================================================
+
+CREDITO / FUENTE
+--------------------------------------------------------------------------------
+Analisis forense original: Kurosaki (@kur0s4k1)
+  https://github.com/kur0s4k1/IoC-PowerBI-Docusign-Phishing
+Esta ficha reorganiza sus indicadores en el formato Intellroom (bloqueo rapido +
+diagramas). Atribucion a Kali365 PhaaS documentada por Unit 42, Crimson7, Todyl,
+Huntress y Arctic Wolf (abr-jun 2026). Sin datos de victima.
+
+RESUMEN
+--------------------------------------------------------------------------------
+Campana de phishing con el lure "Factura CrediGestion Vencida" cuya entrega NO
+usa un sitio comprometido, sino una cadena PhaaS: un correo pasa por el gateway
+legitimo MailinBlack, enlaza a un informe publico de Power BI (publish-to-web)
+con senuelo tipo Docusign, que redirige por un redirector Caddy a una landing
+anti-bot con Cloudflare Turnstile, y de ahi al kit de robo de credenciales /
+device-code del PhaaS Kali365, con panel C2 propio del operador.
+
+RELACION CON OTRA FICHA
+--------------------------------------------------------------------------------
+Mismo lure "CrediGestion Factura Vencida" que Phishing/CrediGestion_FacturaVencida,
+pero VECTOR DISTINTO: aquella instancia usaba un sitio legitimo comprometido
+(nitrollanta[.]com, offline al observarse); esta usa la cadena Kali365 PhaaS con
+Power BI/MailinBlack. Correlacion util: el lure se reutiliza sobre >1 infra.
+
+CADENA DE ATAQUE
+--------------------------------------------------------------------------------
+1. Correo por gateway MailinBlack SecureLink (legitimo, abusado)
+2. Informe Power BI publish-to-web con senuelo Docusign (hyperlink oculto en el
+   modelo de datos del visual -> evade la inspeccion del HTML del primer hop)
+3. Redirector Caddy (80->443, catch-all "Nothing to see here")
+4. Landing anti-bot con Cloudflare Turnstile (evasion de crawlers/sandboxes)
+5. Robo de credenciales + device-code phishing (login real de Microsoft +
+   codigo del atacante) -> robo de token OAuth post-MFA
+6. Panel C2 del operador (Kali365 PhaaS)
+
+INDICADORES DE RED  (defanged)
+--------------------------------------------------------------------------------
+[Dominios del actor]
+asianrnarine[.]com
+k5k33e9k7r[.]asianrnarine[.]com
+alyamunadensons-ae[.]com
+mcole830ej[.]alyamunadensons-ae[.]com
+83hslinka7[.]alyamunadensons-ae[.]com
+gomfar32a[.]alyamunadensons-ae[.]com
+vericlick[.]cc
+edge[.]vericlick[.]cc
+
+[IP del actor]
+82[.]221[.]101[.]187          # FlokiNET ehf (IS) -- redirector Caddy dedicado
+
+[Cloudflare anycast -- VIGILAR, NO bloquear (compartido)]
+104[.]21[.]92[.]137
+172[.]67[.]194[.]135
+
+[Subdominios retirados -- referencia historica, sin DNS]
+gosergio[.]alyamunadensons-ae[.]com
+r7a73ejhs[.]alyamunadensons-ae[.]com
+go823ska[.]alyamunadensons-ae[.]com
+
+IDENTIFICADORES DE CAMPANA (hunting)
+--------------------------------------------------------------------------------
+PowerBI reportId:   7059f420-53d6-4296-aaf2-4970de5973ec
+PowerBI tenant:     e9d310e7-75cd-4824-ba89-78a11e0b2536
+Region Power BI:    wabi-switzerland-north
+Turnstile sitekey:  0x4AAAAAAEaMG8dpijvxbfNI
+ASN redirector:     AS50613 (ThorDC/Advania -- FlokiNET ehf)
+Patron URL:         /l/<token> (landing) · /login (panel C2)
+Panel fingerprint:  titulo "Panel" · "[ ACCESS ]" · "AUTHORIZED PERSONNEL ONLY" ·
+                    fuentes mono (Share Tech Mono, JetBrains Mono, VT323, IBM Plex
+                    Mono) · efecto CRT scanline · login sin CSRF
+(Atribucion Kali365) Merchant OxaPay 11153123 · NetHandle NET-135-129-124-0-1
+
+LO QUE NO ES UN IOC  (servicios LEGITIMOS abusados -- NO bloquear)
+--------------------------------------------------------------------------------
+app[.]powerbi[.]com            # Microsoft Power BI. ALERTAR publish-to-web (?r=)
+                               # desde correo externo; bloquear PowerBI rompe un
+                               # servicio legitimo corporativo.
+mibc-fr-04[.]mailinblack[.]com # gateway MailinBlack legitimo (abusado como hop)
+20[.]199[.]104[.]10            # MailinBlack
+104[.]21[.]92[.]137 / 172[.]67[.]194[.]135  # Cloudflare anycast (colateral masivo)
+
+MITRE ATT&CK
+--------------------------------------------------------------------------------
+T1583.001  Resource Dev  - Adquisicion de dominios (sleeper, registradores dispersos)
+T1587.002  Resource Dev  - Capacidades de phishing (PhaaS Kali365)
+T1584.006  Resource Dev  - Abuso de infraestructura web (Cloudflare, FlokiNET)
+T1566.002  Initial Access- Phishing con enlace (Power BI + MailinBlack abusados)
+T1660      Initial Access- Phishing via servicio de terceros (publish-to-web)
+T1204.001  Execution     - Interaccion de usuario (resuelve Turnstile)
+T1056.004  Cred Access   - Credential harvesting
+T1621      Cred Access   - Device-code phishing (Microsoft 365)
+T1528      Cred Access   - Robo de token OAuth post-MFA (device code flow)
+T1027      Defense Evasion- Anti-bot Turnstile / catch-all Caddy
+T1027.010  Defense Evasion- Hyperlink oculto en el modelo de Power BI
+
+MITIGACION
+--------------------------------------------------------------------------------
+- Alertar sobre app.powerbi.com/view?r=... desde correo externo no solicitado.
+- Capacitar: ningun documento urgente pide tu "correo de recepcion" para verlo.
+- Inspeccion de URL en correo: extender al MODELO DE DATOS del visual, no solo al
+  HTML del primer hop.
+- Cazar en logs proxy/DNS visitas a los dominios/IP del actor.
+
+REFERENCIAS (Kali365)
+--------------------------------------------------------------------------------
+Unit 42 (abr 2026) · Crimson7 "Hunting a PhaaS Operator: Kali365" (abr 2026) ·
+Todyl "Kali365: Inside the Attack Infrastructure" (may 2026) · Huntress (jun 2026)
+· Arctic Wolf (abr 2026).

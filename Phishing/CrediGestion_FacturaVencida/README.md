@@ -33,6 +33,12 @@ no hay base para atribuir a una campaña nombrada.
 - Ante clic/ingreso de credenciales: rotar contraseña, revisar **forwarders/filtros/reglas** (persistencia)
   y sesiones activas.
 
+## Campaña relacionada
+Mismo lure **"CrediGestión Factura Vencida"**, **vector distinto**: la campaña
+[`CrediGestion_Kali365_PowerBI`](../CrediGestion_Kali365_PowerBI/) usa la cadena **Kali365 PhaaS**
+(MailinBlack + Power BI publish-to-web + device-code), analizada por [@kur0s4k1](https://github.com/kur0s4k1).
+Esta ficha es el vector de **sitio comprometido** (`nitrollanta[.]com`).
+
 ## Indicadores
 - Bloqueo rapido (solo IOCs): [`iocs.txt`](iocs.txt)
 - Ficha completa (formato repo + MITRE): [`28082026.txt`](28082026.txt)
