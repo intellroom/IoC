@@ -1,0 +1,146 @@
+================================================================================
+  PHISHING / ABUSO DE MARCA -> SANTA ISABEL "50 ANIVERSARIO"
+  Sitio look-alike con cloaking movil que roba datos de tarjeta de credito
+  Fecha: 31-08-2026 | TLP: CLEAR | Intellroom CTI (intellroom/IoC)
+  Fuentes: analisis propio (OSINT pasivo + render aislado) + CSIRT Nacional CL
+================================================================================
+
+RESUMEN
+--------------------------------------------------------------------------------
+Dominio look-alike (santaisabel-card[.]com) que suplanta a Santa Isabel
+(cadena de supermercados de Cencosud, Chile) con un senuelo de "50 aniversario"
+que promete una "Tarjeta de Regalo" o dinero a cambio de responder una encuesta.
+El nombre del dominio anuncia el objetivo real: "-card" = datos de tarjeta.
+
+El senuelo funciona por PRUEBA SOCIAL y URGENCIA, no por miedo: llega por
+WhatsApp/SMS reenviado por un conocido, muestra la marca real completa y una
+seccion de comentarios con "ganadores" falsos. La victima llega con la guardia
+baja porque el mensaje vino de alguien de confianza.
+
+Dos rasgos definen la campana:
+
+  1) CLOAKING MOVIL: la raiz del sitio devuelve 404 y el contenido solo se
+     sirve a navegadores moviles en vertical. Un analista o sandbox de
+     escritorio ve un 404 y concluye que "no hay nada". Ver seccion 3.
+
+  2) INFRAESTRUCTURA DESECHABLE Y MULTI-MARCA: dominio nuevo (22-07-2026),
+     registrador chino de bajo costo, tras Cloudflare, assets en un CDN de
+     kits de estafa (cdnbaby[.]com), y rutas que rotan en cada visita. Es el
+     patron de una red PhaaS de "encuesta-premio", no un atacante artesanal.
+
+IMPORTANTE: NO se completo la encuesta ni se envio ningun dato. La etapa de
+captura de tarjeta se INFIERE del nombre del dominio y del patron de la red;
+no esta confirmada empiricamente. Ver "LO QUE NO ES UN IOC".
+
+LINEA DE TIEMPO
+--------------------------------------------------------------------------------
+2019-2022    Campanas recurrentes de "Santa Isabel regala $" por redes/WhatsApp
+             (desmentidas por la cadena; patron historico en Chile).
+22-07-2026   Se registra santaisabel-card[.]com (West263 / hkdns.hk, CN).
+2026 (vig.)  CSIRT Nacional CL mantiene alerta 8FFR22-01132-01 por phishing de
+             WhatsApp que suplanta a Santa Isabel.
+31-08-2026   Intellroom analiza la URL reportada; confirma cloaking movil y
+             suplantacion de marca. Ficha publicada en intellroom/IoC.
+
+--------------------------------------------------------------------------------
+1. LO QUE **NO** ES UN IOC  (leer antes que las tablas)
+--------------------------------------------------------------------------------
+
+  santaisabel.cl     cencosud.com     jumbo.cl     cloudflare.com
+
+*** NO SON INDICADORES DE COMPROMISO. ***
+Santa Isabel / Cencosud es la MARCA SUPLANTADA (la parte perjudicada), no el
+atacante. Su dominio legitimo es santaisabel.cl. Cloudflare es el proxy/CDN
+delante del sitio malicioso; es un servicio legitimo usado por millones.
+
+  104.21.68.19     172.67.185.27
+
+Son IP de **Cloudflare** (frente del dominio malicioso). NO se bloquean: son
+compartidas y tumbarian sitios legitimos. Se bloquea el DOMINIO, no la IP.
+
+  /sebw24ZqnK0/...   /sebawWzi/...   /sebaHYzi/...
+
+Las RUTAS con token ROTAN en cada visita (patron /seba<4>/<hex>). Construir el
+bloqueo sobre una ruta exacta da sensacion de cobertura y no cubre nada: se
+bloquea por dominio.
+
+  navigator.platform / window.screen.availWidth
+
+Son APIs estandar del navegador. No son IOC: lo detectable es el USO que el kit
+hace de ellas para filtrar escritorio (seccion 3).
+
+--------------------------------------------------------------------------------
+2. INDICADORES DE RED
+--------------------------------------------------------------------------------
+
+[Dominio malicioso - suplantacion de Santa Isabel]
+santaisabel-card[.]com               - look-alike, creado 22-07-2026 (BLOQUEAR)
+
+[URLs observadas]
+hxxps://santaisabel-card[.]com/sebw24ZqnK0/a7Y2sycpg9DFMEQkDfNg653a3b   - etapa 1 (gateway)
+hxxps://santaisabel-card[.]com/sebawWzi/61826755205252848109cd0990       - etapa 2 (senuelo)
+hxxps://santaisabel-card[.]com/sebaHYzi/33984928041837452675170c51       - etapa 2 (ruta rotada)
+
+[CDN de assets del kit - VIGILAR, no bloquear ciegamente]
+cdnbaby[.]com                        - sirve la imagen og y assets del senuelo;
+                                       CDN reutilizado por multiples kits de estafa.
+
+[Frente CDN - NO ES IOC de bloqueo]
+104.21.68.19 , 172.67.185.27         - Cloudflare (compartido)
+
+--------------------------------------------------------------------------------
+3. TTP / MECANISMO DE CLOAKING
+--------------------------------------------------------------------------------
+  - Raiz '/' -> HTTP 404 ; contenido solo en rutas con token.
+  - Ruta token + navegador de ESCRITORIO -> HTTP 404 / redireccion a /emit/404/p.
+  - Ruta token + navegador MOVIL en vertical -> HTTP 200 (senuelo).
+  - Discriminador real: window.screen.availWidth > availHeight (apaisado=descartado).
+  - Rutas de etapa 2 rotativas por visita (anti-firma).
+  - Contador de "comentarios/ganadores" y fecha generados dinamicamente.
+  Detalle y capturas: 05_evidencia_tecnica.txt , 04_gateway_cloaking.html ,
+  03_captura_pagina_movil.png
+
+--------------------------------------------------------------------------------
+4. MITRE ATT&CK  (IDs reales; validar en tu matriz antes de operacionalizar)
+--------------------------------------------------------------------------------
+  T1583.001  Acquire Infrastructure: Domains        (dominio look-alike)
+  T1656      Impersonation                           (suplantacion de marca)
+  T1566.002  Phishing: Spearphishing Link           (enlace por mensajeria)
+  T1598.003  Phishing for Information: Spearphishing Link (encuesta que pide datos)
+  Nota: el cloaking movil / condicional no tiene una tecnica ATT&CK exacta para
+  web-scam; se documenta como evasion de analisis en seccion 3. ATT&CK cubre
+  mal el fraude a consumidor: usar esta seccion como orientacion, no como mapa
+  completo.
+
+--------------------------------------------------------------------------------
+5. RECOMENDACIONES
+--------------------------------------------------------------------------------
+  [Bloqueo defensivo]
+  - Bloquear santaisabel-card[.]com en DNS/proxy/URL-filter/EDR (por dominio).
+  - NO bloquear las IP de Cloudflare ni cdnbaby[.]com "a ciegas" (colateral).
+
+  [Takedown - en paralelo]
+  - Cloudflare abuse (abuse.cloudflare.com, categoria phishing) - es su CDN/NS.
+  - Registrador: abuse@hkdns.hk (West263).
+  - CSIRT / ANCI Chile (csirt.gob.cl) - enlazar a la alerta 8FFR22-01132-01.
+  - Cencosud / Santa Isabel (marca perjudicada; via de brand-protection).
+  - Feeds: PhishTank, URLhaus, Google Safe Browsing, APWG.
+
+  [Concientizacion]
+  - "Santa Isabel no regala dinero ni tarjetas por su aniversario; no entregues
+     datos de tarjeta." Ver comunicado en el blog de detecciones de Intellroom.
+
+--------------------------------------------------------------------------------
+6. VALORACION (lenguaje estimativo, ICD 203)
+--------------------------------------------------------------------------------
+  - Es fraude / phishing de abuso de marca: CASI CERTERO (alta confianza).
+  - El objetivo final son datos de tarjeta: PROBABLE (dominio "-card" + patron;
+    NO confirmado empiricamente - no se ejercio la etapa final).
+  - Operado por una red PhaaS "encuesta-premio" multi-marca: PROBABLE
+    (fingerprint de infraestructura; atribucion de operador NO confirmada).
+
+================================================================================
+  Recoleccion: OSINT pasivo + render aislado. Sin envio de datos al sitio.
+  Marca suplantada: Santa Isabel (Cencosud). Sin cliente-victima involucrado.
+  Co-Authored-By: Claude Opus 4.8
+================================================================================

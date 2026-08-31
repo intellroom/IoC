@@ -1,0 +1,101 @@
+================================================================================
+  EVIDENCIA TECNICA -- santaisabel-card[.]com
+  Recolectada por OSINT pasivo + render aislado. NO se envio ningun dato al sitio.
+  Fecha de recoleccion: 2026-08-31 | TLP: CLEAR | Intellroom CTI
+================================================================================
+
+1. WHOIS (registro del dominio)
+--------------------------------------------------------------------------------
+  Dominio            santaisabel-card[.]com
+  Creado             2026-07-22T20:36:20Z   (dominio nuevo, ~5 semanas al analisis)
+  Expira             2027-07-22
+  Registrador        West263 International Limited (IANA 1915) / hkdns.hk
+  Abuse registrador  abuse@hkdns.hk
+  Registrante        REDACTED FOR PRIVACY -- Pais: CN -- Estado: Si Chuan Sheng (Sichuan)
+  Name servers       augustus.ns.cloudflare.com , etta.ns.cloudflare.com
+  Estado             ok (activo)
+
+  Lectura: dominio recien registrado + registrador chino de bajo costo +
+  registrante en China + NS de Cloudflare. Firma tipica de kit de estafa
+  desplegado en masa; el nombre "-card" anuncia el objetivo (datos de tarjeta).
+
+2. DNS
+--------------------------------------------------------------------------------
+  A     104.21.68.19 , 172.67.185.27     <- rango Cloudflare (frente/proxy)
+  NS    augustus / etta .ns.cloudflare.com
+  MX    (ninguno)
+  TXT   (ninguno)
+
+  El origen real esta OCULTO tras Cloudflare. Las IP son de Cloudflare y NO
+  deben bloquearse (son compartidas por millones de sitios legitimos).
+
+3. CLOAKING -- prueba reproducible (solo cabeceras, sin enviar datos)
+--------------------------------------------------------------------------------
+  raiz  '/'                 -> HTTP 404   (esconde la campana de escaneos casuales)
+  ruta token + UA escritorio-> HTTP 404   (evasion de analista / sandbox de escritorio)
+  ruta token + UA movil     -> HTTP 200   (solo aqui se sirve el senuelo)
+
+  Reproducido 2026-08-31. La ruta raiz devuelve 404; el contenido malicioso
+  vive SOLO en rutas con token y SOLO se entrega a navegadores moviles.
+
+4. GATEWAY (etapa 1) -- logica de cloaking en el cliente
+--------------------------------------------------------------------------------
+  Archivo de evidencia: 04_gateway_cloaking.html (1071 bytes, capturado del sitio)
+
+  El HTML de entrada trae este script (resumido):
+
+    var p = navigator.platform;
+    system.win = p.indexOf("Win") == 0;
+    if (system.win || system.max || system.xll ||
+        window.screen.availWidth > window.screen.availHeight) {
+        // ESCRITORIO / pantalla apaisada  ->  falso 404
+        a.href = '/emit/404/p'; a.click();
+    } else {
+        // MOVIL en vertical  ->  victima real
+        top.location.href = "https://santaisabel-card[.]com/sebawWzi/61826755205252848109cd0990";
+    }
+
+  Notas:
+  - El discriminador REAL es la orientacion de pantalla
+    (availWidth > availHeight = escritorio/apaisado -> descartado).
+  - "system.max" y "system.xll" son variables mal escritas (typo de "mac"/"x11")
+    que quedan siempre falsas: el filtro se apoya de hecho en el tamano de pantalla.
+  - Meta og:title: "Santa Isabel - 50 aniversario Regalos"
+  - Meta og:image: https://cdnbaby[.]com/upload/9f8ceb15963de5b5159ffbee5744ac95.webp
+
+5. PAGINA SENUELO (etapa 2) -- render aislado en movil
+--------------------------------------------------------------------------------
+  Captura: 03_captura_pagina_movil.png (render headless 414x896, sin interaccion)
+
+  - Identidad visual COMPLETA de Santa Isabel (Cencosud): logo, cabecera roja,
+    banner "50 anos - Celebremos juntos!" con "Tarjeta de Regalo".
+  - Encuesta falsa: "Pregunta 1 de 4: Sabias que Santa Isabel esta celebrando
+    su 50 aniversario?" con botones si / No.
+  - Seccion de comentarios FABRICADA: testimonios ("De hecho gane!") con fotos
+    de stock y un contador que cambia entre visitas (visto 10/185 y 10/206) ->
+    prueba social falsa generada dinamicamente.
+  - Fecha impresa en cabecera = fecha del dia (generada por el kit para parecer
+    "vigente hoy").
+
+6. ROTACION DE RUTAS (anti-analisis)
+--------------------------------------------------------------------------------
+  La ruta de etapa 2 CAMBIA en cada visita. Observadas:
+    /sebawWzi/61826755205252848109cd0990
+    /sebaHYzi/33984928041837452675170c51
+  El patron es /seba<4 chars>/<hex largo>. Bloquear por PATH exacto NO sirve;
+  bloquear por DOMINIO.
+
+7. CORROBORACION EXTERNA (fuentes de terceros, no verificadas por Intellroom)
+--------------------------------------------------------------------------------
+  - CSIRT Nacional (Chile) tiene alerta activa por phishing de WhatsApp que
+    suplanta a Santa Isabel: referencia 8FFR22-01132-01.
+  - Cencosud (Jumbo/Santa Isabel/Lider) ha desmentido publicamente estos
+    "concursos" de aniversario.
+  - El patron (kit configurable "encuesta-premio" difundido por WhatsApp,
+    dominios desechables, multi-marca) coincide con redes PhaaS documentadas
+    publicamente (p.ej. clusters tipo "prize-survey").
+
+================================================================================
+  Marca suplantada: Santa Isabel (Cencosud) -- empresa publica, marca abusada.
+  No hay cliente-victima de Intellroom involucrado en esta campana.
+================================================================================
