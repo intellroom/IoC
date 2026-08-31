@@ -1,0 +1,28 @@
+================================================================================
+  IOCs PARA BLOQUEO -- Phishing "Santa Isabel 50 aniversario" (robo de tarjeta)
+  Fecha: 2026-08-31  |  TLP:CLEAR  |  Fuente: Intellroom CTI (intellroom/IoC)
+  Defanged: reemplazar  [.] -> .  y  hxxp -> http  al aplicar.
+  Ficha completa: SantaIsabel_50Aniversario_31082026.txt
+================================================================================
+
+[BLOQUEAR -- verificado]  DNS / proxy / URL filter / EDR   (bloquear por DOMINIO)
+santaisabel-card[.]com
+
+[BLOQUEAR -- URLs observadas]  (referencia; el bloqueo efectivo es por dominio)
+hxxps://santaisabel-card[.]com/sebw24ZqnK0/a7Y2sycpg9DFMEQkDfNg653a3b   # etapa 1
+hxxps://santaisabel-card[.]com/sebawWzi/61826755205252848109cd0990       # etapa 2
+hxxps://santaisabel-card[.]com/sebaHYzi/33984928041837452675170c51       # etapa 2 (rotada)
+
+[VIGILAR -- NO bloquear ciegamente]  posible colateral
+cdnbaby[.]com                # CDN de assets del kit; reutilizado por varias estafas -> corroborar antes de accionar
+
+[NO ES IOC -- NO bloquear]  marca suplantada (victima) y frente CDN compartido
+santaisabel.cl   cencosud.com   jumbo.cl        # dominios LEGITIMOS suplantados
+104.21.68.19     172.67.185.27                  # IP de Cloudflare (compartidas) -> bloquearlas tumba terceros
+
+[DETECTAR -- comportamiento, no valor de red]
+Proxy/SWG: peticion a *-card[.]com con path /seba<4>/<hex> respondiendo 200 solo a User-Agent movil
+Marca: dominio que contiene "santaisabel" y NO es *.santaisabel.cl  (typo/brand-abuse watch)
+
+Nota: las rutas de etapa 2 ROTAN en cada visita (patron /seba<4>/<hex-largo>);
+NO construir el bloqueo sobre una ruta exacta -- bloquear el dominio.
