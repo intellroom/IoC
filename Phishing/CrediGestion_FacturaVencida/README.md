@@ -34,6 +34,14 @@ no hay base para atribuir a una campaña nombrada.
   y sesiones activas.
 
 ## Campaña relacionada
+
+> 🔴 **Actualización — 2ª oleada (2026-08-31 / 09-01):** el operador **movió el landing** a otro sitio chileno
+> comprometido (`legalnorte[.]cl`) y sumó un **segundo señuelo: CONASET / multa de tránsito**. Y, a diferencia
+> de esta ficha, **esa oleada SÍ entrega malware**: en escritorio descarga un `.lnk` que lanza PowerShell oculto
+> y termina en un **RAT** con C2 `ws://mybia2rap[.]com:8080`. La conclusión de abajo ("no entrega ejecutable")
+> **sigue siendo válida para este vector**, pero no para la campaña en su conjunto.
+> → [`legalnorte_cl_CrediGestion-CONASET`](../legalnorte_cl_CrediGestion-CONASET/)
+
 Mismo lure **"CrediGestión Factura Vencida"**, **vector distinto**: la campaña
 [`CrediGestion_Kali365_PowerBI`](../CrediGestion_Kali365_PowerBI/) usa la cadena **Kali365 PhaaS**
 (MailinBlack + Power BI publish-to-web + device-code), analizada por [@kur0s4k1](https://github.com/kur0s4k1).
