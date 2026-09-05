@@ -1,0 +1,67 @@
+================================================================================
+  IOCs PARA BLOQUEO -- Smishing "abono / compensacion" -> casino ilegal (Chile)
+  Fecha: 2026-09-05  |  TLP:CLEAR  |  Fuente: Intellroom CTI (intellroom/IoC)
+  Defanged: reemplazar  [.] -> .  y  hxxp -> http  al aplicar.
+  Ficha completa: Smishing_Abono_Compensacion_CL_05092026.txt
+================================================================================
+
+[BLOQUEAR -- verificado vivo 2026-09-05]  DNS / proxy / URL filter  (por DOMINIO)
+wq24[.]online                    # landing actual de la campana
+www.wq24[.]online
+ty125[.]online                   # landing hermano, mismo backend, AUN VIVO
+www.ty125[.]online
+asd16[.]online                   # backend/API compartido -> el IOC mas duradero
+
+[BLOQUEAR -- historico de la misma plataforma]  (rotacion de dominios)
+mega666v[.]com                   # 2024-11
+mega666[.]site                   # 2025-06
+mega666my[.]com                  # 2025-09
+mega-666[.]org                   # 2026-02
+yu76[.]online                    # 2026-07, variante Colombia (fuente externa)
+
+[BLOQUEAR -- URLs exactas]  (NO bloquear el acortador completo)
+hxxps://bit[.]ly/4qVqZxL?m9                        # enlace del SMS analizado
+hxxps://bit[.]ly/4qVqZxL
+hxxps://bit[.]ly/46CnTFs                           # otro enlace al mismo destino
+hxxps://www.wq24[.]online/?tr=v09&r=32
+hxxps://asd16[.]online/web88
+
+[VIGILAR -- NO bloquear ciegamente]  posible colateral
+56.125.252.204                   # EC2 sa-east-1 del backend; IP reasignable por AWS
+d6ro5rzkypvg0.cloudfront.net     # distribucion CloudFront de wq24
+d2farv4zvwdfdm.cloudfront.net    # distribucion CloudFront de ty125
+ns1.dyna-ns[.]net                # NS compartido por los dominios .online -> pivote
+ns2.dyna-ns[.]net
+gomakemoney.s3.sa-east-1.amazonaws.com   # bucket de assets de la plataforma
+hxxps://t[.]me/mesero777Slotsbot         # bot de Telegram del operador
+6000880640                       # remitente SMS (600 088 0640) -> reportar a Subtel
+
+[NO ES IOC -- NO bloquear]  servicios legitimos abusados y marcas suplantadas
+bit[.]ly   bitly[.]com                   # acortador legitimo -> bloquear la URL, NO el servicio
+108.158.104.9  108.158.104.23            # IP de AWS CloudFront (COMPARTIDAS):
+108.158.104.33  108.158.104.127          #   bloquearlas tumba miles de sitios de terceros
+13.227.123.4  13.227.123.6               # idem, CloudFront de ty125
+13.227.123.18  13.227.123.58
+fpjs[.]dev                               # FingerprintJS, producto comercial legitimo
+PG Soft / Pragmatic Play / JILI          # proveedores de juegos: marcas ABUSADAS, no el atacante
+Scotiabank / BCP / BBVA / Interbank      # bancos listados en el form de retiro = victimas
+PSE / NEQUI / PIX / RUT / CPF            # medios de pago e identificadores nacionales
+prefijo 600 (como tal)                   # numeracion legitima y regulada; lo anomalo es ESTE numero
+
+[DETECTAR -- comportamiento y patron, sobrevive a la rotacion de dominios]
+SMS:    texto con "se han abonado" + monto + "compensacion" + enlace acortado
+SMS:    remitente con prefijo 600 sin relacion contractual previa con el receptor
+        (Subtel Res. Ex. 1319/2026 reserva el 600 a servicios YA contratados)
+Proxy:  dominio de 2 letras + 2-3 digitos en .online, registrado hace <30 dias,
+        NS en dyna-ns[.]net, servido por CloudFront con origen AmazonS3
+Proxy:  navegacion a *.online con parametros  ?tr=v\d+&r=\d+
+Web:    pagina que carga assets desde gomakemoney.s3.sa-east-1.amazonaws.com
+
+Nota 1: los dominios de landing se ROTAN cada 1-2 semanas (historial de 6 dominios
+        desde nov-2024). NO construir la defensa solo sobre la lista de dominios:
+        cargar tambien la regla de patron.
+Nota 2: asd16[.]online es el backend COMPARTIDO entre varios frentes -> sobrevive a
+        la rotacion y es el indicador de mayor vida util del conjunto.
+Nota 3: esta campana NO suplanta a ningun banco. Etiquetarla como "phishing
+        bancario" lleva a aplicar el control equivocado: el canal es SMS y el
+        destino es un casino sin licencia, no un sitio bancario clonado.
