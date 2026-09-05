@@ -1,0 +1,204 @@
+================================================================================
+ EVIDENCIA TÉCNICA REPRODUCIBLE
+ Smishing "abono / compensación" -> casino ilegal  ·  Chile  ·  2026-09-05
+ Intellroom CTI  ·  TLP:CLEAR
+ Método: OSINT pasivo + lectura estática del código servido.
+ NO se envió ningún dato al sitio, NO se creó cuenta, NO se depositó dinero.
+================================================================================
+
+--------------------------------------------------------------------------------
+1. RESOLUCIÓN DEL ACORTADOR (sin seguir la redirección)
+--------------------------------------------------------------------------------
+$ curl -sS -o /dev/null -D - --max-redirs 0 "https://bit.ly/4qVqZxL?m9"
+
+  HTTP/2 301
+  server: nginx
+  cache-control: private, max-age=90
+  location: https://www.wq24.online/?tr=v09&r=32
+
+Página de información de Bitly (sufijo "+", no ejecuta la redirección):
+$ curl -sS "https://bit.ly/4qVqZxL+" | grep -A2 'bitlink--destination'
+  href="https://www.wq24.online/?tr=v09&amp;r=32"
+
+Verificado de nuevo al cierre del análisis (2026-09-05 22:4x UTC): sigue activo.
+
+--------------------------------------------------------------------------------
+2. DNS  (DNS-over-HTTPS, resolutor 1.1.1.1)
+--------------------------------------------------------------------------------
+wq24.online        NS    ns1.dyna-ns.net. / ns2.dyna-ns.net.
+wq24.online        SOA   ns1.dyna-ns.net. hostmaster.wq24.online. 2026082002
+                          (el serial 2026082002 indica creación ~2026-08-20)
+wq24.online        A     -- (sin registro en el apex)
+
+www.wq24.online    CNAME d6ro5rzkypvg0.cloudfront.net.
+                   A     108.158.104.9 / .23 / .33 / .127     (AWS, AS16509)
+
+www.ty125.online   CNAME d2farv4zvwdfdm.cloudfront.net.
+                   A     13.227.123.4 / .6 / .18 / .58        (AWS, AS16509)
+
+asd16.online       NS    ns1.dyna-ns.net. / ns2.dyna-ns.net.   <-- mismos NS
+asd16.online       A     56.125.252.204
+
+WHOIS del apex: no disponible (timeout del servidor del registro .online, Radix).
+La antigüedad se estableció por otras dos vías independientes: el serial SOA y
+la fecha de emisión del certificado + los escaneos públicos (§4, §5).
+
+--------------------------------------------------------------------------------
+3. IP DEL BACKEND
+--------------------------------------------------------------------------------
+$ curl -sS "https://ipinfo.io/56.125.252.204/json"
+  {
+    "ip": "56.125.252.204",
+    "hostname": "ec2-56-125-252-204.sa-east-1.compute.amazonaws.com",
+    "city": "São Paulo",  "region": "São Paulo",  "country": "BR",
+    "org": "AS16509 Amazon.com, Inc."
+  }
+
+--------------------------------------------------------------------------------
+4. TLS
+--------------------------------------------------------------------------------
+$ echo | openssl s_client -connect www.wq24.online:443 \
+        -servername www.wq24.online | openssl x509 -noout -subject -issuer -dates
+
+  subject = CN=*.wq24.online
+  issuer  = C=US, O=Amazon, CN=Amazon RSA 2048 M01
+  notBefore = Aug 21 00:00:00 2026 GMT
+  notAfter  = Mar  6 23:59:59 2027 GMT
+  SAN: DNS:*.wq24.online
+
+crt.sh: un único certificado para el dominio, emitido 2026-08-21.
+-> El dominio tenía 15 días de vida al momento del SMS.
+
+--------------------------------------------------------------------------------
+5. RESPUESTA HTTP DEL LANDING
+--------------------------------------------------------------------------------
+$ curl -sS -D - "https://www.wq24.online/?tr=v09&r=32"
+
+  HTTP/2 200
+  content-type: text/html
+  content-length: 16151
+  last-modified: Thu, 03 Sep 2026 07:58:59 GMT     <-- 2 días antes del SMS
+  server: AmazonS3
+  x-cache: RefreshHit from cloudfront
+  via: 1.1 ...cloudfront.net (CloudFront)
+  x-amz-cf-pop: SCL51-P6                           <-- PoP de Santiago, Chile
+
+PRUEBA DE NO-CLOAKING: se repitió la petición con User-Agent de Android móvil y
+Referer de bit.ly. Respuesta byte a byte IDÉNTICA (mismo etag, mismo tamaño).
+-> A diferencia de otras campañas (p. ej. Santa Isabel en este mismo feed), aquí
+   NO hay cloaking por User-Agent en el servidor: es una SPA estática y toda la
+   lógica de segmentación corre en el navegador.
+
+<title>MEGA666</title>
+<meta property="og:description" content="Créditos gratis — Sin depósito ⭐️⭐️⭐️⭐️
+ Cuotas ultra altas ⭐️⭐️⭐️⭐️ Retiros gratuitos ⭐️⭐️⭐️⭐️ Soporte en línea 24*7">
+
+--------------------------------------------------------------------------------
+6. ANÁLISIS ESTÁTICO DEL BUNDLE JAVASCRIPT
+--------------------------------------------------------------------------------
+Archivos descargados y analizados SIN ejecutarlos:
+  js/app.c4c2d157.js            479.025 bytes
+  js/chunk-vendors.778d9911.js 1.318.966 bytes
+
+6.1 CONFIGURACIÓN DEL OPERADOR
+  o = "https://t.me/mesero777Slotsbot/?start="
+  s = { robotUrl: "https://asd16.online",
+        projectId: "1",
+        kefuId:    "service",      <-- "kefu" (客服) = servicio al cliente en chino
+        currentLang: "pt" }        <-- idioma por defecto: portugués (Brasil)
+  r = "https://asd16.online/web88"
+
+6.2 DOMINIOS REFERENCIADOS EN EL CÓDIGO
+  https://asd16.online                              backend
+  https://asd16.online/web88                        endpoint
+  https://gomakemoney.s3.sa-east-1.amazonaws.com    bucket de assets (iconos)
+  https://fpjs.dev/pro                              FingerprintJS Pro (deviceId)
+  https://t.me/mesero777Slotsbot                    bot del operador
+  (el resto son dominios de librerías: lodash, feross, w3.org, etc.)
+
+6.3 RIELES DE PAGO POR PAÍS  -- una sola plataforma, cuatro países
+  Chile:     selectPayType: { text:"RUT", value:13, payType:13 }
+             campo de formulario: "RUT Número"
+  Perú:      banksType: { BCP:["Banco de Credito","Banco de Crédito del Perú"],
+                          BBVA:["Banco Continental","BBVA Continental Perú"],
+                          Interbank:["Interbank"],
+                          Scotiabank:["Scotiabank","Scotiabank Perú S.A.A."] }
+             validación: "Un número de cuenta de Scotiabank debe constar de
+                          exactamente 10 dígitos."
+             validación: "El número de cuenta interbancaria debe constar de
+                          exactamente 13 dígitos."   (Interbank)
+  Colombia:  payTypeList: [{text:"PSE",...},{text:"NEQUI",...}]
+  Brasil:    "CPF"  ·  "Todos os bônus podem ser sacados para PIX Key"
+
+6.4 MECÁNICA DEL RETIRO BLOQUEADO  (citas literales del bundle)
+  a) mínimo inalcanzable:
+     "...de saque é 500. O saldo da sua conta é insuficiente. Você pode tentar
+      jogar para ganhar mais dinheiro antes de sacar."
+  b) hay que DEPOSITAR para poder retirar  -> fraude de pago anticipado:
+     "Caro usuário, você tem a oportunidade de desfrutar gratuitamente do canal
+      VIP de retirada rápida. Agora que você deposita R$ ..."
+     "Caro usuário, ... Agora que você deposita S/. ..."          (Perú)
+     "...el sistema le proporcionará un canal de pago de retiro rápido VIP de
+      forma gratuita."
+  c) comisión sobre el retiro:
+     "...% del monto del retiro como tarifa de manejo. Esta tarifa de retiro se
+      utiliza para mantener el sistema de pago."
+  d) barrera adicional si insiste:
+     "...uma tarefa de resfriamento foi acionada. Por favor, conclua a tarefa
+      primeiro antes de fazer qualquer saque."
+  e) presión para que retire (y por tanto deposite):
+     "Por la seguridad de su cuenta, ¡haga un retiro!"
+     "El canal de pago actual es fluido y el retiro debería llegar en 5 minutos."
+
+6.5 RUTAS Y SEÑALES EN EL HTML
+  window.location.href = "/cdn/recovery" + window.location.search
+  window.location.href = wechatGuidePage        <-- guía de WeChat
+  { url: window.location.href, deviceId: deviceId }
+
+--------------------------------------------------------------------------------
+7. HISTORIAL DE LA PLATAFORMA  (escaneos públicos, pivote por título "MEGA666")
+--------------------------------------------------------------------------------
+  fecha scan   dominio             edad dominio   hosting
+  2024-11-19   mega666v.com        --             Cloudflare
+  2025-06-28   mega666.site        --             Cloudflare
+  2025-09-26   mega666my.com       240 d          Cloudflare
+  2026-02-05   mega-666.org         64 d          Namecheap
+  2026-08-12   ty125.online          2 d          AWS CloudFront
+  2026-08-13   ty125.online          3 d          AWS CloudFront
+  2026-08-17   ty125.online          7 d          AWS CloudFront
+  2026-08-27   wq24.online           6 d          AWS CloudFront
+  2026-09-04   wq24.online          13 d          AWS CloudFront
+
+  Parámetros observados sobre la misma infraestructura:
+    ?tr=v08&r=03   ?tr=v07&r=10   ?tr=v09&r=12    (ty125)
+    ?tr=v37&r=09   ?tr=v18&r=29   ?tr=v09&r=32    (wq24)
+  -> varios afiliados y varios lotes de tráfico operando en paralelo.
+
+  Enlaces acortados distintos que llegan al MISMO destino:
+    bit.ly/4qVqZxL   (este SMS)
+    bit.ly/46CnTFs   (observado en escaneo público del 2026-09-04)
+
+--------------------------------------------------------------------------------
+8. ESTADO AL CIERRE DEL ANÁLISIS  (2026-09-05)
+--------------------------------------------------------------------------------
+  https://www.wq24.online/     HTTP 200   VIVO
+  https://www.ty125.online/    HTTP 200   VIVO
+  https://asd16.online/        HTTP 200   VIVO
+  https://bit.ly/4qVqZxL       HTTP 301   VIVO -> www.wq24.online/?tr=v09&r=32
+
+  Ningún elemento de la cadena estaba dado de baja al momento de publicar.
+
+--------------------------------------------------------------------------------
+9. LO QUE NO SE HIZO  (límites declarados)
+--------------------------------------------------------------------------------
+  · No se creó cuenta ni se ingresó RUT, nombre, banco ni número de cuenta.
+  · No se realizó ningún depósito ni se jugó.
+  · No se ejecutó la página en un navegador propio: el comportamiento se dedujo
+    leyendo el JavaScript servido y una captura pública de urlscan.io.
+  · No se consultó la base de numeración de Subtel: NO consta a quién está
+    asignado el 600 088 0640.
+  · No se hizo escaneo activo de puertos contra ninguna IP.
+
+================================================================================
+ Intellroom Threat Intelligence · 2026-09-05 · TLP:CLEAR
+================================================================================

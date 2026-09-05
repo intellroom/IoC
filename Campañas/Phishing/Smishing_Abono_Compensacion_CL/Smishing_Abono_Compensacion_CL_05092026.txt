@@ -1,0 +1,403 @@
+================================================================================
+ ALERTA CTI — Smishing "abono / compensación" que termina en un casino ilegal
+ Campaña activa en Chile · señuelo genérico, sin marca bancaria suplantada
+ Fecha del análisis: 2026-09-05   |   TLP:CLEAR   |   Intellroom Threat Intelligence
+ Confianza: ALTA (cadena reproducida de punta a punta con OSINT pasivo)
+================================================================================
+
+--------------------------------------------------------------------------------
+1. RESUMEN EJECUTIVO
+--------------------------------------------------------------------------------
+Un SMS masivo le dice a la persona que "se han abonado 240 mil pesos a su cuenta
+como compensación" y la invita a "revisar y verificar su saldo" en un enlace
+acortado. No nombra ningún banco, no lleva logo y no clona ningún sitio bancario.
+
+Esa ausencia NO es descuido: es el diseño. El señuelo es deliberadamente genérico
+para que cada receptor lo asocie con SU propio banco, y de paso evita el trabajo
+de clonar una marca y los filtros de brand-abuse que buscan dominios parecidos a
+un banco.
+
+El enlace no lleva a un banco falso. Lleva a un CASINO EN LÍNEA SIN LICENCIA que
+regala un saldo de $2.000 al abrirlo — el "abono" que el SMS prometía — y que
+después bloquea el retiro hasta que la víctima DEPOSITE dinero real. Para cobrar,
+el sitio pide nombre, RUT, banco y número de cuenta.
+
+Es decir, dos daños en la misma cadena:
+  · pérdida económica por fraude de pago anticipado (advance-fee), y
+  · entrega de datos personales y bancarios a un tercero no identificado.
+
+No es una campaña improvisada. La plataforma lleva al menos desde noviembre de
+2024 rotando dominios, y el mismo señuelo se documentó en Colombia en julio de
+2026 con la cifra cambiada a pesos colombianos.
+
+--------------------------------------------------------------------------------
+2. EL MENSAJE (verbatim, tal como se recibió)
+--------------------------------------------------------------------------------
+  Fecha/hora  : 2026-09-05, 11:19 hora de Chile
+  Remitente   : 6000880640   (se presenta como 600 088 0640)
+  Canal       : SMS
+  Texto       :
+
+      ID:99640***807  Se han abonado 240 mil pesos a su cuenta como
+      compensacion. Por favor, revise y verifique su saldo.
+      https://bit.ly/4qVqZxL?m9
+
+  Receptor    : usuario móvil en Chile — identidad REDACTADA
+
+  Detalles del texto que valen como señal:
+   · "compensacion" SIN TILDE — plantilla generada/traducida automáticamente.
+   · "ID:99640***807" — enmascaramiento parcial que IMITA el formato de un aviso
+     de transacción real. No corresponde a ningún identificador verificable; su
+     única función es dar apariencia de sistema bancario.
+   · No nombra entidad, no saluda por nombre, no incluye los 4 últimos dígitos de
+     ninguna cuenta real. Un aviso bancario legítimo hace lo contrario.
+   · "?m9" al final del enlace: bit.ly ignora ese parámetro para resolver el
+     destino, pero queda registrado en sus analíticas — sirve al operador para
+     saber qué lote de SMS convirtió.
+
+--------------------------------------------------------------------------------
+3. EL REMITENTE — abuso del prefijo 600 (hallazgo regulatorio)
+--------------------------------------------------------------------------------
+El número usa el prefijo 600, que en Chile NO es un número cualquiera.
+
+La Resolución Exenta 1319 de Subtel (publicada el 05-06-2026) reserva el 600
+EXCLUSIVAMENTE para "llamadas masivas solicitadas, con fines informativos o de
+soporte, dirigidas a usuarios, por prestaciones requeridas expresamente o
+contratadas", y prohíbe expresamente su uso para "ventas, ofrecimientos o
+promociones de servicios adicionales o no requeridos". Las comunicaciones masivas
+NO solicitadas deben usar el prefijo 809.
+
+Consecuencia directa: el prefijo 600 está pensado para que el receptor lo lea como
+"esto viene de alguien con quien YA tengo contrato". La campaña se apoya
+exactamente en esa confianza. Un SMS masivo no solicitado enviado desde un 600 es,
+además del fraude, un incumplimiento normativo — y por eso es reportable a Subtel
+con independencia de lo penal.
+
+⚠ NO VERIFICADO: no se pudo consultar a quién está asignado el 600 088 0640 en la
+base de numeración de Subtel. Quedan abiertas tres hipótesis y NO se afirma
+ninguna: (a) sender ID suplantado vía pasarela SMS, (b) cuenta de un proveedor
+legítimo de SMS masivos comprometida o revendida, (c) numeración asignada a un
+tercero y usada fuera de su finalidad autorizada. Determinarlo requiere a Subtel o
+al operador móvil.
+
+--------------------------------------------------------------------------------
+4. CADENA TÉCNICA (reproducida, no supuesta)
+--------------------------------------------------------------------------------
+  [1] SMS  ──►  hxxps://bit[.]ly/4qVqZxL?m9
+  [2] bit.ly responde HTTP 301
+        Location: hxxps://www.wq24[.]online/?tr=v09&r=32
+  [3] www.wq24[.]online  →  CNAME  →  d6ro5rzkypvg0.cloudfront.net
+        →  108.158.104.9 / .23 / .33 / .127   (AWS CloudFront, AS16509)
+        Origen: AmazonS3   ·   PoP servidor: SCL51-P6 (Santiago)
+  [4] La página es una SPA estática; toda la lógica corre en el navegador y
+      consulta el backend  hxxps://asd16[.]online/web88
+        asd16[.]online → 56.125.252.204
+        → ec2-56-125-252-204.sa-east-1.compute.amazonaws.com (São Paulo, AS16509)
+
+  Parámetros del enlace — así se paga a los afiliados:
+    tr=v09   fuente/lote de tráfico
+    r=32     identificador de referido (afiliado que envió el SMS)
+  Se observaron otras combinaciones sobre la MISMA infraestructura
+  (tr=v18&r=29, tr=v37&r=09, y bit.ly/46CnTFs), lo que confirma que hay varios
+  enlaces y varios afiliados operando en paralelo.
+
+--------------------------------------------------------------------------------
+5. QUÉ HACE EL SITIO — la mecánica del fraude
+--------------------------------------------------------------------------------
+Todo lo de esta sección sale de leer el código JavaScript servido por el sitio y
+de una captura pública del render. NO se creó cuenta, NO se ingresó ningún dato y
+NO se depositó dinero.
+
+ (a) ENGANCHE — el sitio "confirma" el SMS.
+     Al abrirlo aparece una cuenta con ID auto-generado y un saldo regalado de
+     $2.000, con el mensaje: "¡Bienvenido! Hemos preparado $2.000 para que cada
+     nuevo jugador experimente nuestros juegos". La víctima llega buscando un
+     abono y encuentra un saldo: la promesa del SMS parece cumplirse.
+
+ (b) PRUEBA SOCIAL FABRICADA.
+     Ticker de "ganadores" y montos retirados ("usuario 1159570 retiró...",
+     "$695.700") generados por el propio sitio. Mismo recurso que ya se documentó
+     en la campaña Santa Isabel de este mismo feed.
+
+ (c) EL RETIRO ESTÁ BLOQUEADO POR DISEÑO. Textos extraídos del bundle:
+       · "...de saque é 500. O saldo da sua conta é insuficiente. Você pode tentar
+         jogar para ganhar mais dinheiro antes de sacar."
+         → el mínimo de retiro no se alcanza con el bono: hay que jugar.
+       · "Caro usuário, você tem a oportunidade de desfrutar gratuitamente do
+         canal VIP de retirada rápida. Agora que você deposita R$ ..."
+         → PARA RETIRAR HAY QUE DEPOSITAR. Esto es fraude de pago anticipado.
+       · "...% del monto del retiro como tarifa de manejo. Esta tarifa de retiro
+         se utiliza para mantener el sistema de pago."
+         → segunda extracción, ahora como comisión.
+       · "...uma tarefa de resfriamento foi acionada. Por favor, conclua a tarefa
+         primeiro antes de fazer qualquer saque."
+         → tercera barrera ("tarea de enfriamiento") si insiste.
+
+ (d) COSECHA DE DATOS PERSONALES Y BANCARIOS.
+     El formulario de retiro pide nombre del titular, "RUT Número" (payType 13),
+     banco y número de cuenta. El mismo bundle trae los rieles de otros países:
+       Chile     → RUT
+       Perú      → BCP, BBVA Continental, Interbank, Scotiabank
+                   (con validación: "Un número de cuenta de Scotiabank debe
+                   constar de exactamente 10 dígitos")
+       Colombia  → PSE, NEQUI
+       Brasil    → CPF, PIX
+     Es una sola plataforma que cambia de riel según el país de la víctima.
+
+ (e) PROPAGACIÓN POR REFERIDOS.
+     "Invita a tus amigos · Gana recompensas · recibe una recompensa de $2000".
+     Esto explica el parámetro ?r= : la campaña se paga a sí misma reclutando a
+     los propios afectados como distribuidores del enlace.
+
+ (f) HUELLA DEL DISPOSITIVO.
+     Carga FingerprintJS Pro (fpjs.dev/pro) y arma un deviceId. Sirve para abuso
+     de bonos, pero también para reconocer analistas y sandboxes.
+
+--------------------------------------------------------------------------------
+6. LA PLATAFORMA NO ES NUEVA — historial de rotación de dominios
+--------------------------------------------------------------------------------
+Pivotando por el título de la página ("MEGA666") en escaneos públicos:
+
+    2024-11-19   mega666v[.]com        (Cloudflare)
+    2025-06-28   mega666[.]site        (Cloudflare)
+    2025-09-26   mega666my[.]com       (Cloudflare)
+    2026-02-05   mega-666[.]org        (Namecheap)
+    2026-08-10   ty125[.]online        (AWS CloudFront)   ← VIVO al 2026-09-05
+    2026-08-21   wq24[.]online         (AWS CloudFront)   ← el de esta campaña
+    2026-07-??   yu76[.]online         (Colombia, ver §7)
+
+Lectura del patrón: pasaron de dominios con la marca en el nombre (mega666*) a
+dominios desechables de dos letras + dígitos en .online detrás de CloudFront. Es
+una evolución deliberada — el nombre de marca se quema en las listas de bloqueo,
+el dominio aleatorio no dice nada y se reemplaza cada una o dos semanas. La marca
+queda solo DENTRO de la página, donde ninguna blocklist la ve.
+
+El backend asd16[.]online es común a varios frentes, así que sobrevive a la
+rotación. Es el indicador más duradero de todo el conjunto.
+
+--------------------------------------------------------------------------------
+7. ¿ES UNA CAMPAÑA CONOCIDA? ¿SUPLANTA A UNA MARCA?
+--------------------------------------------------------------------------------
+Se preguntó explícitamente si esto corresponde a una campaña nacional conocida o
+al abuso de una marca. Respuesta separada en tres, con lo que consta y lo que no:
+
+ ✔ NO SUPLANTA A NINGÚN BANCO. Verificado: el SMS no nombra entidad, y el sitio
+   de destino no clona ninguna interfaz bancaria ni usa un dominio parecido a uno.
+   Esto la distingue de las campañas que CSIRT Chile ha alertado suplantando a
+   Banco de Chile o a CorreosChile. Etiquetar esto como "phishing bancario" sería
+   incorrecto y llevaría a buscar el control equivocado.
+
+ ✔ SÍ ES UNA CAMPAÑA REGIONAL ESTRUCTURADA, no un mensaje suelto. La evidencia:
+   más de un año de rotación de dominios (§6), backend compartido, varios enlaces
+   y afiliados activos en paralelo, y rieles de pago para cuatro países.
+
+ ✔ EL MISMO SEÑUELO YA SE DOCUMENTÓ EN COLOMBIA. Un análisis público de julio de
+   2026 describe un SMS casi idéntico —"¡Se han abonado 222.000 pesos colombianos
+   a su cuenta! Por favor, revise su saldo"— apuntando a yu76[.]online, mismo
+   patrón de nombre y mismo TLD. Es la misma plantilla con la moneda cambiada.
+   (Fuente: disoftin.com, "Anatomía de un ataque de smishing: Desglosando el
+   fraude del 'Abono de Cuenta'".)
+
+ ✖ NO HAY ALERTA PÚBLICA PREVIA PARA CHILE de esta cadena concreta. Se revisaron
+   los avisos de CSIRT Nacional y no aparece. Hasta donde consta, esta ficha es el
+   primer registro público del vínculo SMS-600 → bit.ly → wq24[.]online.
+
+ ⚠ NO ATRIBUIDA. Hay indicios de un operador de habla china —el parámetro
+   kefuId:"service" (kefu 客服 = servicio al cliente), una referencia a
+   wechatGuidePage y un bot de Telegram— y el idioma por defecto del bundle es
+   portugués, lo que sugiere Brasil como mercado principal. Existe investigación
+   pública sobre kits de smishing comercializados por actores de habla china que
+   operan en Chile (Twoko Research documentó el caso CorreosChile y el actor
+   "Chenlun"), PERO esa infraestructura es distinta de esta y NO se afirma que sea
+   el mismo actor. Coincidencia de modus operandi ≠ atribución.
+
+--------------------------------------------------------------------------------
+8. LO QUE NO ES UN IOC — leer antes de bloquear
+--------------------------------------------------------------------------------
+Bloquear esto en bloque hace daño a terceros que no tienen nada que ver.
+
+ ✖ bit.ly / bitly.com
+   Acortador legítimo, abusado. Bloquear bit.ly rompe miles de enlaces legítimos
+   en cualquier organización. Se bloquea el ENLACE ESPECÍFICO, nunca el servicio.
+
+ ✖ 108.158.104.9 / .23 / .33 / .127  y  d6ro5rzkypvg0.cloudfront.net
+   Son IP y distribución de AWS CloudFront, infraestructura COMPARTIDA. Esas
+   mismas IP sirven a miles de sitios legítimos. Bloquearlas tumba terceros.
+   → El bloqueo va por DOMINIO.
+
+ ✖ 56.125.252.204
+   EC2 en AWS São Paulo. Aunque hoy aloja el backend, es una IP reasignable: puede
+   quedar en manos de un tercero inocente mañana. VIGILAR, no bloquear a ciegas.
+
+ ✖ PG Soft · Pragmatic Play · JILI
+   Proveedores de juegos legítimos cuyos nombres y arte aparecen en el sitio sin
+   licencia. Son marcas abusadas, NO el atacante.
+
+ ✖ Scotiabank · BCP · BBVA · Interbank · NEQUI · PSE · PIX
+   Aparecen SOLO como opciones del formulario de retiro. Son los bancos y medios
+   de pago de las víctimas, no infraestructura del adversario.
+
+ ✖ El prefijo 600 como tal
+   Es numeración legítima y regulada, usada por bancos, isapres y servicios reales
+   para contactar a sus propios clientes. Lo anómalo es ESTE número enviando SMS
+   masivos no solicitados, no el prefijo.
+
+ ✖ fpjs.dev (FingerprintJS)
+   Producto comercial legítimo de anti-fraude, usado aquí en contra de su
+   propósito. No es un dominio malicioso.
+
+--------------------------------------------------------------------------------
+9. INDICADORES
+--------------------------------------------------------------------------------
+(defanged: reemplazar [.] por . y hxxp por http)
+
+ DOMINIOS — BLOQUEAR
+   wq24[.]online                         landing actual        vivo 2026-09-05
+   www.wq24[.]online
+   ty125[.]online                        landing hermano       vivo 2026-09-05
+   www.ty125[.]online
+   asd16[.]online                        backend / API         vivo 2026-09-05
+   mega666v[.]com                        histórico 2024-11
+   mega666[.]site                        histórico 2025-06
+   mega666my[.]com                       histórico 2025-09
+   mega-666[.]org                        histórico 2026-02
+   yu76[.]online                         variante Colombia 2026-07 (fuente externa)
+
+ URLs
+   hxxps://bit[.]ly/4qVqZxL?m9           enlace del SMS analizado
+   hxxps://bit[.]ly/4qVqZxL              mismo destino sin el parámetro
+   hxxps://bit[.]ly/46CnTFs              otro enlace al mismo destino (observado)
+   hxxps://www.wq24[.]online/?tr=v09&r=32
+   hxxps://asd16[.]online/web88          endpoint del backend
+
+ INFRAESTRUCTURA — VIGILAR, NO BLOQUEAR CIEGAMENTE
+   56.125.252.204                        EC2 sa-east-1 (backend)
+   d6ro5rzkypvg0.cloudfront.net          distribución CloudFront de wq24
+   d2farv4zvwdfdm.cloudfront.net         distribución CloudFront de ty125
+   ns1.dyna-ns.net / ns2.dyna-ns.net     NS compartidos por los dominios .online
+   gomakemoney.s3.sa-east-1.amazonaws.com   bucket de assets de la plataforma
+
+ REMITENTE SMS
+   6000880640                            (600 088 0640)
+
+ OTROS
+   hxxps://t[.]me/mesero777Slotsbot      bot de Telegram del operador
+   TLS: CN=*.wq24.online, Amazon RSA 2048 M01, 2026-08-21 → 2027-03-06
+
+ PATRONES DE DETECCIÓN (más duraderos que cualquier dominio)
+   · SMS con "se han abonado" + monto + "compensación" + enlace acortado
+   · SMS desde prefijo 600 sin relación contractual previa con el receptor
+   · Dominio de 2 letras + 2-3 dígitos en .online, con NS dyna-ns.net,
+     registrado hace menos de 30 días, tras CloudFront con origen S3
+   · Navegación a un .online joven con parámetros ?tr=<v\d+>&r=<\d+>
+
+--------------------------------------------------------------------------------
+10. MITRE ATT&CK
+--------------------------------------------------------------------------------
+Nota: ATT&CK Enterprise modela intrusiones a sistemas. Esta campaña ataca a la
+persona, no al endpoint, así que el mapeo cubre solo la parte que sí encaja. Se
+marca lo que NO aplica en vez de forzarlo.
+
+  T1583.001  Acquire Infrastructure: Domains
+             Dominios .online desechables, rotados cada 1-2 semanas.
+  T1583.006  Acquire Infrastructure: Web Services
+             Abuso de AWS CloudFront, S3 y EC2 como frente y backend.
+  T1608.001  Stage Capabilities: Upload Malware / contenido
+             (aplica parcialmente: se publica el sitio señuelo, no malware)
+  T1566      Phishing  —  variante SMS (smishing)
+             Entrega por SMS masivo con acortador.
+  T1204.001  User Execution: Malicious Link
+             La víctima abre el enlace acortado.
+  T1585      Establish Accounts
+             Cuentas de acortador y canal de Telegram del operador.
+
+  SIN MAPEO LIMPIO — se dice en vez de forzarlo:
+   · La cosecha de nombre, RUT, banco y número de cuenta NO encaja bien en
+     T1589.001 (esa técnica cubre CREDENCIALES, y aquí lo que se entrega son
+     datos de identidad y bancarios, no credenciales de acceso). ATT&CK modela
+     intrusiones a sistemas; el fraude directo al consumidor queda fuera de su
+     alcance. Forzar el ID daría una falsa sensación de cobertura.
+
+  NO APLICA — y decirlo importa:
+   · No hay ejecución de código en el dispositivo de la víctima.
+   · No se observó descarga de APK ni de ningún binario.
+   · No hay persistencia, movimiento lateral ni C2 sobre el endpoint.
+  Cualquier control que se elija debe apuntar al canal SMS y al filtrado web,
+  no al EDR.
+
+--------------------------------------------------------------------------------
+11. RECOMENDACIONES
+--------------------------------------------------------------------------------
+ PARA QUIEN RECIBIÓ EL SMS
+  1. No abrir el enlace. Si ya se abrió y solo se miró: no hay compromiso del
+     teléfono — no hay descarga ni ejecución en esta cadena.
+  2. Si se ingresaron RUT, banco o número de cuenta: avisar al banco por su canal
+     oficial y vigilar movimientos. Esos datos ya están en manos de terceros.
+  3. Si se depositó dinero: no depositar más. Ninguna cifra adicional destraba el
+     retiro — esa es precisamente la mecánica. Denunciar a PDI/Fiscalía.
+  4. Verificar cualquier "abono" entrando a la app del banco a mano, nunca por un
+     enlace recibido.
+
+ PARA UNA ORGANIZACIÓN
+  5. Bloquear por DOMINIO los cinco dominios activos (§9). Nunca por la IP de
+     CloudFront.
+  6. Cargar la regla de detección por patrón (§9), que sobrevive al próximo
+     dominio; la lista de dominios caduca en semanas.
+  7. Incluir este señuelo en la concientización: es el caso perfecto para enseñar
+     que un SMS que NO nombra al banco es más sospechoso, no menos.
+
+ REPORTES QUE CORRESPONDEN
+  8. Subtel — abuso del prefijo 600 (Res. Ex. 1319/2026). Es la vía más rápida
+     para cortar el canal de entrega, que es lo que de verdad escala.
+  9. Bitly — abuse report de los enlaces; matarlos rompe la cadena aunque el
+     dominio siga vivo.
+ 10. AWS Abuse — el frente CloudFront/S3 y el EC2 del backend.
+ 11. CSIRT Nacional / ANCI — no hay alerta previa de esta cadena para Chile.
+ 12. SCJ (Superintendencia de Casinos de Juego) — operación de juego en línea sin
+     licencia dirigida a residentes en Chile.
+
+--------------------------------------------------------------------------------
+12. VALORACIÓN Y LÍMITES DEL ANÁLISIS
+--------------------------------------------------------------------------------
+ Confianza ALTA en:
+   la cadena SMS → bit.ly → wq24[.]online → asd16[.]online (reproducida en vivo,
+   HTTP 301 verificado), la infraestructura AWS, las fechas de registro y TLS, la
+   mecánica de retiro bloqueado y la cosecha de RUT y datos bancarios (leídas del
+   código servido), y el historial de rotación de dominios (escaneos públicos).
+
+ Confianza MEDIA en:
+   que el SMS y la plataforma sean operados por el mismo grupo. Lo sostiene el
+   parámetro de afiliado del enlace, pero un modelo de afiliados admite que el
+   emisor del SMS sea un tercero que solo cobra por el tráfico.
+
+ NO VERIFICADO — dicho explícito:
+   · A quién está asignado el número 600 088 0640.
+   · Si el sitio paga alguna vez a algún usuario (no se depositó ni se jugó).
+   · La identidad del operador. Los indicios de habla china son eso, indicios.
+   · Si existen más dominios hermanos activos además de los seis listados.
+   · No se ejecutó la página en un navegador propio: el análisis del
+     comportamiento sale de leer su JavaScript y de una captura pública.
+
+ Método: OSINT pasivo + lectura estática del código servido. No se envió ningún
+ dato al sitio, no se creó cuenta y no se realizó ningún depósito.
+
+--------------------------------------------------------------------------------
+13. FUENTES EXTERNAS CITADAS
+--------------------------------------------------------------------------------
+ · disoftin.com — "Anatomía de un ataque de smishing: Desglosando el fraude del
+   'Abono de Cuenta'" (jul-2026). Variante Colombia, yu76[.]online.
+ · Twoko Research — "Malicious SMS Campaigns in Chile". Contexto de CaaS de
+   smishing operado desde habla china con impacto en Chile. NO es esta campaña.
+ · Subtel — Resolución Exenta 1319 (05-06-2026), régimen de los prefijos 600/809.
+ · urlscan.io — escaneos públicos de wq24[.]online, ty125[.]online y del
+   histórico de la plataforma. La captura 03 procede de un escaneo público.
+ · CSIRT Nacional (csirt.gob.cl) — revisado; sin alerta previa de esta cadena.
+
+ Las cifras y afirmaciones de terceros se reportan como tales; no fueron
+ verificadas de forma independiente por Intellroom.
+
+================================================================================
+ El receptor del SMS es la parte perjudicada y su identidad NO se publica.
+ Ninguna organización cliente de Intellroom está involucrada en esta campaña.
+ Intellroom Threat Intelligence · intellroom.com · 2026-09-05 · TLP:CLEAR
+================================================================================
