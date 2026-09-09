@@ -1,0 +1,77 @@
+================================================================================
+  EVIDENCIA TECNICA -- Phishing Banco Itau (CSIRT ACF26-01184)
+  Recolectada: 2026-09-09 13:31:35 UTC  |  TLP:CLEAR  |  Intellroom CTI
+  Metodo: OSINT pasivo + peticiones HTTP sin ejecucion de JavaScript.
+  NO se envio ningun dato a la infraestructura del atacante.
+================================================================================
+
+== 1. RESOLUCION DNS ==========================================================
+-- vipmovingcrew[.]com (sitio de tercero, comprometido)
+A  : 173.236.244.221 
+NS : ns1.dreamhost.com. ns3.dreamhost.com. ns2.dreamhost.com. 
+
+-- creditoitauenlineaplus...sbs (dominio del atacante)
+A  : 172.67.195.154 104.21.41.231 
+NS : savanna.ns.cloudflare.com. harvey.ns.cloudflare.com. 
+
+== 2. REGISTRO DE DOMINIO (WHOIS) =============================================
+-- vipmovingcrew[.]com
+   Updated Date: 2025-11-07T18:43:16Z
+   Creation Date: 2025-11-07T18:43:13Z
+   Registrar: DreamHost, LLC
+Updated Date: 2025-11-07T18:43:16.00Z
+   -> ~10 meses de antiguedad, registrador y hosting legitimos (DreamHost).
+
+-- creditoitauenlineaplus...sbs
+Creation Date: 2026-09-03T18:11:55.0Z
+Registrar: NameSilo, LLC
+Creation Date: 2026-09-03T07:00:00Z
+   -> 5 dias entre el registro y la alerta del CSIRT: infraestructura desechable.
+
+== 3. CERTIFICADO TLS DEL DOMINIO DEL ATACANTE ================================
+issuer=C=US, O=Google Trust Services, CN=WE1
+subject=CN=creditoitauenlineaplusf340021badc5f856e608a3af039f6[.]sbs
+notBefore=Sep  3 17:28:03 2026 GMT
+notAfter=Dec  2 18:25:35 2026 GMT
+   -> Emisor Google Trust Services = certificado automatico de Cloudflare.
+      notBefore fija el levantamiento de la infraestructura.
+
+== 4. ESTADO OBSERVADO DE LA CADENA ===========================================
+raiz del sitio comprometido       : HTTP %{http_code}
+redirector /activacion/cuenta-test: HTTP %{http_code}
+pagina falsa .sbs (ruta del IOC)  : HTTP %{http_code}
+raiz del dominio .sbs             : HTTP %{http_code}
+
+   LECTURA: la pagina final ya cayo, el REDIRECTOR sigue en pie. El activo
+   persistente del atacante es el acceso al sitio de terceros, no el dominio.
+
+== 5. CONTENIDO DEL REDIRECTOR (literal) ======================================
+<meta http-equiv='Refresh' content='0; URL=hxxps[:]//creditoitauenlineaplusf340021badc5f856e608a3af039f6[.]sbs/'>
+   -> HTML de una sola linea: meta refresh a 0 segundos. Sin JavaScript.
+
+== 6. CABECERAS DEL REDIRECTOR ================================================
+content-type: text/html; charset=UTF-8
+server: Apache
+
+== 7. SONDEO DE RUTAS DEL SITIO COMPROMETIDO ===================================
+  /activacion/                HTTP %{http_code}
+  /activacion/cuenta-test/    HTTP %{http_code}
+  /wp-login.php               HTTP %{http_code}
+  /activacion/index.php       HTTP %{http_code}
+
+   -> /activacion/ da 404 pero /activacion/cuenta-test/ da 200: no hay listado
+      de directorio y la ruta es especifica. El nombre "cuenta-test" sugiere
+      una ruta de PRUEBA del operador; pueden coexistir otras no publicadas.
+
+== 8. SEGUNDO USO DEL MISMO SITIO COMPROMETIDO =================================
+La raiz sirve spam SEO inyectado (casinos y adulto, en indonesio) junto al
+contenido original en espanol (<title>Bienvenidos</title>). Muestra literal:
+     slot gacor gampang menang 
+     link slot gacor 
+     slot qris gacor 
+     situs slot pulsa 
+     login mposun 
+     bokep ngentod memek jembut 
+
+   -> El sitio esta tomado por al menos DOS operaciones distintas. Patron de
+      acceso comprometido revendido o alquilado.

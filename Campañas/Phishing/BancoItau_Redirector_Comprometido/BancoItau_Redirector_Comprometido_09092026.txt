@@ -1,0 +1,201 @@
+================================================================================
+  FICHA CTI -- Phishing Banco Itau Chile con redirector en sitio comprometido
+  Intellroom CTI  |  2026-09-09  |  TLP:CLEAR
+  Origen: CSIRT Nacional de Chile, alerta ACF26-01184 (2026-09-08 14:14 UTC)
+  Verificacion y clasificacion: Intellroom, 2026-09-09
+================================================================================
+
+1. RESUMEN
+--------------------------------------------------------------------------------
+Campana de robo de credenciales que suplanta a Banco Itau Chile. La victima no
+llega directo a la pagina falsa: primero pasa por el sitio web de una empresa
+sin relacion con el fraude, que los atacantes tienen comprometido y usan como
+trampolin.
+
+Lo que distingue a esta campana no es la pagina falsa -- es de kit y ya cayo --
+sino la ESTRUCTURA de la cadena:
+
+  * El primer salto vive en un dominio legitimo y con reputacion, de casi un ano
+    de antiguedad. Un filtro que puntua por reputacion de dominio lo deja pasar.
+  * El segundo salto es desechable: dominio registrado cinco dias antes, detras
+    de Cloudflare, quemado en una semana.
+
+Al verificarla el 09-09-2026, la pagina falsa ya estaba caida y el REDIRECTOR
+seguia en pie. Esa asimetria es el hallazgo operativo de la ficha y define la
+respuesta: el activo persistente del atacante no es el dominio quemado, es el
+ACCESO al sitio de terceros -- desde ahi reapunta el enlace a una pagina nueva
+en segundos, sin cambiar el link que ya repartio.
+
+  Analisis por OSINT pasivo y peticiones HTTP sin ejecucion de JavaScript.
+  NO se envio ningun dato a la infraestructura del atacante.
+
+2. CADENA DEL ATAQUE
+--------------------------------------------------------------------------------
+  [1] SENUELO -- no observado directamente
+      Mensaje de "activacion de cuenta" con la marca del banco, por SMS o correo.
+      Se infiere del nombre de la ruta (/activacion/) y del patron de la familia.
+      La alerta del CSIRT no publica el vector de entrega.
+
+  [2] PRIMER SALTO -- sitio de un tercero, comprometido
+      hxxps://vipmovingcrew[.]com/activacion/cuenta-test/
+      Dominio real, ajeno al fraude, con reputacion e historia. Aqui el atacante
+      solo deja un archivo: un HTML de UNA linea, sin JavaScript.
+
+          <meta http-equiv='Refresh' content='0; URL=hxxps[:]//credito...sbs/'>
+
+      Refresco a cero segundos: la persona no alcanza a ver esta pagina.
+      Servidor Apache. Al 09-09-2026 responde HTTP 200 -- sigue operativo.
+
+  [3] SEGUNDO SALTO -- dominio del atacante, tras Cloudflare
+      hxxps://creditoitauenlineaplusf340021badc5f856e608a3af039f6[.]sbs
+        /1788876727/wps/portal/newiol/web/login/p/z1/
+      Registrado el 03-09-2026 en NameSilo. Certificado emitido el mismo dia por
+      Google Trust Services (automatico de Cloudflare). El nombre concatena la
+      marca, palabras de contexto bancario y un hexadecimal largo: forma tipica
+      de dominio generado en volumen por un kit.
+
+  [4] PAGINA FALSA -- login clonado del banco
+      La ruta /wps/portal/newiol/web/login/p/z1/ NO es decorativa: replica la
+      estructura real del portal IBM WebSphere que usa la banca. Quien mire la
+      URL con cierto criterio reconoce una ruta "correcta" y baja la guardia.
+      Ese es el detalle de oficio del kit.
+      Al 09-09-2026: HTTP 404 en la ruta, 302 en la raiz -- infraestructura caida
+      o rotada.
+
+  [5] IMPACTO -- credenciales de banca en linea en manos del actor.
+      No verificado por Intellroom: no se interactuo con el formulario.
+
+3. LINEA DE TIEMPO
+--------------------------------------------------------------------------------
+  2025-11-07 18:43 UTC  vipmovingcrew[.]com registrado en DreamHost (sitio real)
+  fecha indeterminada   el sitio es comprometido; se le inyecta spam SEO
+  2026-09-03 07:00 UTC  se registra el dominio .sbs en NameSilo
+  2026-09-03 17:28 UTC  se emite su certificado TLS (Google Trust Services)
+  2026-09-03 -> 09-08   ventana de campana activa
+  2026-09-08 14:14 UTC  el CSIRT Chile publica la alerta ACF26-01184
+  2026-09-09 13:31 UTC  verificacion Intellroom: .sbs CAIDO, redirector VIVO
+
+  Del registro del dominio a la alerta publica: 5 dias. Del registro a la caida
+  de la pagina: 6. La ventana util de un bloqueo por dominio es de dias.
+
+4. INDICADORES
+--------------------------------------------------------------------------------
+  DOMINIO DEL ATACANTE -- bloquear
+    creditoitauenlineaplusf340021badc5f856e608a3af039f6[.]sbs
+
+  URL DEL REDIRECTOR -- bloquear la ruta, NO el dominio
+    hxxps://vipmovingcrew[.]com/activacion/cuenta-test/
+
+  URL DE LA PAGINA FALSA -- referencia
+    hxxps://creditoitauenlineaplusf340021badc5f856e608a3af039f6[.]sbs
+      /1788876727/wps/portal/newiol/web/login/p/z1/
+
+  DOMINIO DE TERCERO COMPROMETIDO -- vigilar, no bloquear
+    vipmovingcrew[.]com
+
+  Detalle con la accion por linea en: iocs.txt
+  Mediciones crudas y reproducibles en: 03_evidencia_tecnica.txt
+
+5. LO QUE NO ES UN IOC
+--------------------------------------------------------------------------------
+Esta seccion existe porque publicar estos valores como indicadores causa mas
+dano que la campana misma.
+
+  * 104.21.41.231 y 172.67.195.154 -- IP de borde de CLOUDFLARE.
+    No son del atacante. Son direcciones compartidas por millones de sitios.
+    Bloquearlas rompe una porcion enorme de internet para la organizacion.
+    El propio CSIRT lo declara en el cuerpo de la alerta: no publica IP de
+    Google, Cloudflare, Microsoft, Digital Ocean u Oracle por falsos positivos.
+
+  * 173.236.244.221 -- hosting COMPARTIDO de DreamHost.
+    Otros sitios sin relacion alguna resuelven a esa direccion.
+
+  * vipmovingcrew[.]com como dominio completo -- es una VICTIMA, no el actor.
+    Empresa real con dominio de casi un ano en un registrador legitimo. Bloquear
+    el dominio castiga a su dueno y ademas envejece mal: en cuanto limpie el
+    sitio, el bloqueo solo estorba. La accion correcta es la ruta especifica.
+
+  * itau.cl y los dominios reales del banco -- la marca suplantada es la parte
+    danada. Se anota para que nadie los sume a una blocklist por asociacion.
+
+6. MITRE ATT&CK
+--------------------------------------------------------------------------------
+  T1583.001  Acquire Infrastructure: Domains
+             Registro del .sbs cinco dias antes de la campana.
+  T1584.004  Compromise Infrastructure: Server
+             Uso del sitio de un tercero como primer salto. Tecnica central.
+  T1608.005  Stage Capabilities: Link Target
+             El meta refresh depositado en el sitio comprometido.
+  T1665      Hide Infrastructure
+             Cloudflare delante del origen: oculta el servidor real.
+  T1656      Impersonation
+             Uso no autorizado de la imagen corporativa y logos del banco.
+  T1566.002  Phishing: Spearphishing Link            (entrega -- inferida)
+  T1598.003  Phishing for Information: Spearphishing Link
+             Captura de credenciales en el formulario clonado.
+
+7. RECOMENDACIONES
+--------------------------------------------------------------------------------
+  Inmediato
+    1. Bloquear el dominio .sbs completo en DNS, proxy y filtro de URL.
+    2. Bloquear la URL exacta del redirector -- la ruta, nunca el dominio.
+    3. Buscar hacia atras en los registros de proxy y DNS quien visito
+       cualquiera de los dos en los ultimos 15 dias. Un bloqueo puesto hoy no
+       dice nada sobre quien ya entrego sus credenciales.
+    4. Si hay visitas: forzar cambio de clave de banca en linea de esa persona
+       y avisar al banco. La contencion de red no revierte una credencial
+       entregada.
+
+  Estructural -- lo que si sobrevive a esta campana
+    5. Implementar la deteccion por COMPORTAMIENTO de iocs.txt. Una lista de
+       dominios caduca en dias; el patron "respuesta cuyo cuerpo entero es un
+       meta refresh a otro dominio" sobrevive a la rotacion.
+    6. Vigilancia de abuso de marca sobre "itau" fuera de los dominios del
+       banco, y sobre TLD baratos con certificado del mismo dia.
+    7. El vector de entrega no consta. Si aparece el SMS o el correo original,
+       ese remitente es el indicador que mas vale y no esta en esta ficha.
+
+  Para el dueno del sitio comprometido -- si alguien tiene el contacto
+    8. No basta con borrar /activacion/cuenta-test/. El sitio sirve ademas spam
+       SEO de otra operacion: hay al menos dos actores dentro. Corresponde
+       auditoria completa, rotacion de credenciales y revision de tareas
+       programadas y archivos subidos.
+
+8. VALORACION
+--------------------------------------------------------------------------------
+  Sofisticacion tecnica ......... BAJA
+      Un meta refresh de una linea y un kit de login clonado. Nada novedoso.
+
+  Eficacia del diseno ........... ALTA
+      El primer salto tiene reputacion legitima: evade filtros que puntuan por
+      antiguedad y reputacion de dominio. La ruta copiada del portal real del
+      banco resiste una mirada atenta a la URL.
+
+  Persistencia .................. MEDIA-ALTA
+      La pagina cayo en seis dias; el acceso al sitio comprometido sigue. La
+      campana se relanza sin registrar nada nuevo.
+
+  Alcance ....................... El CSIRT publico SEIS alertas de campana
+      fraudulenta contra marcas chilenas el mismo 08-09-2026 (Itau, MetLife,
+      Lider, Outlook, mas GTD Telsur y Poder Judicial en la misma semana). El
+      hilo comun no es un actor identificado: es el metodo -- alojar el fraude
+      en infraestructura de terceros legitimos (Firebase, Azure Storage,
+      MediaFire, acortadores y sitios comprometidos en Chile, Mexico y
+      Argentina). Eso hace que la lista de bloqueo sea el control equivocado
+      para casi todas.
+
+9. LIMITACIONES DECLARADAS
+--------------------------------------------------------------------------------
+  * No se observo el mensaje senuelo. El vector de entrega es inferencia.
+  * No se interactuo con el formulario: que capture credenciales se deduce del
+    diseno y del rotulo del CSIRT, no de haberlo ejercido.
+  * La pagina falsa ya no responde: no se pudo analizar su codigo ni identificar
+    el kit ni el destino de la exfiltracion.
+  * No hay atribucion de actor. No se afirma ninguna.
+  * "cuenta-test" sugiere una ruta de prueba del operador. Pueden existir otras
+    rutas activas en el mismo sitio que esta ficha no cubre.
+
+================================================================================
+  Intellroom -- Cyber Threat Intelligence  |  https://intellroom.com
+  Fuente primaria: https://csirt.gob.cl/alertas/acf26-01184/
+================================================================================
