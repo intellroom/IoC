@@ -7,10 +7,14 @@
 
 1. RESUMEN
 --------------------------------------------------------------------------------
-Campana de robo de credenciales que suplanta a Banco Itau Chile. La victima no
-llega directo a la pagina falsa: primero pasa por el sitio web de una empresa
-sin relacion con el fraude, que los atacantes tienen comprometido y usan como
-trampolin.
+Campana de robo de credenciales que suplanta el portal de BANCA EMPRESAS de
+Banco Itau Chile. La victima no llega directo a la pagina falsa: primero pasa
+por el sitio web de una empresa sin relacion con el fraude, que los atacantes
+tienen comprometido y usan como trampolin.
+
+El objetivo son cuentas de EMPRESA, no de personas naturales -- confirmado en la
+captura oficial del CSIRT. Eso sube el impacto: una cuenta de banca empresa mueve
+nomina, pagos a proveedores y montos que una cuenta personal no.
 
 Lo que distingue a esta campana no es la pagina falsa -- es de kit y ya cayo --
 sino la ESTRUCTURA de la cadena:
@@ -54,16 +58,37 @@ en segundos, sin cambiar el link que ya repartio.
       marca, palabras de contexto bancario y un hexadecimal largo: forma tipica
       de dominio generado en volumen por un kit.
 
-  [4] PAGINA FALSA -- login clonado del banco
+  [4] PAGINA FALSA -- login clonado de ITAU EMPRESAS
       La ruta /wps/portal/newiol/web/login/p/z1/ NO es decorativa: replica la
       estructura real del portal IBM WebSphere que usa la banca. Quien mire la
       URL con cierto criterio reconoce una ruta "correcta" y baja la guardia.
       Ese es el detalle de oficio del kit.
+
+      La captura del CSIRT (04_evidencia_csirt_pagina_falsa.png) confirma tres
+      cosas que antes eran inferencia:
+
+        a) NO es banca personal, es BANCA EMPRESAS. El titulo de la pestana dice
+           "Acceso a Itau Empresas", el encabezado "Te damos la bienvenida al
+           portal Itau Empresas" y hay un interruptor "Quiero acceder con RUT
+           empresa". Cambia el perfil de la victima y sube el impacto: una
+           cuenta empresa mueve nomina, pagos a proveedores y montos mayores.
+
+        b) Los campos capturados son "Ingresa tu RUT personal" e "Ingresa tu
+           clave internet". Se leen en el formulario; no se dedujeron.
+
+        c) El kit CLONO tambien el panel "Recomendaciones de seguridad" del
+           banco real, que en la propia pagina falsa aconseja: "Nuestros emails
+           no contienen links ni botones" y "Nunca entregues tus claves de
+           seguridad a terceros". La pagina que roba la clave muestra el consejo
+           que la desmiente -- es copia literal del sitio legitimo, no descuido.
+
       Al 09-09-2026: HTTP 404 en la ruta, 302 en la raiz -- infraestructura caida
       o rotada.
 
-  [5] IMPACTO -- credenciales de banca en linea en manos del actor.
-      No verificado por Intellroom: no se interactuo con el formulario.
+  [5] IMPACTO -- credenciales de banca EMPRESAS en manos del actor.
+      El formulario que las pide esta a la vista en la captura del CSIRT; lo que
+      NO se verifico es el envio: Intellroom no interactuo con el formulario ni
+      analizo el destino de la exfiltracion.
 
 3. LINEA DE TIEMPO
 --------------------------------------------------------------------------------
@@ -95,6 +120,9 @@ en segundos, sin cambiar el link que ya repartio.
 
   Detalle con la accion por linea en: iocs.txt
   Mediciones crudas y reproducibles en: 03_evidencia_tecnica.txt
+  Captura oficial de la pagina falsa: 04_evidencia_csirt_pagina_falsa.png
+    (publicada por el CSIRT en la alerta; navegacion privada, formulario vacio,
+     sin datos personales de ninguna persona)
 
 5. LO QUE NO ES UN IOC
 --------------------------------------------------------------------------------
@@ -169,7 +197,12 @@ dano que la campana misma.
   Eficacia del diseno ........... ALTA
       El primer salto tiene reputacion legitima: evade filtros que puntuan por
       antiguedad y reputacion de dominio. La ruta copiada del portal real del
-      banco resiste una mirada atenta a la URL.
+      banco resiste una mirada atenta a la URL, y el clon de la pagina incluye
+      hasta el panel de consejos de seguridad del sitio original.
+
+  Impacto potencial ............. ALTO
+      El objetivo es banca EMPRESAS, no personal. Una credencial de ese portal
+      da acceso a movimientos de mayor monto y a operaciones de pago masivo.
 
   Persistencia .................. MEDIA-ALTA
       La pagina cayo en seis dias; el acceso al sitio comprometido sigue. La
@@ -187,10 +220,13 @@ dano que la campana misma.
 9. LIMITACIONES DECLARADAS
 --------------------------------------------------------------------------------
   * No se observo el mensaje senuelo. El vector de entrega es inferencia.
-  * No se interactuo con el formulario: que capture credenciales se deduce del
-    diseno y del rotulo del CSIRT, no de haberlo ejercido.
+  * Los campos del formulario (RUT y clave internet) se LEEN en la captura del
+    CSIRT. Lo que no se verifico es el envio: no se interactuo con el formulario
+    ni se analizo adonde viajan los datos.
   * La pagina falsa ya no responde: no se pudo analizar su codigo ni identificar
     el kit ni el destino de la exfiltracion.
+  * La captura es del CSIRT, tomada el 08-09-2026. Intellroom no la reprodujo:
+    al momento del analisis la pagina ya estaba caida.
   * No hay atribucion de actor. No se afirma ninguna.
   * "cuenta-test" sugiere una ruta de prueba del operador. Pueden existir otras
     rutas activas en el mismo sitio que esta ficha no cubre.

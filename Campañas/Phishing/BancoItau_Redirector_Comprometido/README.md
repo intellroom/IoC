@@ -3,9 +3,13 @@
 **Fecha:** 2026-09-09 · **TLP:CLEAR** · Intellroom CTI
 **Fuente primaria:** CSIRT Nacional de Chile — alerta [`ACF26-01184`](https://csirt.gob.cl/alertas/acf26-01184/) (2026-09-08)
 
-Campaña de robo de credenciales que suplanta a **Banco Itaú Chile**. La víctima no llega
-directo a la página falsa: primero pasa por el sitio web de una empresa sin relación con el
-fraude, que los atacantes tienen comprometido y usan como trampolín.
+Campaña de robo de credenciales que suplanta el portal de **banca EMPRESAS de Banco Itaú
+Chile**. La víctima no llega directo a la página falsa: primero pasa por el sitio web de una
+empresa sin relación con el fraude, que los atacantes tienen comprometido y usan como trampolín.
+
+**El objetivo son cuentas de empresa, no de personas naturales** — confirmado en la captura
+oficial del CSIRT. Eso sube el impacto: una cuenta de banca empresa mueve nómina, pagos a
+proveedores y montos que una cuenta personal no.
 
 Lo que distingue a esta campaña no es la página falsa — es de kit y ya cayó — sino la
 **estructura** de la cadena:
@@ -54,6 +58,27 @@ criterio reconoce una ruta "correcta" y baja la guardia.
 ## Modelo del Diamante
 
 ![Modelo del Diamante](02_modelo_diamante.png)
+
+## La página falsa — captura oficial del CSIRT
+
+![Página falsa de Itaú Empresas](04_evidencia_csirt_pagina_falsa.png)
+
+*Publicada por el CSIRT en la alerta. Navegación privada, formulario vacío, sin datos
+personales de ninguna persona. Intellroom no la reprodujo: al momento del análisis la página
+ya estaba caída.*
+
+Tres cosas que la captura confirma y que antes eran inferencia:
+
+1. **Es banca EMPRESAS.** Título de pestaña *"Acceso a Itaú Empresas"*, encabezado *"Te damos
+   la bienvenida al portal Itaú Empresas"* e interruptor *"Quiero acceder con RUT empresa"*.
+2. **Los campos que captura:** *"Ingresa tu RUT personal"* y *"Ingresa tu clave internet"*.
+   Se leen en el formulario, no se dedujeron.
+3. **El kit clonó también el panel "Recomendaciones de seguridad" del banco real** — que en la
+   propia página falsa aconseja *"Nuestros emails no contienen links ni botones"* y *"Nunca
+   entregues tus claves de seguridad a terceros"*. La página que roba la clave muestra el
+   consejo que la desmiente. Es copia literal del sitio legítimo, no descuido del atacante.
+
+Y en la barra de direcciones se ve el dominio completo: es el mismo `.sbs` del indicador.
 
 ---
 
@@ -111,7 +136,8 @@ sí escalan.
 | [`iocs.txt`](iocs.txt) | Indicadores para bloqueo rápido, **con la acción en cada línea**: `[BLOQUEAR]` · `[VIGILAR]` · `[NO ES IOC]` · `[DETECTAR]` |
 | [`BancoItau_Redirector_Comprometido_09092026.txt`](BancoItau_Redirector_Comprometido_09092026.txt) | Ficha completa: resumen, cadena, línea de tiempo, **"lo que NO es un IOC"**, MITRE ATT&CK, recomendaciones, valoración y limitaciones |
 | [`03_evidencia_tecnica.txt`](03_evidencia_tecnica.txt) | Mediciones crudas y reproducibles: DNS, WHOIS, certificado TLS, códigos HTTP, contenido literal del redirector |
-| `01_flujo_ataque.png` · `02_modelo_diamante.png` | Diagramas |
+| `01_flujo_ataque.png` · `02_modelo_diamante.png` | Diagramas de Intellroom |
+| `04_evidencia_csirt_pagina_falsa.png` | Captura de la página falsa **publicada por el CSIRT** en la alerta ([fuente](https://csirt.gob.cl/alertas/acf26-01184/)) |
 
 **Todos los indicadores van defanged.** Al aplicarlos: reemplazar `[.]` → `.` y `hxxp` → `http`.
 
