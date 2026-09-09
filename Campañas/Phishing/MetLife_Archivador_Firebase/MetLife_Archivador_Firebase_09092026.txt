@@ -1,0 +1,210 @@
+================================================================================
+  FICHA CTI -- "MetLife | Archivador": aplicacion de cartera de seguros
+                alojada en Firebase, con la marca usada sin autorizacion
+  Intellroom CTI  |  2026-09-09  |  TLP:CLEAR
+  Origen: CSIRT Nacional de Chile, alerta ACF26-01185 (2026-09-08 14:18 UTC)
+  Verificacion y ampliacion: Intellroom, 2026-09-09
+================================================================================
+
+1. RESUMEN
+--------------------------------------------------------------------------------
+El CSIRT publico esta alerta como "Campana Fraudulenta" con un solo indicador:
+un sitio en Firebase que suplanta a MetLife. Al examinarlo aparecio algo que la
+alerta no alcanza a decir y que cambia la respuesta.
+
+No es un clon de un portal publico para robar la clave de un cliente. Es una
+APLICACION DE GESTION DE CARTERA de seguros, funcional y bien construida:
+
+  * roles reales (lector / editor / admin) via Firebase custom claims;
+  * validacion de datos con tipos declarados y operaciones en lote acotadas;
+  * captura de documentos con la CAMARA del telefono y zonas de recorte;
+  * buscador "por poliza o nombre" sobre un archivo de registros;
+  * modulos versionados -- la cadena de version es "?v=20260908-grupos", o sea
+    se seguia desarrollando el MISMO dia en que el CSIRT emitio la alerta.
+
+Y el pie del formulario de acceso dice, textual: "Acceso autorizado para
+administradores METLIFE". El publico objetivo no son clientes: es personal.
+
+Dos diferencias operativas con la campana hermana de Itau (ACF26-01184), del
+mismo dia:
+
+  * La de Itau ya habia caido al analizarla. ESTA SIGUE VIVA (HTTP 200).
+  * Alla lo expuesto era una credencial de banca. Aqui es el expediente completo
+    de una cartera de clientes.
+
+  Analisis por OSINT pasivo sobre ficheros estaticos publicos del sitio, SIN
+  ejecutar JavaScript, SIN autenticarse y SIN enviar ningun dato. La base de
+  datos NO se consulto -- decision deliberada, ver seccion 6.
+
+2. QUE ES ESTO REALMENTE -- dos lecturas, y la distincion importa
+--------------------------------------------------------------------------------
+El CSIRT lo clasifico como campana fraudulenta. Lo observado admite dos lecturas
+y esta ficha no elige por conveniencia: se declaran las dos con su evidencia.
+
+  (A) HERRAMIENTA DE UN AGENTE O EQUIPO COMERCIAL, con la marca usada sin
+      autorizacion.  -- lo que mas se parece a lo observado.
+      A favor: nadie invierte en un esquema de campos de negocio tan especifico
+      (suma asegurada, prima excedente, medio, vendida, estatus), en tipos
+      declarados, en roles con custom claims y en un modo "development" con
+      configuracion demo, solo para robar una contrasena. Eso es software que
+      alguien usa para trabajar.
+
+  (B) PHISHING DIRIGIDO a personal de MetLife para que vuelque su cartera.
+      A favor: el uso no autorizado de marca y logo, el hosting gratuito, y que
+      el pie invoque autoridad ("Acceso autorizado para administradores").
+
+  LO QUE NO CAMBIA EN NINGUNA DE LAS DOS: hay datos personales de clientes de
+  seguros -- nombre, telefono, correo, RFC, CURP, lugar de trabajo, poliza,
+  suma asegurada y prima -- en un proyecto Firebase de un tercero, bajo una
+  marca que se usa sin permiso. Si (A) es cierta, el problema no es menor: es
+  una fuga de cartera hacia infraestructura no autorizada, y probablemente
+  ninguno de esos titulares lo sabe.
+
+  Por eso la accion que cierra el caso NO es la blocklist: es el reporte de
+  abuso a Google y el aviso a MetLife. Ver seccion 7.
+
+3. HALLAZGO: EL ESQUEMA ES MEXICANO, NO CHILENO
+--------------------------------------------------------------------------------
+La aplicacion pide RFC (Registro Federal de Contribuyentes) y CURP (Clave Unica
+de Registro de Poblacion). Los dos son identificadores de MEXICO.
+
+NO existe campo RUT.
+
+La alerta la emite el CSIRT de Chile, pero el producto esta disenado para el
+mercado mexicano. Puede significar que la campana se detecto alcanzando a
+victimas chilenas, o que el organismo la publico por suplantar a una aseguradora
+que tambien opera en Chile. Con lo observado no se puede decidir, y no se dice.
+
+  Consecuencia practica: si esto llega a una organizacion chilena, el formulario
+  pidiendo CURP y RFC es en si mismo la senal de alarma -- son campos que no
+  tienen ningun sentido en un tramite chileno.
+
+4. INFRAESTRUCTURA
+--------------------------------------------------------------------------------
+  Sitio        metlife-6d467[.]web[.]app          (Firebase Hosting, Google)
+  authDomain   metlife-6d467[.]firebaseapp[.]com
+  Base datos   metlife-6d467-default-rtdb[.]firebaseio[.]com
+  Almacen      metlife-6d467[.]firebasestorage[.]app
+  projectId    metlife-6d467
+  appId        1:1046142840408:web:da5dbd6c954496ae7fe42d
+
+  El sufijo hexadecimal "-6d467" lo autogenera Firebase al crear el proyecto.
+  El patron <marca>-<hex>.web.app es la firma de una marca suplantada sobre
+  hosting gratuito de Google, y sirve como regla de deteccion (ver iocs.txt).
+
+  El certificado TLS NO permite fechar el levantamiento: su subject es
+  "CN=web.app", el wildcard compartido de la plataforma. A diferencia del caso
+  Itau, donde el certificado propio del dominio marcaba la hora exacta.
+
+5. DEFECTO EN EL PROPIO CODIGO DEL SITIO
+--------------------------------------------------------------------------------
+  En /modules/access.js:
+
+      metlifeState.role = token ? token.claims.role : 'admin';
+
+  La AUSENCIA de token concede el rol MAXIMO ('admin', con permiso de borrado).
+  Es fail-open: lo contrario de lo que debe hacer un control de acceso.
+
+  Matiz honesto: un control en el navegador es cosmetico de todos modos -- quien
+  decide de verdad son las reglas del servidor de Firebase, que NO se
+  comprobaron (seccion 6). Pero escrito asi delata que el permiso no se penso
+  como frontera de seguridad, y si las reglas del servidor son igual de laxas,
+  la base queda al alcance de cualquiera.
+
+  Se anota como observacion tecnica, no como via de acceso: Intellroom no la
+  ejercio ni la va a ejercer.
+
+6. LO QUE NO SE HIZO, Y POR QUE
+--------------------------------------------------------------------------------
+  NO se consulto la base de datos ni el almacen de imagenes, aunque
+  tecnicamente se podia comprobar si estan abiertos.
+
+  Si lo estan, contienen datos personales de terceros -- clientes de seguros que
+  no consintieron nada -- y leerlos seria exactamente el dano que este analisis
+  existe para prevenir. Que sea tecnicamente posible no lo vuelve legitimo.
+
+  Corresponde que eso lo verifique Google al recibir el reporte de abuso, o el
+  CSIRT en el ejercicio de sus facultades. No un tercero.
+
+  Tampoco se creo cuenta, ni se autentico, ni se envio ningun formulario, ni se
+  subio ninguna imagen.
+
+7. RECOMENDACIONES
+--------------------------------------------------------------------------------
+  Inmediato -- contencion local
+    1. Bloquear el subdominio completo y los tres dominios del proyecto
+       (iocs.txt). BLOQUEAR EL SUBDOMINIO, NUNCA "web.app": el dominio padre es
+       Firebase Hosting y tumbarlo rompe millones de sitios legitimos.
+    2. Buscar hacia atras en proxy y DNS quien visito el sitio o hablo con
+       *-default-rtdb.firebaseio.com sin ser un proyecto propio.
+
+  Lo que de verdad cierra el caso -- y no es un bloqueo
+    3. REPORTE DE ABUSO A GOOGLE con el projectId (metlife-6d467). Baja el
+       proyecto entero; una blocklist local solo protege a quien la aplica.
+    4. AVISO A METLIFE: es su marca, y si (A) es cierta puede tratarse de gente
+       de su propia red comercial operando fuera de sus sistemas. Solo la
+       aseguradora puede distinguir eso, y solo ella puede avisar a los
+       titulares afectados.
+    5. Trasladar el hallazgo al CSIRT: la alerta original clasifica esto como
+       campana fraudulenta y lo observado sugiere que el alcance es mayor --
+       una cartera de clientes, no una credencial.
+
+  Estructural
+    6. Vigilancia de abuso de marca sobre *.web.app y *.firebaseapp.com. El
+       hosting gratuito de Google es hoy uno de los alojamientos preferidos de
+       estas campanas: en la misma tanda del CSIRT aparece tambien Azure
+       Storage con el mismo papel.
+    7. Regla de deteccion sobre formularios que piden CURP o RFC fuera de un
+       contexto mexicano.
+
+8. VALORACION
+--------------------------------------------------------------------------------
+  Sofisticacion tecnica ......... MEDIA-ALTA para el genero
+      Roles con custom claims, tipos declarados, operaciones en lote validadas y
+      captura de documentos. Muy por encima de un kit de phishing.
+
+  Persistencia .................. ALTA
+      Vivo al momento del analisis y en desarrollo activo (version fechada el
+      mismo dia de la alerta).
+
+  Exposicion de datos ........... ALTA, y es lo que define el caso
+      15 campos por registro, incluidos dos identificadores nacionales (RFC,
+      CURP) y documentos digitalizados por camara.
+
+  Certeza sobre la intencion .... MEDIA
+      Que hay abuso de marca y datos personales en infraestructura no autorizada
+      es observable. Si el operador es un estafador o un agente de la propia red
+      comercial NO se puede determinar con lo observado, y no se afirma.
+
+9. MITRE ATT&CK
+--------------------------------------------------------------------------------
+  T1583.006  Acquire Infrastructure: Web Services
+             Firebase Hosting gratuito de Google como alojamiento.
+  T1656      Impersonation
+             Marca, logo y lema de MetLife usados sin autorizacion.
+  T1585      Establish Accounts
+             Proyecto Firebase creado a nombre de la marca suplantada.
+  T1598      Phishing for Information
+             Captura de datos de terceros mediante un formulario con la
+             apariencia de un sistema corporativo.
+
+  Se omiten a proposito tecnicas de entrega y ejecucion: el vector por el que
+  alguien llega a este sitio NO consta en la alerta ni se observo.
+
+10. LIMITACIONES DECLARADAS
+--------------------------------------------------------------------------------
+  * No consta el vector de entrega. El CSIRT no lo publica y no se observo.
+  * No se determino si el operador es un actor malicioso o un agente comercial
+    con la marca usada indebidamente. Se declaran ambas lecturas (seccion 2).
+  * No se consulto la base de datos ni el almacen: no consta si estan abiertos
+    ni si contienen registros reales de personas (seccion 6).
+  * No se verifico si el sitio alcanzo a titulares chilenos. El esquema de datos
+    es mexicano; la alerta es chilena. La contradiccion queda anotada, no
+    resuelta.
+  * El certificado TLS es el wildcard de la plataforma: no permite fechar el
+    levantamiento del sitio.
+
+================================================================================
+  Intellroom -- Cyber Threat Intelligence  |  https://intellroom.com
+  Fuente primaria: https://csirt.gob.cl/alertas/acf26-01185/
+================================================================================

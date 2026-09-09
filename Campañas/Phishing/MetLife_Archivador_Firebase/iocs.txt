@@ -1,0 +1,66 @@
+================================================================================
+  IOCs PARA BLOQUEO -- "MetLife | Archivador" alojado en Firebase
+  Fecha: 2026-09-09  |  TLP:CLEAR  |  Fuente: Intellroom CTI (intellroom/IoC)
+  Origen del dato: CSIRT Nacional de Chile, alerta ACF26-01185 (2026-09-08),
+                   verificado y ampliado por Intellroom el 2026-09-09.
+  Defanged: reemplazar  [.] -> .  y  hxxp -> http  al aplicar.
+  Ficha completa: MetLife_Archivador_Firebase_09092026.txt
+================================================================================
+
+[BLOQUEAR -- verificado]  DNS / proxy / URL filter   (SUBDOMINIO exacto)
+metlife-6d467[.]web[.]app
+    # Sitio publicado por el CSIRT. VIVO al 09-09-2026 (HTTP 200) -- a diferencia
+    # de la campana hermana de Itau, esta sigue en pie.
+
+[BLOQUEAR -- resto del proyecto Firebase, mismo operador]
+metlife-6d467[.]firebaseapp[.]com                      # authDomain
+metlife-6d467-default-rtdb[.]firebaseio[.]com          # base de datos
+metlife-6d467[.]firebasestorage[.]app                  # almacen de imagenes
+    # Salen del propio /firebase-config.js del sitio. Bloquear solo el .web.app
+    # deja el resto del proyecto alcanzable.
+
+[NO ES IOC -- NO bloquear jamas]  plataforma compartida
+web[.]app        firebaseapp[.]com        firebaseio[.]com
+firebasestorage[.]app                     *[.]gstatic[.]com
+199.36.158.100
+    # Son Firebase Hosting de GOOGLE. Bloquear el dominio padre o esa IP tumba
+    # millones de sitios legitimos, y gstatic sirve librerias de medio internet.
+    # BLOQUEAR SIEMPRE EL SUBDOMINIO COMPLETO, NUNCA EL PADRE.
+    # El propio CSIRT declara en la alerta que no publica IP de Google,
+    # Cloudflare, Microsoft, Digital Ocean u Oracle por falsos positivos.
+
+metlife.cl   metlife.com   metlife.com.mx    # marca LEGITIMA suplantada
+    # La aseguradora es la parte danada. Se anota para que nadie sume sus
+    # dominios a una blocklist por asociacion con esta alerta.
+
+[REPORTAR -- accion que si cierra el caso, mas util que el bloqueo]
+projectId          metlife-6d467
+messagingSenderId  1046142840408
+appId              1:1046142840408:web:da5dbd6c954496ae7fe42d
+apiKey             AIzaSyAz7PQdl-6H_rjnwIlHviunulsoA_gMyNM
+    # Identifican el proyecto ante Google. Un reporte de abuso lo baja entero;
+    # una blocklist local solo protege a quien la aplica.
+    # La apiKey de Firebase es PUBLICA por diseno (viaja al navegador del
+    # visitante): publicarla no expone un secreto, identifica el proyecto.
+    # Reporte de abuso: https://support.google.com/firebase (Report abuse)
+    # Corresponde ademas avisar a MetLife: es su marca la que se esta usando.
+
+[DETECTAR -- comportamiento, no valor de red]
+Marca:  subdominio de *.web.app o *.firebaseapp.com que contenga el nombre de
+        una marca conocida y NO pertenezca a esa marca. Firebase autogenera el
+        sufijo hexadecimal (-6d467), asi que el patron <marca>-<hex> es la firma.
+
+Datos:  formulario que pide CURP y/o RFC en un sitio que NO es del emisor. Son
+        identificadores mexicanos; en un contexto chileno estan fuera de lugar.
+
+Fuga:   trafico saliente de la organizacion hacia *-default-rtdb.firebaseio.com
+        que no corresponda a un proyecto propio. Es el canal por donde saldrian
+        los datos capturados.
+
+NOTA -- ESTA CAMPANA NO ES COMO LA DE ITAU, y la respuesta cambia:
+No es un clon de un portal publico para robar la clave de un cliente. Es una
+APLICACION DE GESTION DE CARTERA de seguros, con roles, validacion de datos y
+captura de documentos por camara, dirigida a "administradores METLIFE". Lo que
+esta en juego no es una credencial suelta: es el expediente completo de los
+clientes de una cartera (nombre, telefono, correo, RFC, CURP, lugar de trabajo,
+poliza, suma asegurada y prima). Ver la ficha, seccion "QUE ES ESTO REALMENTE".
