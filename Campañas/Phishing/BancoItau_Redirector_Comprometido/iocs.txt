@@ -1,0 +1,68 @@
+================================================================================
+  IOCs PARA BLOQUEO -- Phishing Banco Itau Chile (redirector en sitio comprometido)
+  Fecha: 2026-09-09  |  TLP:CLEAR  |  Fuente: Intellroom CTI (intellroom/IoC)
+  Origen del dato: CSIRT Nacional de Chile, alerta ACF26-01184 (2026-09-08),
+                   verificado y clasificado por Intellroom el 2026-09-09.
+  Defanged: reemplazar  [.] -> .  y  hxxp -> http  al aplicar.
+  Ficha completa: BancoItau_Redirector_Comprometido_09092026.txt
+================================================================================
+
+[BLOQUEAR -- verificado]  DNS / proxy / URL filter / EDR   (bloquear por DOMINIO)
+creditoitauenlineaplusf340021badc5f856e608a3af039f6[.]sbs
+    # Dominio del atacante. Registrado 03-09-2026 (NameSilo), 5 dias antes de la
+    # alerta. Sin ningun uso legitimo: no hay colateral posible al bloquearlo.
+    # Al 09-09-2026 ya responde 404/302 -- se bloquea igual: el bloqueo tambien
+    # sirve como deteccion retrospectiva de quien lo visito.
+
+[BLOQUEAR -- URL exacta, NO el dominio]
+hxxps://vipmovingcrew[.]com/activacion/cuenta-test/
+    # Redirector. Al 09-09-2026 SIGUE VIVO (HTTP 200) sirviendo un meta refresh.
+    # Se bloquea la RUTA, nunca el dominio -> ver seccion VIGILAR.
+
+[VIGILAR -- NO bloquear ciegamente]  sitio de un tercero, comprometido
+vipmovingcrew[.]com
+    # Dominio LEGITIMO de un tercero (registrado 07-11-2025, DreamHost), tomado
+    # por atacantes. No es infraestructura del actor: es una victima mas.
+    # Bloquear el dominio completo castiga a su dueno y se vuelve obsoleto en
+    # cuanto limpie el sitio. Bloquear la RUTA especifica y vigilar el resto.
+    # OJO: el mismo sitio sirve ademas spam SEO inyectado de otra operacion
+    # -> hay al menos dos actores dentro. Vigilar por rutas nuevas.
+
+[NO ES IOC -- NO bloquear jamas]  infraestructura compartida y marca suplantada
+104.21.41.231    172.67.195.154     # IP de borde de Cloudflare (compartidas)
+173.236.244.221                     # hosting compartido de DreamHost
+    # Bloquear cualquiera de estas tumba a miles de terceros sin relacion.
+    # El propio CSIRT lo declara en la alerta: no publica IP de Google,
+    # Cloudflare, Microsoft, Digital Ocean u Oracle por falsos positivos.
+
+itau.cl    itau[.]cl                # marca LEGITIMA suplantada = la victima
+    # El dominio real del banco NO es un indicador. Aparece aqui solo para que
+    # nadie lo agregue a una blocklist por asociacion con esta alerta.
+
+[DETECTAR -- comportamiento, no valor de red]
+Proxy/SWG: respuesta HTTP cuyo cuerpo completo es un <meta http-equiv="Refresh">
+           que apunta a un dominio distinto al solicitado
+           -> patron de redirector en sitio comprometido, independiente del dominio.
+
+Marca:     dominio que contiene "itau" y NO termina en itau.cl / itau.com.br
+           (brand-abuse watch). El de esta campana usa el patron
+           <marca><palabras><hex-largo>.<tld-barato>.
+
+Ruta:      peticion a /wps/portal/newiol/web/login/ hacia un host que NO sea del
+           banco. El kit copia la ruta real del portal IBM WebSphere de la banca
+           para que la URL "se vea correcta" -> la ruta legitima en un host
+           ajeno es la senal.
+
+TLD:       registro reciente en .sbs con certificado de Google Trust Services
+           emitido el mismo dia (firma de dominio desechable tras Cloudflare).
+
+NOTA OPERATIVA -- por que bloquear solo el .sbs no cierra esto:
+La pagina final ya cayo y el redirector sigue de pie. El atacante conserva el
+acceso al sitio comprometido y puede reapuntar el meta refresh a un dominio
+nuevo en segundos, sin tocar el enlace que ya repartio por SMS o correo.
+El activo persistente es el ACCESO, no el dominio quemado.
+
+NOTA -- la ruta publicada puede no ser la de produccion:
+La ruta se llama "cuenta-test". /activacion/ devuelve 404, asi que no hay listado
+de directorio: pueden coexistir otras rutas activas con nombre distinto en el
+mismo sitio. La deteccion por comportamiento (arriba) cubre lo que la lista no ve.
