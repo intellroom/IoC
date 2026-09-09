@@ -1,0 +1,85 @@
+================================================================================
+  EVIDENCIA TECNICA -- MetLife "Archivador" en Firebase (CSIRT ACF26-01185)
+  Recolectada: 2026-09-09 14:19:03 UTC  |  TLP:CLEAR  |  Intellroom CTI
+  Metodo: OSINT pasivo. Se descargaron ficheros estaticos publicos del sitio
+  (HTML y JS) SIN ejecutar JavaScript, SIN autenticarse y SIN enviar dato alguno.
+  LIMITE AUTOIMPUESTO: no se consulto la base de datos Firebase. Ver seccion 7.
+================================================================================
+
+== 1. RESOLUCION Y ALOJAMIENTO ================================================
+A     : 199.36.158.100 
+        -> 199.36.158.100 = Firebase Hosting (Google). IP COMPARTIDA por
+           millones de sitios .web.app: NO es un indicador.
+
+== 2. CERTIFICADO TLS =========================================================
+issuer=C=US, O=Google Trust Services, CN=WR4
+subject=CN=web.app
+notBefore=Jul 20 14:59:55 2026 GMT
+notAfter=Oct 18 14:59:54 2026 GMT
+        -> subject CN=web.app: es el certificado WILDCARD de la plataforma.
+           A diferencia del caso Itau, aqui el certificado NO permite fechar
+           el levantamiento del sitio: es compartido por todo Firebase.
+
+== 3. ESTADO OBSERVADO ========================================================
+raiz del sitio: HTTP %{http_code} · %{size_download} bytes
+        -> VIVO al momento de la recoleccion (a diferencia de ACF26-01184,
+           cuya pagina ya habia caido). Campana ACTIVA.
+
+== 4. TITULO Y NATURALEZA DEL SITIO ===========================================
+        <title>MetLife | Archivador</title>
+        Pie del formulario de acceso: "Acceso autorizado para administradores
+        METLIFE"  -> el publico objetivo NO son clientes, es personal.
+
+== 5. ARQUITECTURA (ficheros JS publicos del propio sitio) =====================
+        SDK: firebase-app / firebase-auth / firebase-database 10.14.1
+        Modulos propios, con cadena de version "?v=20260908-grupos":
+          firebase-config.js · app-state.js · field-schema.js
+          operations.js · access.js · contracts.js · archive-core.js
+        -> La cadena de version lleva la fecha 2026-09-08, el MISMO dia de la
+           alerta: el sitio se seguia desarrollando en ese momento.
+
+== 6. PROYECTO FIREBASE (de /firebase-config.js, fichero publico) ==============
+        projectId       : metlife-6d467
+        authDomain      : metlife-6d467[.]firebaseapp[.]com
+        databaseURL     : hxxps[:]//metlife-6d467-default-rtdb[.]firebaseio[.]com
+        storageBucket   : metlife-6d467[.]firebasestorage[.]app
+        messagingSenderId: 1046142840408
+        appId           : 1:1046142840408:web:da5dbd6c954496ae7fe42d
+        -> Identifican el proyecto de Google para un REPORTE DE ABUSO.
+           La apiKey de Firebase es publica por diseno (viaja al navegador):
+           publicarla no expone un secreto, identifica el proyecto.
+
+== 7. LO QUE NO SE HIZO, Y POR QUE ============================================
+        NO se consulto hxxps[:]//metlife-6d467-default-rtdb[.]firebaseio[.]com
+        aunque tecnicamente se podia comprobar si esta abierta. Si lo esta,
+        contiene datos personales de terceros y leerlos seria exactamente el
+        dano que este analisis existe para prevenir. Corresponde reportarlo a
+        Google y al CSIRT, no mirarlo.
+        Tampoco se creo cuenta, ni se autentico, ni se envio ningun formulario.
+
+== 8. ESQUEMA DE DATOS (de /modules/field-schema.js) ===========================
+        Campos que la aplicacion captura por registro:
+          POLIZA · NOMBRE COMPLETO · NEGOCIO · SUMA ASEGURADA · PRIMA ·
+          PRIMA EXCEDENTE · MEDIO · VENDIDA · ESTATUS · TELEFONO · FECHA ·
+          RFC · CURP · CORREO ELECTRONICO · LUGAR DE TRABAJO
+
+        HALLAZGO: RFC y CURP son identificadores fiscales y de poblacion
+        MEXICANOS. NO hay campo RUT. El esquema esta disenado para Mexico,
+        pese a que la alerta la emite el CSIRT de Chile.
+
+== 9. MODELO DE ACCESO (de /modules/access.js) =================================
+        Roles reales via Firebase custom claims: lector / editor / admin
+          lector -> read     editor -> read,write     admin -> read,write,delete
+
+        DEFECTO EN SU PROPIO CODIGO (linea de access.js):
+          metlifeState.role = token ? token.claims.role : 'admin';
+        La AUSENCIA de token concede el rol MAXIMO. Es fail-open. El control
+        de cliente es cosmetico de todos modos -- lo que manda son las reglas
+        del servidor, que no se comprobaron (ver seccion 7) -- pero escrito
+        asi delata que el permiso no se penso como frontera de seguridad.
+
+== 10. CAPTURA POR CAMARA (del HTML) ===========================================
+        <input id="cameraFile" type="file" accept="image/*" capture="environment">
+        mas controles de "zonas de escaneo" y recorte (cropLeft, etc.).
+        -> La aplicacion digitaliza documentos con la camara trasera del
+           telefono. Las imagenes irian al storageBucket de la seccion 6.
