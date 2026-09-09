@@ -39,6 +39,14 @@ itau.cl    itau[.]cl                # marca LEGITIMA suplantada = la victima
     # El dominio real del banco NO es un indicador. Aparece aqui solo para que
     # nadie lo agregue a una blocklist por asociacion con esta alerta.
 
+PERFIL DE LA VICTIMA -- para dimensionar la respuesta:
+El portal suplantado es el de BANCA EMPRESAS ("Acceso a Itau Empresas", con
+interruptor "Quiero acceder con RUT empresa"), no el de banca personal. Si en
+los registros aparece una visita, el usuario afectado probablemente opera cuentas
+con capacidad de pago masivo y nomina -> tratarlo con esa urgencia, no como una
+credencial personal. Verificado en la captura oficial del CSIRT
+(04_evidencia_csirt_pagina_falsa.png). Campos capturados: RUT y clave internet.
+
 [DETECTAR -- comportamiento, no valor de red]
 Proxy/SWG: respuesta HTTP cuyo cuerpo completo es un <meta http-equiv="Refresh">
            que apunta a un dominio distinto al solicitado
