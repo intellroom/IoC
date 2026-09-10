@@ -1,0 +1,36 @@
+================================================================================
+  IOCs / ACCIONES -- Servidor de staging en bulletproof hosting
+  176.65.148.208 : 8000 / 8080  --  AS51396 Pfcloud UG
+  Fecha: 2026-09-10  |  TLP:CLEAR  |  Fuente: Intellroom CTI (intellroom/IoC)
+  Ficha completa: Pfcloud_OpenDir_Staging_10092026.txt
+  *** El contenido del directorio NO fue observado. NO se atribuye familia. ***
+================================================================================
+
+[BLOQUEAR]  confianza ALTA sobre la infraestructura
+176[.]65[.]148[.]208          # open-dir en python http.server; VPS dedicado en ASN bulletproof
+                              # bloqueo seguro: es VPS, NO hosting compartido de sitios legitimos
+
+[VIGILAR -- NO bloquear ciegamente]  vecindario del mismo /24
+176[.]65[.]148[.]207          # puerto 8000 abierto; mismo patron, sin confirmar contenido
+176[.]65[.]148[.]212          # tag open-dir en Shodan
+176[.]65[.]148[.]216          # tag scanner en Shodan
+176[.]65[.]148[.]0/24         # PF-CLOUD-NET-1 -- bloque completo con abuso sostenido.
+                              # Bloquear el /24 entero es defendible pero es decision de
+                              # apetito de riesgo: puede haber inquilinos no maliciosos.
+AS51396                       # Pfcloud UG -- 2.370 dominios maliciosos historicos (MalwareURL)
+
+[DETECTAR -- alta fidelidad; esto es lo que si sirve]
+Descarga HTTP a IP literal en puerto 8000/8080 sin dominio ni TLS      # patron de loader
+Server: SimpleHTTP/0.6 Python/3.12.x en respuesta HTTP de destino externo
+Salida a AS51396 desde un endpoint corporativo                          # ningun uso legitimo esperado
+User-Agent de curl/wget/certutil/BITS hacia IP:8000 externa
+Listado de directorio (Directory listing for /) recibido desde IP externa
+
+[NO ES IOC -- NO crear reglas sobre esto]
+Python 3.12.3                 # el CPE que reporta Shodan. Es el interprete, no el malware.
+Puerto 8000 / 8080            # puertos de desarrollo legitimos (Django, runserver, proxies).
+                              # Solo son senal EN CONJUNTO con IP literal + sin TLS + open-dir.
+Las 20 CVEs que lista Shodan  # se DERIVAN del CPE de Python, no estan verificadas en el host.
+                              # No sirven como evidencia y no deben ir a un informe.
+45[.]153[.]34[.]187           # staging de la campana Katana, MISMO ASN pero OTRA IP y OTROS
+                              # puertos (13121/13122). Contexto de TTP, NO es esta infraestructura.
