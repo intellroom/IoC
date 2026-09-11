@@ -1,0 +1,27 @@
+{
+  "_nota": "Banner capturado por Shodan. Evidencia cruda del listado de directorio. Ningun archivo fue descargado.",
+  "ip_str": "176.65.148.208",
+  "org": "Pfcloud UG",
+  "asn": "AS51396",
+  "country": "Germany",
+  "hostnames": [
+    "176.65.148.208.ptr.pfcloud.network"
+  ],
+  "tags": [
+    "open-dir"
+  ],
+  "last_update": "2026-09-04T14:08:15.690480",
+  "banner": {
+    "port": 8080,
+    "timestamp": "2026-09-04T14:08:15.690480",
+    "product": "SimpleHTTPServer",
+    "version": "0.6",
+    "data": "HTTP/1.0 200 OK\r\nServer: SimpleHTTP/0.6 Python/3.12.3\r\nDate: Fri, 04 Sep 2026 14:08:15 GMT\r\nContent-type: text/html; charset=utf-8\r\nContent-Length: 1605\r\n\r\n",
+    "http": {
+      "title": "Directory listing for /",
+      "server": "SimpleHTTP/0.6 Python/3.12.3",
+      "status": 200,
+      "html": "<!DOCTYPE HTML>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Directory listing for /</title>\n</head>\n<body>\n<h1>Directory listing for /</h1>\n<hr>\n<ul>\n<li><a href=\".bash_history\">.bash_history</a></li>\n<li><a href=\".bashrc\">.bashrc</a></li>\n<li><a href=\".cache/\">.cache/</a></li>\n<li><a href=\".config/\">.config/</a></li>\n<li><a href=\".lesshst\">.lesshst</a></li>\n<li><a href=\".local/\">.local/</a></li>\n<li><a href=\".msf4/\">.msf4/</a></li>\n<li><a href=\".profile\">.profile</a></li>\n<li><a href=\".ssh/\">.ssh/</a></li>\n<li><a href=\".wget-hsts\">.wget-hsts</a></li>\n<li><a href=\"exec_recipe.log\">exec_recipe.log</a></li>\n<li><a href=\"fgt60f_backup/\">fgt60f_backup/</a></li>\n<li><a href=\"fgt60f_backup.rb\">fgt60f_backup.rb</a></li>\n<li><a href=\"fgt60f_keepalive.rb\">fgt60f_keepalive.rb</a></li>\n<li><a href=\"fgt60f_lan_tunnel.rb\">fgt60f_lan_tunnel.rb</a></li>\n<li><a href=\"fgt60f_sslvpn.rb\">fgt60f_sslvpn.rb</a></li>\n<li><a href=\"fgt60f_sslvpn_policy.rb\">fgt60f_sslvpn_policy.rb</a></li>\n<li><a href=\"fgt60f_sysmgr_key\">fgt60f_sysmgr_key</a></li>\n<li><a href=\"fgt60f_sysmgr_key.pub\">fgt60f_sysmgr_key.pub</a></li>\n<li><a href=\"fgt60f_sysmgr_key_rsa\">fgt60f_sysmgr_key_rsa</a></li>\n<li><a href=\"fgt60f_sysmgr_key_rsa.pub\">fgt60f_sysmgr_key_rsa.pub</a></li>\n<li><a href=\"fgvip-rip.rb\">fgvip-rip.rb</a></li>\n<li><a href=\"fgvip2.rb\">fgvip2.rb</a></li>\n<li><a href=\"fgvipdiag.rb\">fgvipdiag.rb</a></li>\n<li><a href=\"ops-sys.pw\">ops-sys.pw</a></li>\n<li><a href=\"p.exe\">p.exe</a></li>\n<li><a href=\"recipe_-9.log\">recipe_-9.log</a></li>\n<li><a href=\"recipe_1.log\">recipe_1.log</a></li>\n</ul>\n<hr>\n</body>\n</html>\n"
+    }
+  }
+}

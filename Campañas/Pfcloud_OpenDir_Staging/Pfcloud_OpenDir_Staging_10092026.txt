@@ -1,242 +1,290 @@
 ================================================================================
-  SERVIDOR DE STAGING EN BULLETPROOF HOSTING
-  176.65.148.208 : 8000 / 8080  --  AS51396 Pfcloud UG
-  Fecha: 10-09-2026 | TLP: CLEAR
-  Fuentes: RIPE WHOIS, Shodan InternetDB, check-host.net, Hunt.io, Lexfo,
-           deepfield/public-research (Katana), FraudGuard, MalwareURL,
-           Bulletproof Hosting Watch (ai.rud.is)
+  SERVIDOR DE OPERADOR CON KIT CONTRA FORTIGATE 60F
+  176.65.148.208 : 8080  --  AS51396 Pfcloud UG  --  directorio abierto
+  Fecha: 10-09-2026  |  Actualizado: 11-09-2026 (v2)  |  TLP: CLEAR
+  Fuentes: Shodan API (banner del 04-09-2026), RIPE WHOIS, check-host.net,
+           Hunt.io, Lexfo, deepfield/public-research, FraudGuard, MalwareURL,
+           Bulletproof Hosting Watch (ai.rud.is), Rescana, Bitsight, Darktrace
 ================================================================================
+
+CAMBIO EN LA v2  (leer primero)
+--------------------------------------------------------------------------------
+La v1 de esta ficha declaraba: "el contenido del directorio NO fue observado".
+Eso ya no es cierto. Con acceso a la API de Shodan se recupero el banner HTTP
+completo del 04-09-2026, que incluye el cuerpo HTML con el LISTADO DE ARCHIVOS.
+
+El caso cambia de categoria. No es un servidor de staging generico: es el
+DIRECTORIO HOME de un operador ofensivo, expuesto por descuido, con un juego de
+modulos de Metasploit escritos a medida contra un firewall FortiGate 60F.
+
+La v1 no se borra. Se corrige y queda el registro del cambio.
 
 RESUMEN
 --------------------------------------------------------------------------------
 IP recibida por un feed externo como "http://176.65.148.208:8000".
 
-Lo medido: es un VPS en Pfcloud UG (AS51396), el proveedor de bulletproof
-hosting mas activo del set monitoreado en 2026. Shodan lo tiene etiquetado
-como DIRECTORIO ABIERTO servido por el modulo http.server de Python 3.12.3.
-Ese es el patron recurrente y documentado de STAGING DE PAYLOADS: un servidor
-de archivos improvisado, sin TLS, sin dominio y sin autenticacion, del que un
-loader descarga la siguiente etapa.
+Es un VPS en Pfcloud UG (AS51396), el proveedor de bulletproof hosting mas
+activo del set monitoreado en 2026. Shodan lo capturo el 04-09-2026 sirviendo
+un listado de directorio con SimpleHTTP/0.6 de Python 3.12.3 en el puerto 8080.
 
-El servicio NO esta caido: esta VIVO y filtra por IP de origen. Se comprobo
-desde 12 nodos externos en 12 paises; 11 agotan tiempo de espera y 1 conecta.
+El listado tiene 28 entradas y NO es un repositorio de payloads ordenado: es el
+home de un usuario Linux sin sanear (.bashrc, .profile, .cache/, .lesshst,
+.bash_history), con el material de trabajo mezclado.
 
-*** NO SE OBSERVO EL CONTENIDO DEL DIRECTORIO. No hay muestra, no hay hash,
-    no se determina familia de malware y NO se atribuye a ningun actor. ***
+Dentro hay tres cosas que definen el caso:
+
+  1. NUEVE scripts Ruby con prefijo fgt60f_ y fgvip, dirigidos a un FortiGate
+     60F: backup de configuracion, manipulacion de SSL-VPN, tunel a la LAN,
+     persistencia y manejo de Virtual IP.
+  2. CUATRO archivos de clave SSH con nombre "sysmgr" (privada y publica, en
+     dos formatos) y un archivo "ops-sys.pw".
+  3. El directorio .msf4/, que es la configuracion de METASPLOIT FRAMEWORK.
+     Los modulos de Metasploit se escriben en Ruby. Los .rb no son scripts
+     sueltos: son modulos del framework, y los recipe_*.log son la salida de
+     sus corridas.
+
+Ademas hay un directorio fgt60f_backup/, o sea el operador ya tiene guardadas
+configuraciones extraidas, y un binario p.exe para Windows.
+
+*** Los archivos NO se descargaron. Hacerlo seria acceso no autorizado a un
+    sistema ajeno, aunque el sistema sea de un atacante. Lo que se publica es
+    el LISTADO DE NOMBRES que Shodan capturo de forma pasiva y entrego por su
+    API. Ningun contenido de ningun archivo fue leido. ***
 
 Confianza en la naturaleza de la infraestructura: ALTA.
-Confianza en el payload y la atribucion: NULA.
+Confianza en la atribucion a un actor o campana conocida: NULA.
 
 LINEA DE TIEMPO
 --------------------------------------------------------------------------------
-2026-04    Reporte Breakglass: Pfcloud hospeda 67 servidores C2 en una sola subred
-2026-06    Pfcloud domina la actividad observada: 4.379 eventos, 94 IPs unicas
-2026-07    Pfcloud aporta +2.500 eventos de honeypot desde 39 IPs unicas
-2026-08    Pfcloud: 11.483 eventos de honeypot, +37% respecto de la semana previa
-2026-09-10 14:42 UTC  Intellroom mide la IP: 8000 sin respuesta desde 6 origenes,
-           8080 responde a 1 de 12 nodos. Shodan: open-dir + Python 3.12.3.
+2026-01/02  Campana asistida por IA compromete +600 FortiGate en +55 paises.
+            Actor ruso-parlante con motivacion financiera. NO explota CVE:
+            apunta a interfaces de gestion expuestas y credenciales sin MFA.
+            Roba configuraciones con credenciales SSL-VPN y topologia.  [Rescana]
+2026-02-26  CISA emite directiva por CVE-2026-0847 (CVSS 9.8), bypass de
+            autenticacion en SSL-VPN de FortiOS, explotado activamente.
+2026-06     FortiBleed: credenciales de administrador verificadas de +73.000
+            FortiGate expuestos a internet circulando en foros criminales.
+                                                                    [Bitsight]
+2026-08     Pfcloud: 11.483 eventos de honeypot en una semana, +37% semanal.
+2026-09-04  14:08 UTC. Shodan captura el listado del directorio. ES LA EVIDENCIA.
+2026-09-10  14:42 UTC. Intellroom mide: 8000 sin respuesta desde 6 origenes;
+            8080 responde a 1 de 12 nodos externos.
+2026-09-11  Se recupera el banner historico via API. Se reescribe la ficha.
 
 --------------------------------------------------------------------------------
 1. LO QUE **NO** ES UN IOC  (leer antes que las tablas)
 --------------------------------------------------------------------------------
 
+  "fgt60f_backup.rb", "fgt60f_sysmgr_key", "ops-sys.pw"  ->  NO SON FIRMAS DE RED
+
+Son nombres de archivo en el equipo DEL ATACANTE. No van a aparecer nunca en el
+trafico ni en el disco de la victima. Sirven para entender la capacidad del
+operador y para saber QUE BUSCAR en el firewall, no para escribir una regla de
+IDS. Confundir las dos cosas produce una regla que no dispara jamas.
+
   Python 3.12.3   ->  NO ES UN INDICADOR
 
-Es el CPE que reporta Shodan. Identifica el interprete, no el malware. Hay
-millones de hosts legitimos con ese mismo CPE.
-
-  Puerto 8000  /  Puerto 8080   ->  NO SON INDICADORES POR SI SOLOS
-
-Son puertos de desarrollo perfectamente legitimos (Django runserver, proxies,
-paneles internos). Solo constituyen senal EN CONJUNTO con: IP literal sin
-dominio + ausencia de TLS + listado de directorio activo + ASN de reputacion
-conocida.
+Es el CPE que reporta Shodan. Identifica el interprete, no el malware.
 
   LAS 20 CVEs QUE LISTA SHODAN   ->  NO SON EVIDENCIA
 
-Shodan InternetDB las DERIVA del CPE de Python declarado, no las verifica
-contra el host. Incluirlas en un informe como "vulnerabilidades del servidor
-del atacante" es un error de metodo. Se dejan fuera a proposito.
+Shodan InternetDB las DERIVA del CPE de Python, no las verifica contra el host.
+Dos de ellas (CVE-2009-3720 y CVE-2009-2940) son de 2009. Incluirlas como
+"vulnerabilidades del servidor del atacante" es un error de metodo.
 
   45.153.34.187  (campana Katana)   ->  NO ES ESTA INFRAESTRUCTURA
 
-Comparte ASN (AS51396) pero es OTRA IP y OTROS puertos (13121/13122). Sirve
-como contexto de TTP del proveedor, no como atribucion de este caso.
+Comparte ASN (AS51396) pero es otra IP y otros puertos (13121/13122).
 
 --------------------------------------------------------------------------------
-2. INDICADORES DE RED
+2. EL LISTADO COMPLETO  (28 entradas, capturado 2026-09-04 14:08 UTC)
 --------------------------------------------------------------------------------
 
-[Objetivo principal]
-176.65.148.208           IP del servidor de staging
-  rDNS                   176.65.148.208.ptr.pfcloud.network
-  Puerto 8000/tcp        reportado por el feed de origen; sin respuesta al analisis
-  Puerto 8080/tcp        observado abierto por Shodan; responde de forma selectiva
-  Tag Shodan             open-dir  (listado de directorio activo)
-  Software               cpe:/a:python:python:3.12.3  ->  python3 -m http.server
+[Kit contra FortiGate 60F -- 9 modulos Ruby]
+  fgt60f_backup.rb            exfiltracion de la configuracion del firewall
+  fgt60f_backup/              directorio con configuraciones ya extraidas
+  fgt60f_sslvpn.rb            manipulacion del portal SSL-VPN
+  fgt60f_sslvpn_policy.rb     alteracion de politicas de acceso VPN
+  fgt60f_lan_tunnel.rb        PIVOTE hacia la red interna del objetivo
+  fgt60f_keepalive.rb         persistencia: mantiene el acceso vivo
+  fgvip-rip.rb                manipulacion de Virtual IP
+  fgvip2.rb                   idem, segunda version
+  fgvipdiag.rb                diagnostico del estado de los VIP
 
-[Red y propietario]
-inetnum    176.65.148.0 - 176.65.148.255
-netname    PF-CLOUD-NET-1
-org        Pfcloud UG   (registrada en DE, anuncia desde NL)
-origin     AS51396
-abuse      abuse@pfcloud.io
-mnt-by     MNT-ZEXOTEK
-route      176.65.148.0/24
+[Credenciales y claves -- 5 archivos]
+  fgt60f_sysmgr_key           clave SSH privada
+  fgt60f_sysmgr_key.pub       clave publica correspondiente
+  fgt60f_sysmgr_key_rsa       segunda clave privada, formato RSA
+  fgt60f_sysmgr_key_rsa.pub   clave publica del par RSA
+  ops-sys.pw                  archivo de contrasenas de la operacion
 
-[Vecindario del mismo /24 -- VIGILAR, no bloquear ciegamente]
-176.65.148.207    puerto 8000 abierto  (IP contigua, mismo patron)
-176.65.148.212    tag open-dir
-176.65.148.216    tag scanner
-176.65.148.133    anonymous_tracker      (FraudGuard)
-176.65.148.149    anonymous_tracker      (FraudGuard)
-176.65.148.0 / .10 / .51    honeypot_tracker  (FraudGuard)
+[Operacion -- 5 archivos]
+  .msf4/                      configuracion de Metasploit Framework
+  exec_recipe.log             log de ejecucion de recetas automatizadas
+  recipe_1.log                salida de una corrida
+  recipe_-9.log               salida de otra corrida
+  p.exe                       binario Windows
+
+[Home sin sanear -- 9 entradas]
+  .bash_history  .bashrc  .profile  .cache/  .config/  .local/
+  .lesshst  .ssh/  .wget-hsts
+
+Que el home este sin sanear es en si un dato: el operador no monto un servidor
+de entrega, dejo expuesto su propio directorio de trabajo. Eso sugiere descuido
+operativo, no una infraestructura de distribucion planificada.
 
 --------------------------------------------------------------------------------
-3. LA MEDICION QUE DECIDE EL CASO
+3. QUE SIGNIFICA "sysmgr" Y POR QUE ES LO MAS GRAVE DEL LISTADO
+--------------------------------------------------------------------------------
+
+Los cuatro archivos fgt60f_sysmgr_key* son un par de claves SSH, en dos
+formatos, con el nombre de un administrador de sistema.
+
+La lectura mas directa es persistencia por clave publica: se planta la clave
+publica en el administrador del FortiGate y el operador conserva acceso por SSH
+aunque se cambie la contrasena, aunque se parche el equipo y aunque se cierre
+la vulnerabilidad de entrada original.
+
+Esa es la razon por la que, si alguien encuentra este kit apuntando a su equipo,
+cambiar la contrasena del firewall NO cierra el incidente.
+
+*** ADVERTENCIA: lo anterior es la interpretacion mas razonable de un nombre de
+    archivo. NO se abrio ninguno de esos archivos y NO se confirmo su contenido
+    ni su uso. Se declara como hipotesis fundada, no como hecho verificado. ***
+
+--------------------------------------------------------------------------------
+4. LA MEDICION DE ALCANZABILIDAD
 --------------------------------------------------------------------------------
 
 Prueba TCP contra 176.65.148.208:8080 desde 12 nodos de check-host.net
 (reporte permanente: https://check-host.net/check-report/4ae0c372k304)
 
   Chipre, India, Iran, Israel, Japon, Polonia, Suecia, Suiza, Turquia,
-  Ucrania (nodo A), EE.UU.        ->  Connection timed out   (11 de 12)
-
-  Ucrania (nodo B)                ->  Connected en 0,002 s   (1 de 12)
+  Ucrania (nodo A), EE.UU.       ->  Connection timed out   (11 de 12)
+  Ucrania (nodo B)               ->  Connected en 0,002 s   ( 1 de 12)
 
 Dos nodos en LA MISMA CIUDAD (Kiev) dan resultados opuestos. Eso descarta las
-dos explicaciones faciles a la vez:
+dos explicaciones faciles a la vez: no es filtrado geografico y no es un host
+caido. La lectura que queda es una ALLOWLIST POR IP DE ORIGEN.
 
-  - No es filtrado geografico:   dos nodos del mismo pais y ciudad difieren.
-  - No es un host caido:         un nodo si establece la conexion TCP.
+Una latencia de 0,002 s ademas sugiere que ese nodo esta en la misma red o muy
+proximo. Se anota como observacion, no como conclusion.
 
-La lectura que queda es una ALLOWLIST POR IP DE ORIGEN. El servidor esta
-operativo y solo acepta conexiones de direcciones que ya conoce (sus victimas
-infectadas, o el propio operador). Una latencia de 0,002 s ademas sugiere que
-ese nodo esta en la misma red o muy proximo, lo que se anota como observacion
-y no como conclusion.
-
-El puerto 8000, el que traia el feed, no respondio a NINGUNO de los 6 origenes
-probados. Puede estar retirado, movido a 8080, o bajo una allowlist mas
-estrecha. No se determina cual.
+El puerto 8000, el que traia el feed, no respondio a ninguno de los 6 origenes
+probados, y Shodan NUNCA lo ha visto abierto: su historial para esta IP registra
+un solo puerto, el 8080. Puede que el feed lo reportara mal, que el servicio se
+moviera, o que 8000 tenga una allowlist mas estrecha. No se determina cual.
 
 --------------------------------------------------------------------------------
-4. POR QUE ESTO ES STAGING Y NO UN PANEL DE C2
+5. CRUCE CON CAMPANAS CONOCIDAS  (coincidencia de TTP, NO atribucion)
 --------------------------------------------------------------------------------
 
-Un panel de C2 tiene interfaz, autenticacion y suele ir sobre TLS o tras un
-proxy. Lo observado es lo contrario: listado de directorio plano servido por
-el modulo estandar de Python, sin TLS y sin dominio. Ese perfil corresponde a
-T1608.001 (Stage Capabilities: Upload Malware) del ciclo previo a la intrusion.
+El kit encaja con lo descrito para la campana asistida por IA de enero-febrero
+2026, que comprometio mas de 600 FortiGate en mas de 55 paises:
 
-Es un TTP con casos documentados y recientes:
+  Esa campana                          Este kit
+  ---------------------------------    ---------------------------------
+  Roba archivos de configuracion       fgt60f_backup.rb + fgt60f_backup/
+  Extrae credenciales SSL-VPN          fgt60f_sslvpn.rb, ops-sys.pw
+  Organiza lo robado con scripts       recipe_*.log, exec_recipe.log
+  No explota CVE: gestion expuesta     (coherente: no hay exploit en el listado)
 
-  165.154.236.93 (Singapur)   572 archivos en 126 directorios via http.server
-                              en el puerto 8000; carpetas nombradas por CVE,
-                              incluidas CVE-2026-26980 y CVE-2026-42945, mas
-                              una build de AdaptixC2.                 [Hunt.io]
+Coincide tambien con el contexto de FortiBleed (credenciales de +73.000
+FortiGate circulando desde junio de 2026): un operador con ese dataset no
+necesita un exploit, necesita exactamente este tipo de herramientas para
+automatizar el acceso y la persistencia.
 
-  31.58.209.241:8000          13-08-2026. SimpleHTTP de Python, 1.310 archivos
-                              y 1,17 GB en 86 subdirectorios con utilidades
-                              ofensivas y exploits.                   [Hunt.io]
+*** NO SE ATRIBUYE. La coincidencia es de tecnica, no de infraestructura.
+    No hay solapamiento de IP, dominio ni muestra con ninguna campana publica.
+    Pfcloud es un ASN compartido por multiples operadores no relacionados. ***
 
-  Actor irani                 06-03-2026. Open dir con SimpleHTTP en 8888.
-                                                              [ThreatHunter.ai]
-
-Y el proveedor tiene el rol probado en al menos una campana activa:
-
-  Campana Katana (botnet Mirai sobre Android TV, ~30.000 bots). Usa
-  45.153.34.187 en AS51396 / pfcloud.io como SERVIDOR DE STAGING DE RESPALDO
-  cuando el primario (87.121.84.74, AS215925) no responde. Tres patrones de
-  dropper concurrentes, con el operador cambiando de metodo en minutos cuando
-  una descarga falla.                              [deepfield/public-research]
-
-Eso es corroboracion del ROL que Pfcloud cumple en cadenas de entrega. NO es
-atribucion de esta IP a Katana: la campana usa otra direccion y otros puertos.
+Pivote ejecutado en Shodan para buscar otros servidores del mismo operador:
+  http.html:"ops-sys.pw"          -> 1 resultado (solo esta IP)
+  http.html:"fgt60f_sysmgr_key"   -> 1 resultado (solo esta IP)
+No hay otros hosts indexados con este kit. Es una operacion de un solo servidor
+expuesto, o el resto no esta indexado.
 
 --------------------------------------------------------------------------------
-5. CONTEXTO DEL PROVEEDOR  (por que el ASN pesa en este caso)
+6. EL VECINDARIO  (medido con la API, no inferido)
 --------------------------------------------------------------------------------
 
-Pfcloud UG (AS51396) es descrito como el proveedor de bulletproof hosting mas
-activo del conjunto monitoreado en 2026, con tendencia al alza:
+  176.65.148.112   open-dir en puerto 80, sirviendo UN archivo: win.exe
+                   OpenSSH 8.9p1 Ubuntu 3          [BLOQUEAR]
+  176.65.148.142   open-dir + scanner. Puertos 22, 111, 8000, 8800, 9090.
+                   Sirve "mark;id;#.ima" y "srv.log". El nombre del primero
+                   lleva una inyeccion de comandos (;id;#): es el artefacto que
+                   deja un escaneador de vulnerabilidades, no un payload.
+  176.65.148.2     tag scanner. OpenSSH 8.9p1 Ubuntu 3ubuntu0.15.
+  176.65.148.207   puerto 8000 abierto, contenido sin confirmar
+  176.65.148.212   tag open-dir
+  176.65.148.216   tag scanner
 
-  Ago-2026   11.483 eventos de honeypot en una semana, +37% sobre la anterior
-  Jul-2026   +2.500 eventos desde 39 IPs unicas
-  Jun-2026   4.379 eventos desde 94 IPs unicas, +19% semanal
-  Historico  2.370 dominios maliciosos observados en el ASN     [MalwareURL]
-  Abr-2026   67 servidores C2 en una sola subred                [Breakglass]
-
-Se le atribuye "tendencia a desatender el contenido abusivo de sus clientes".
-Se le observo ademas corriendo un framework propio de escaneo en Go ("riptide")
-expuesto por un endpoint de depuracion pprof, y multiples IPs suyas comparten
-la misma huella HASSH de SSH, senal de aprovisionamiento automatizado.
-
-Consecuencia practica: en este ASN la IP individual pesa poco y el bloque pesa
-mucho. Pero el bloqueo del /24 completo sigue siendo una decision de apetito de
-riesgo, no una conclusion tecnica.
+Dato de aprovisionamiento: .2 y .112 corren la MISMA version de OpenSSH
+(8.9p1 Ubuntu). Coincide con lo publicado sobre Pfcloud, donde multiples IPs
+comparten huella HASSH identica por aprovisionamiento automatizado.
 
 --------------------------------------------------------------------------------
-6. MITRE ATT&CK
+7. MITRE ATT&CK
 --------------------------------------------------------------------------------
 
 T1583.003   Acquire Infrastructure: Virtual Private Server
-            VPS contratado en un proveedor que desatiende el abuso.
-
+T1587.001   Develop Capabilities: Malware  (los modulos Ruby a medida)
 T1608.001   Stage Capabilities: Upload Malware
-            Tecnica central de este caso. El directorio abierto ES la etapa.
+T1133       External Remote Services  (el SSL-VPN como via de entrada/salida)
+T1098.004   Account Manipulation: SSH Authorized Keys  (persistencia por clave)
+T1556       Modify Authentication Process
+T1090       Proxy  (a nivel de ASN)
+T1005       Data from Local System  (backup de configuracion del firewall)
 
-T1584       Compromise Infrastructure  (no aplica aqui; se descarta de forma
-            explicita: la IP es un VPS contratado, no un tercero comprometido.
-            Por eso el bloqueo no genera dano colateral.)
-
-T1105       Ingress Tool Transfer
-            Es la tecnica que se veria en el lado de la victima al descargar.
-
-T1090       Proxy  (observado a nivel de ASN, no de esta IP)
-
---------------------------------------------------------------------------------
-7. ACCIONES RECOMENDADAS
---------------------------------------------------------------------------------
-
-1. BLOQUEAR 176.65.148.208 en el perimetro (saliente y entrante).
-   Es seguro: Pfcloud comercializa VPS dedicados, no hosting compartido de
-   sitios legitimos, asi que no se arrastra a terceros inocentes. Esta es
-   justamente la excepcion a la regla de oro del metodo Intellroom.
-
-2. BUSCAR HACIA ATRAS en logs de proxy y firewall cualquier salida hacia
-   176.65.148.0/24 o hacia AS51396. Ninguna organizacion tiene motivo
-   legitimo para hablar con ese ASN. Una sola conexion saliente convierte
-   esto de exposicion potencial en incidente.
-
-3. DETECTAR el patron, no la IP: descarga por HTTP a una direccion IP literal
-   en puerto alto, sin TLS y sin dominio, con respuesta de SimpleHTTP de
-   Python. La IP rota; el patron no.
-
-4. NO usar las CVEs de Shodan como hallazgo. Ver seccion 1.
-
-5. Si se decide bloquear el /24 completo, dejar por escrito que es una
-   decision de riesgo y no un hallazgo tecnico verificado IP por IP.
+T1584 Compromise Infrastructure se descarta de forma explicita: la IP es un VPS
+contratado, no un tercero comprometido. Por eso el bloqueo no genera dano
+colateral.
 
 --------------------------------------------------------------------------------
-8. LO QUE NO SE PUDO VERIFICAR  (declarado, no omitido)
+8. ACCIONES RECOMENDADAS
 --------------------------------------------------------------------------------
 
-- El CONTENIDO del directorio. Nunca se obtuvo un listado. Sin nombres de
-  archivo, sin hashes, sin muestra.
-- La FAMILIA de malware. No se determina y no se especula.
-- El ACTOR. No se atribuye. Pfcloud es un ASN compartido por multiples
-  operadores no relacionados entre si.
-- Si el puerto 8000 sigue en servicio o fue retirado.
-- ThreatFox y URLhaus (abuse.ch) no pudieron consultarse: el primero exige
-  resolver un desafio de navegador y el segundo requiere clave de API desde
-  2025. Queda pendiente corroborar ahi.
-- Esta IP no aparece en ningun dato historico propio de Intellroom
-  (barrido en cero sobre el repositorio CTI completo) ni en las fuentes
-  publicas consultadas para esta ficha.
+SI TIENE UN FORTIGATE EXPUESTO A INTERNET, ESTO ES LO URGENTE:
+
+1. Revisar las claves SSH publicas autorizadas en TODAS las cuentas de
+   administrador del firewall. Cualquiera que el equipo no reconozca se
+   retira. Es el vector de persistencia que este kit sugiere.
+2. Buscar administradores o usuarios con nombre tipo "sysmgr" no creados por
+   el equipo.
+3. Revisar objetos Virtual IP y reglas de port-forward que nadie haya creado.
+4. Revisar politicas de SSL-VPN modificadas sin ticket.
+5. Cerrar la interfaz de gestion a internet y exigir MFA. La campana de 600
+   equipos NO uso ningun CVE: uso gestion expuesta y credenciales sin MFA.
+6. Rotar credenciales de SSL-VPN si el equipo aparece en el dataset FortiBleed.
+
+EN EL PERIMETRO:
+
+7. BLOQUEAR 176.65.148.208 y 176.65.148.112.
+8. BUSCAR HACIA ATRAS en logs de proxy y firewall cualquier salida hacia
+   176.65.148.0/24 o AS51396. Ninguna organizacion tiene motivo legitimo para
+   hablar con ese ASN. Una sola conexion convierte esto de exposicion potencial
+   en incidente.
+9. NO usar las CVEs de Shodan como hallazgo. Ver seccion 1.
+
+--------------------------------------------------------------------------------
+9. LO QUE NO SE PUDO VERIFICAR  (declarado, no omitido)
+--------------------------------------------------------------------------------
+
+- El CONTENIDO de los archivos. Solo se tiene el listado de nombres. No se
+  descargo nada y no se va a descargar.
+- La VICTIMA. No hay ningun identificador de organizacion en el listado. No se
+  sabe de quien es el FortiGate 60F, ni si hay uno o varios.
+- El ACTOR. No se atribuye.
+- Si el acceso al FortiGate sigue activo hoy.
+- El significado exacto de "sysmgr". Ver la advertencia de la seccion 3.
+- Si p.exe es malware, una utilidad o un artefacto de prueba.
+- ThreatFox y URLhaus no pudieron consultarse (CAPTCHA y clave de API).
+- Esta IP no aparece en ningun dato historico propio de Intellroom ni en las
+  fuentes publicas consultadas.
 
 ================================================================================
   Intellroom Threat Intelligence  --  https://intellroom.com
-  Analisis pasivo. No se realizo ninguna interaccion intrusiva con el objetivo:
-  solo consulta WHOIS/DNS, peticiones HTTP estandar y verificacion TCP.
+  Analisis pasivo. No hubo ninguna interaccion intrusiva con el objetivo: solo
+  WHOIS/DNS, peticiones HTTP estandar, verificacion TCP y consulta a la API de
+  Shodan. Ningun archivo del servidor fue descargado ni abierto.
 ================================================================================
