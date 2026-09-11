@@ -5,12 +5,20 @@
   Ficha completa: Pfcloud_OpenDir_Staging_10092026.txt
   *** Actualizacion v2: el contenido del directorio SI se obtuvo (banner Shodan).
       Los archivos NO se descargaron. No se atribuye actor. ***
+  *** Actualizacion v3 (11-09): corroboracion externa de @Yusufcancakiir (X,
+      09-09-2026), que leyo el contenido. Suma CVEs, componente QNAP y foco en
+      documentos financieros. No verificado por Intellroom de primera mano.
+      SIGUE SIN HABER HASH de muestra en ninguna fuente (OTX/ThreatFox/VT/externo). ***
 ================================================================================
 
 [BLOQUEAR]  confianza ALTA
 176[.]65[.]148[.]208          # home del operador expuesto; kit Metasploit anti-FortiGate
                               # VPS dedicado en ASN bulletproof: NO es hosting compartido,
                               # el bloqueo no arrastra terceros legitimos
+                              # HISTORIAL: 176.65.148.208:8808 fue C2 de AsyncRAT
+                              # (ThreatFox 1493619, abr-may 2025, confianza 100%). Uso
+                              # malicioso previo verificado -> refuerza el bloqueo de la IP.
+                              # Es otro puerto/otra epoca; no consta el mismo operador.
 176[.]65[.]148[.]112          # open-dir sirviendo win.exe (payload Windows)
 
 [VIGILAR -- NO bloquear ciegamente]
@@ -24,6 +32,16 @@
                               # es decision de apetito de riesgo, no un hallazgo verificado.
 AS51396                       # Pfcloud UG. 2.370 dominios maliciosos historicos.
 
+[PARCHEAR / PRIORIZAR -- CVEs que el kit explota, segun analisis externo]
+CVE-2018-13379                # FortiOS SSL-VPN path traversal: robo de datos de
+                              # sesion. El kit tiene tooling para esto.
+CVE-2022-40684                # FortiOS/FortiProxy auth bypass. El kit lo usa para
+                              # crear un super_admin con llave SSH del operador.
+                              # CRITICO si hay FortiGate expuesto sin parchear.
+                              # Fuente: @Yusufcancakiir (X, 09-09). No verificado
+                              # por Intellroom. NO son IOC de red: son la prioridad
+                              # de parcheo para quien tenga el equipo.
+
 [DETECTAR -- en el FortiGate, esto es lo que de verdad sirve]
 Clave SSH publica NO reconocida en el admin del FortiGate        # backdoor plantado
 Usuario o admin con nombre tipo "sysmgr" no creado por el equipo
@@ -33,6 +51,13 @@ Politica de SSL-VPN modificada sin ticket asociado
 Tunel o ruta nueva desde el FortiGate hacia la LAN sin justificacion
 Acceso administrativo al firewall desde IP extranjera
 Salida desde el perimetro hacia AS51396                          # ningun uso legitimo
+
+[DETECTAR -- si tiene un NAS QNAP, segun analisis externo]
+Entrada nueva en el crontab del NAS que lance un proceso periodico   # exfil / sniffer
+Proceso de captura de paquetes (sniffer) no instalado por el equipo
+Trafico saliente del NAS concentrado entre las 01:00 y las 06:00     # ventana de exfil
+Script que busca archivos por nombre: facturas, contratos, caja      # robo con foco financiero
+                              # Fuente: @Yusufcancakiir (X, 09-09). No verificado por Intellroom.
 
 [DETECTAR -- en red]
 Descarga HTTP a IP literal en puerto alto, sin TLS ni dominio

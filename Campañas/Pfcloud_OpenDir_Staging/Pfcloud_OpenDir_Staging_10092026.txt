@@ -1,10 +1,12 @@
 ================================================================================
   SERVIDOR DE OPERADOR CON KIT CONTRA FORTIGATE 60F
   176.65.148.208 : 8080  --  AS51396 Pfcloud UG  --  directorio abierto
-  Fecha: 10-09-2026  |  Actualizado: 11-09-2026 (v2)  |  TLP: CLEAR
+  Fecha: 10-09-2026  |  Actualizado: 11-09-2026 (v3)  |  TLP: CLEAR
   Fuentes: Shodan API (banner del 04-09-2026), RIPE WHOIS, check-host.net,
            Hunt.io, Lexfo, deepfield/public-research, FraudGuard, MalwareURL,
-           Bulletproof Hosting Watch (ai.rud.is), Rescana, Bitsight, Darktrace
+           Bulletproof Hosting Watch (ai.rud.is), Rescana, Bitsight, Darktrace,
+           X / @Yusufcancakiir (analisis publico del contenido, 09-09-2026),
+           ThreatFox / abuse.ch (registro 1493619, consultado 11-09-2026)
 ================================================================================
 
 CAMBIO EN LA v2  (leer primero)
@@ -18,6 +20,20 @@ DIRECTORIO HOME de un operador ofensivo, expuesto por descuido, con un juego de
 modulos de Metasploit escritos a medida contra un firewall FortiGate 60F.
 
 La v1 no se borra. Se corrige y queda el registro del cambio.
+
+CAMBIO EN LA v3  (11-09-2026, tarde)
+--------------------------------------------------------------------------------
+Un investigador independiente (Yusuf Can Cakir, @Yusufcancakiir) publico en X
+el 09-09-2026 su propio analisis del MISMO directorio. El accedio a los archivos
+y leyo su contenido; esta ficha solo tenia el listado de nombres de Shodan. Su
+reporte (a) confirma de forma independiente la clasificacion "servidor de
+operador / staging, no C2", (b) precisa los CVE que explota el kit y (c) suma un
+componente QNAP que el listado de nombres no dejaba ver. Se integra en la seccion
+5-bis, atribuido a el y marcado como fuente externa no verificada por Intellroom.
+Su unico IOC publicado es 176.65.148[.]208:8000 -- el mismo puerto que traia el
+feed original, lo que reconcilia el enigma 8000/8080 de la seccion 4.
+IMPORTANTE: ni el ni ninguna fuente publica aporta HASHES de las muestras. El
+nego a publicarlos igual que nosotros. No hay hash de muestra recuperable hoy.
 
 RESUMEN
 --------------------------------------------------------------------------------
@@ -56,6 +72,11 @@ Confianza en la atribucion a un actor o campana conocida: NULA.
 
 LINEA DE TIEMPO
 --------------------------------------------------------------------------------
+2025-04-18  ThreatFox registra 176.65.148.208:8808 como C2 de AsyncRAT
+   a 05-23  (botnet_cc, confianza 100%, reporter DonPasci). Puerto y actividad
+            DISTINTOS a los de esta ficha, misma IP. "Is compromised: False"
+            confirma infra dedicada del atacante, no un tercero hackeado. NO se
+            establece que sea el mismo operador que el kit FortiGate de 2026.
 2026-01/02  Campana asistida por IA compromete +600 FortiGate en +55 paises.
             Actor ruso-parlante con motivacion financiera. NO explota CVE:
             apunta a interfaces de gestion expuestas y credenciales sin MFA.
@@ -67,6 +88,10 @@ LINEA DE TIEMPO
                                                                     [Bitsight]
 2026-08     Pfcloud: 11.483 eventos de honeypot en una semana, +37% semanal.
 2026-09-04  14:08 UTC. Shodan captura el listado del directorio. ES LA EVIDENCIA.
+2026-09-09  18:27 UTC. Yusuf Can Cakir (@Yusufcancakiir) publica en X un
+            analisis del CONTENIDO de los archivos, con acceso directo al
+            directorio en el puerto 8000. Fuente externa, no verificada por
+            Intellroom. Detalle en la seccion 5-bis.
 2026-09-10  14:42 UTC. Intellroom mide: 8000 sin respuesta desde 6 origenes;
             8080 responde a 1 de 12 nodos externos.
 2026-09-11  Se recupera el banner historico via API. Se reescribe la ficha.
@@ -205,6 +230,80 @@ No hay otros hosts indexados con este kit. Es una operacion de un solo servidor
 expuesto, o el resto no esta indexado.
 
 --------------------------------------------------------------------------------
+5-bis. CORROBORACION INDEPENDIENTE  (fuente externa: @Yusufcancakiir, X, 09-09-2026)
+--------------------------------------------------------------------------------
+
+Un investigador independiente recorrio el MISMO directorio y publico su analisis.
+A diferencia de esta ficha, el SI leyo el contenido de los archivos. Lo que sigue
+es su reporte, atribuido a el. Intellroom NO lo verifico de primera mano; se
+incluye porque coincide con lo observado y agrega detalle que el listado de
+nombres no permitia ver.
+
+Lo que CONFIRMA (coincide con nuestra lectura):
+  - La clasificacion: "no es un C2, es un operator/staging box expuesto", con
+    piezas de distintos flujos de intrusion en el mismo lugar. Es, palabra por
+    palabra, la conclusion de esta ficha.
+  - El kit FortiGate: lo describe con creacion de un super_admin nuevo cuya llave
+    SSH controla el operador, y reemplazo de la llave de un administrador
+    existente. Coincide con la lectura de "sysmgr" como persistencia por clave
+    SSH de la seccion 3.
+
+Lo que AGREGA (no visible en el listado de nombres):
+  - CVE que explota el kit, ahora con nombre y numero:
+      CVE-2018-13379   robo de datos de sesion SSL-VPN (path traversal FortiOS)
+      CVE-2022-40684   bypass de autenticacion; el kit lo usa para crear el
+                       super_admin con la llave SSH del operador
+    Esto MATIZA la seccion 5: el kit no se limita a "gestion expuesta", tiene
+    tooling de explotacion de CVE reales. La campana de enero-febrero que se
+    cita ahi es OTRA cosa; este operador si explota vulnerabilidades.
+  - Componente QNAP (no aparecia en el listado, que solo tenia FortiGate + p.exe):
+    scripts que modifican y recargan el crontab del NAS para lanzar de forma
+    periodica un componente de exfiltracion y un sniffer de paquetes crudo. La
+    exfiltracion solo corre entre las 01:00 y las 06:00 -- ventana nocturna para
+    pasar desapercibida.
+  - Robo dirigido a documentos financieros: un script de descubrimiento busca en
+    directorios compartidos y de usuario archivos cuyo nombre contenga terminos
+    como facturas, contratos y documentos de caja. Es robo con foco economico,
+    no exfiltracion masiva.
+  - Movimiento lateral: scripts que toman usuarios de Active Directory ya
+    identificados y prueban un set pequeno de contrasenas contra un controlador
+    de dominio interno, mas herramientas post-compromiso WinRM, WMI, SSH y VPN.
+
+Alcance real del listado (capturas del mismo analista, 09-09-2026):
+  El banner de Shodan (seccion 2) mostraba 28 entradas, centradas en el kit
+  FortiGate. Las capturas del analista muestran un directorio MUCHO mas grande
+  -cientos de entradas- servido al parecer desde /tmp (.X11-unix, .ICE-unix,
+  .font-unix). El operador NO es monotematico. Lo visible (parcial, llega hasta
+  la letra "e"):
+    - VMware ESXi: CVE-2019-5544_CVE-2020-3992-main/, cve5544.py, esxi_brute.log,
+      esxi_pw.txt, esxi.rc  -> fuerza bruta y RCE contra ESXi (CVEs de ESXiArgs).
+    - Android / POS: aionRailSushiPos_1.2.35.apk, aion_apk/, dexctx.py, dexscan.py
+      -> analisis de una app de punto de venta (SushiPos).
+    - Recon a escala: cientos de banner_result.attack.*.json.
+    - ctf_harness.tar.gz, cj_asoka.*, contract.sh, exec*.sh, dd*.sh.
+  No se ve la seccion "f" (donde estarian los fgt60f_*): es el mismo directorio
+  en un estado mas completo, no otro servidor. El FortiGate es UN modulo de un
+  toolbox ofensivo multiplataforma.
+  *** Leido de capturas de pantalla del analista. Parcial y NO verificado por
+      Intellroom. ***
+
+Reconciliacion del puerto (cruza con la seccion 4):
+  Su unico IOC es 176.65.148[.]208:8000, y accedio al directorio por ese puerto.
+  El feed original tambien reportaba 8000. Shodan solo indexo 8080. La lectura
+  mas simple es que el directorio vivia en 8000 (feed + investigador coinciden)
+  y Shodan capturo el servicio en 8080. Que el pudiera leer los archivos el
+  09-09 tambien indica que en esa fecha 8000 estaba accesible desde su punto de
+  observacion, sea porque su IP estaba en la allowlist o porque esta se apreto
+  despues. No se determina cual.
+
+*** SIGUE SIN ATRIBUIRSE. La corroboracion es de dos analistas mirando el mismo
+    servidor expuesto, no de inteligencia sobre el actor. No hay nombre de grupo,
+    ni muestra, ni victima identificada. Y NO hay hash de muestra: el investigador
+    leyo los scripts pero no publico ningun SHA-256 ni MD5. ***
+
+Fuente: https://x.com/Yusufcancakiir/status/2097799171424276983  (09-09-2026)
+
+--------------------------------------------------------------------------------
 6. EL VECINDARIO  (medido con la API, no inferido)
 --------------------------------------------------------------------------------
 
@@ -272,13 +371,23 @@ EN EL PERIMETRO:
 
 - El CONTENIDO de los archivos. Solo se tiene el listado de nombres. No se
   descargo nada y no se va a descargar.
+  (Un investigador externo si leyo el contenido y lo reporto -- seccion 5-bis --
+   pero Intellroom no lo verifico de primera mano, y el tampoco publico hashes.)
+- HASHES de las muestras. No existen en ninguna fuente publica consultada:
+  OTX (0 muestras atadas a la IP), ThreatFox (0), VirusTotal (relacion de
+  archivos bloqueada en el tier gratuito, 0 communicating_files), ni el
+  investigador externo. Recuperarlos exige VT Enterprise, incautacion del
+  servidor o el dispositivo victima.
 - La VICTIMA. No hay ningun identificador de organizacion en el listado. No se
   sabe de quien es el FortiGate 60F, ni si hay uno o varios.
 - El ACTOR. No se atribuye.
 - Si el acceso al FortiGate sigue activo hoy.
 - El significado exacto de "sysmgr". Ver la advertencia de la seccion 3.
 - Si p.exe es malware, una utilidad o un artefacto de prueba.
-- ThreatFox y URLhaus no pudieron consultarse (CAPTCHA y clave de API).
+- ThreatFox SI se consulto (registro 1493619): la misma IP fue C2 de AsyncRAT
+  en el puerto 8808 entre abril y mayo de 2025 (confianza 100%). Es historial de
+  la IP, no de esta operacion, y NO aporta hash de muestra. URLhaus sigue sin
+  consultarse (requiere clave de API).
 - Esta IP no aparece en ningun dato historico propio de Intellroom ni en las
   fuentes publicas consultadas.
 
