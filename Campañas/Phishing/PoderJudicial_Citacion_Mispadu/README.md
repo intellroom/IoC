@@ -24,6 +24,16 @@ físico de C2**, con un tercer nombre de fachada (typosquat de "pdf-access", mis
 "PJud1774PDF"). No es una campaña nueva — esta ficha se amplía en vez de fragmentarse.
 Detalle completo en la sección 11 de [`03_evidencia_tecnica.txt`](03_evidencia_tecnica.txt).
 
+## 🔴 Segunda actualización 2026-09-14: reverse IP lookup — un cuarto dominio y otro pretexto
+
+Buscamos qué más apunta a las dos IP del C2. **`64.202.189.143` es hosting compartido real**
+— 29 dominios ajenos coalojados, sin relación con la campaña. **`64.202.189.173` no**: solo
+2 dominios en total, y los dos son del atacante. El segundo es `kucoins-signin.com` — typosquat
+del exchange de criptomonedas **KuCoin**, con el **mismo certificado TLS exacto** que
+`painel.painelst.com`. El operador reparte al menos dos pretextos (Poder Judicial de Chile +
+exchange cripto) desde el mismo servidor de control. Detalle completo en la sección 12 de
+[`03_evidencia_tecnica.txt`](03_evidencia_tecnica.txt).
+
 ---
 
 ## El hallazgo que cambia la ficha: no es solo "suplantación al PJUD"

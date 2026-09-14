@@ -10,6 +10,8 @@
   Ficha completa: PoderJudicial_Citacion_Mispadu_14092026.txt
   ACTUALIZACION 2026-09-14: se agrego pdf-acess[.]online, mismo operador
   (WHOIS identico) y MISMO servidor de C2 que pjud.online.
+  SEGUNDA ACTUALIZACION 2026-09-14: reverse IP lookup encontro un cuarto
+  dominio, kucoins-signin[.]com (senuelo de exchange cripto, MISMO cert).
 ================================================================================
 
 [BLOQUEAR -- verificado]  DNS / proxy / URL filter / EDR   (dominio senuelo/entrega)
@@ -24,6 +26,13 @@ pdf-acess[.]online
     # handshake sirve CN=painel.painelst.com -- resuelve al MISMO servidor de
     # C2 (64.202.189.173). Mismo panel "Operador - Login", HTML identico.
 
+kucoins-signin[.]com
+    # Agregado 2026-09-14 (reverse IP lookup). Registrado 10-09-2026, mismo
+    # dia que pdf-acess.online pero en OTRO registrador (Gransy/regtons.com).
+    # Handshake TLS sirve el MISMO cert CN=painel.painelst.com. Senuelo de
+    # phishing de exchange cripto (typosquat de kucoin.com), NO judicial --
+    # confirma que el operador reparte varios pretextos desde el mismo C2.
+
 [BLOQUEAR -- verificado]  DNS / proxy / URL filter / EDR   (C2, incluye subdominios)
 painelst[.]com
 remoto.painelst[.]com
@@ -32,11 +41,19 @@ painel.painelst[.]com
     # 41 muestras distintas se comunicaron con remoto.painelst[.]com entre el
     # 02 y el 06-09-2026 (VirusTotal). 2/89 motores ya lo marcan Malware.
 
-[VIGILAR -- NO bloquear por IP directamente]  hosting GoDaddy, posible compartido
-64.202.189.143     # remoto.painelst.com -- PTR generico *.secureserver.net
-64.202.189.173     # painel.painelst.com -- PTR generico *.secureserver.net
-    # No verificado si es IP dedicada al atacante o hosting compartido de
-    # GoDaddy. Bloquear por DOMINIO (arriba), no por estas direcciones.
+[VIGILAR -- NO bloquear por IP]  64.202.189.143 -- CONFIRMADO hosting compartido
+64.202.189.143     # remoto.painelst.com -- reverse IP lookup (2026-09-14):
+    # 29 dominios AJENOS coalojados (beltasoft.com, surplusgarments.in,
+    # hindphysio.com, drxhomehealthcare.com y otros 25+, sin relacion con
+    # la campana). Bloquear esta IP tumba a decenas de terceros inocentes.
+
+[CANDIDATA A BLOQUEO POR IP -- revisado 2026-09-14, ya no es "vigilar" sin mas]
+64.202.189.173     # painel.painelst.com -- reverse IP lookup: SOLO 2
+    # dominios vistos en total (painel.painelst.com + kucoins-signin.com) y
+    # LOS DOS son del atacante. El PTR generico de GoDaddy no es evidencia
+    # de hosting compartido aqui. Bloquear por DOMINIO sigue siendo mas
+    # preciso, pero esta IP no tiene el mismo riesgo de dano colateral
+    # que la .143.
 
 [REFERENCIA -- hunting retrospectivo, ventana 27-29 ago]
 158.94.209.196
