@@ -8,6 +8,8 @@
              any.run/malware-trends/mispadu/ (ver ficha, seccion 4).
   Defanged: reemplazar  [.] -> .  y  hxxp -> http  al aplicar.
   Ficha completa: PoderJudicial_Citacion_Mispadu_14092026.txt
+  ACTUALIZACION 2026-09-14: se agrego pdf-acess[.]online, mismo operador
+  (WHOIS identico) y MISMO servidor de C2 que pjud.online.
 ================================================================================
 
 [BLOQUEAR -- verificado]  DNS / proxy / URL filter / EDR   (dominio senuelo/entrega)
@@ -15,6 +17,12 @@ pjud[.]online
     # Registrado 01-09-2026 (NameSilo), registrante "Lisboa lima" (BR), correo
     # desechable. Sirve el kit de entrega (/h/estagio1.php, /h/modulo.php).
     # Sin ningun uso legitimo.
+
+pdf-acess[.]online
+    # Agregado 2026-09-14. Registrado 10-09-2026, MISMO WHOIS que pjud.online
+    # (registrante, correo, telefono identicos). Sin cert TLS propio: el
+    # handshake sirve CN=painel.painelst.com -- resuelve al MISMO servidor de
+    # C2 (64.202.189.173). Mismo panel "Operador - Login", HTML identico.
 
 [BLOQUEAR -- verificado]  DNS / proxy / URL filter / EDR   (C2, incluye subdominios)
 painelst[.]com
@@ -87,3 +95,8 @@ Mispadu opera como Malware-as-a-Service (grupo Malteiro): el kit se reutiliza
 entre campanas y paises, y el dominio del dia siguiente sera distinto. Lo que
 sobrevive es el PATRON de rutas de backend (arriba) y el comportamiento del
 dropper -- cargarlos como regla de deteccion, no solo la blocklist de dominios.
+
+CONFIRMADO 2026-09-14: pjud.online -> pdf-acess.online en 9 dias, MISMO
+servidor de C2 (64.202.189.143/173, cert CN=painel/remoto.painelst.com).
+Vigilar CUALQUIER dominio nuevo que resuelva a esas IP o sirva esos CN de
+certificado -- es mas confiable que perseguir el nombre del dominio del dia.
