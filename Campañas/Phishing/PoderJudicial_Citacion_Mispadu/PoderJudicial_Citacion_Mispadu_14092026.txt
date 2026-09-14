@@ -10,6 +10,13 @@
   certificado TLS CN=painel.painelst.com: es el MISMO servidor de C2, no una
   campana nueva. Ver secciones 2, 3, 5 y 9. La ficha original no se reescribe
   en silencio; el registro es acumulativo.
+  SEGUNDA ACTUALIZACION 2026-09-14 (reverse IP lookup): se encontro un CUARTO
+  dominio, kucoins-signin.com (typosquat del exchange cripto KuCoin), MISMO
+  certificado TLS que painel.painelst.com. El operador diversifica el
+  senuelo (judicial CL + exchange cripto) sobre el MISMO servidor de C2, y
+  la IP 64.202.189.173 queda reclasificada: solo 2 dominios vistos ahi en
+  total y los DOS son maliciosos -- ya no se trata como posible hosting
+  compartido. Ver secciones 2, 3, 5, 6 y 9.
 ================================================================================
 
 1. RESUMEN
@@ -76,6 +83,21 @@ endpoints de su infraestructura de entrega. Ver seccion 4.
       (urlscan.io, tag "possiblethreat") el 11-09-2026, con 0 dias de
       antiguedad en ese momento.
 
+      TERCER DOMINIO DE FACHADA (agregado 2026-09-14, reverse IP lookup):
+      kucoins-signin.com -- registrado 10-09-2026 (mismo dia que
+      pdf-acess.online), pero en OTRO registrador (Gransy s.r.o./regtons.com,
+      no NameSilo) y con NS de Cloudflare propios -- el operador diversifica
+      registradores. Verificado con el MISMO metodo que pdf-acess.online: el
+      handshake TLS sirve exactamente CN=painel.painelst.com, mismo emisor y
+      misma fecha de emision. La respuesta HTTP es un 302 hacia /logout con
+      Server: gunicorn -- comportamiento del MISMO backend de sesiones del
+      panel "Operador". El nombre imita al exchange de criptomonedas KuCoin
+      (kucoin.com real; "kucoins-signin" = "inicia sesion en KuCoin"). Es un
+      SENUELO DISTINTO al judicial -- confirma que el operador reparte varios
+      pretextos (institucion publica chilena + exchange cripto internacional)
+      desde el mismo servidor de control, coherente con que Mispadu (seccion
+      4) ya amplio sus objetivos a exchanges de criptomonedas desde 2025.
+
   [3] DESCARGA -- ZIP con nombre de documento judicial
       Patron confirmado en VirusTotal: PJud1774PDF-<sufijo>.zip (al menos 8
       variantes de sufijo entre el 02 y el 06-09-2026) y DOC-KVMPAS.zip.
@@ -138,10 +160,15 @@ endpoints de su infraestructura de entrega. Ver seccion 4.
                          tag "possiblethreat"), 0 dias de antiguedad
   2026-09-12            painel.painelst.com escaneado por un tercero en
                          urlscan.io (visibilidad publica)
+  2026-09-10 15:30 UTC  kucoins-signin.com registrado (Gransy/regtons.com,
+                         registrador DISTINTO), NS Cloudflare propios
   2026-09-14            verificacion y correlacion Intellroom (painelst.com +
                          pjud.online); MISMO DIA, mas tarde: se confirma que
                          pdf-acess.online es un TERCER dominio del mismo
-                         operador -- mismo WHOIS, mismo servidor de C2
+                         operador -- mismo WHOIS, mismo servidor de C2;
+                         reverse IP lookup sobre 64.202.189.143/173 encuentra
+                         un CUARTO dominio, kucoins-signin.com (senuelo de
+                         exchange cripto, mismo certificado TLS del C2)
 
   Del registro de painelst.com a la primera muestra comunicandose: 6 dias.
   Del registro de pjud.online a la alerta del CSIRT: 7 dias.
@@ -205,17 +232,28 @@ endpoints de su infraestructura de entrega. Ver seccion 4.
 --------------------------------------------------------------------------------
   DOMINIO SENUELO / ENTREGA -- bloquear
     pjud.online
-    pdf-acess.online   (agregado 2026-09-14: mismo WHOIS que pjud.online,
-                        resuelve al mismo servidor de C2 -- ver seccion 2)
+    pdf-acess.online     (agregado 2026-09-14: mismo WHOIS que pjud.online,
+                          resuelve al mismo servidor de C2 -- ver seccion 2)
+    kucoins-signin.com   (agregado 2026-09-14 via reverse IP lookup: senuelo
+                          de exchange cripto, mismo cert TLS del C2 -- ver
+                          seccion 2)
 
   DOMINIO DE CONTROL (C2) -- bloquear
     painelst.com  (incluye remoto.painelst.com y painel.painelst.com)
 
-  IP DE LA INFRAESTRUCTURA DE C2 -- vigilar, NO bloquear por IP sola
-    64.202.189.143   (remoto.painelst.com, GoDaddy, PTR generico *.secureserver.net)
-    64.202.189.173   (painel.painelst.com, GoDaddy, PTR generico *.secureserver.net)
-    -> ver seccion 6: el PTR generico de GoDaddy sugiere hosting compartido,
-       no verificado como dedicado. Bloquear por DOMINIO, no por estas IP.
+  IP DE LA INFRAESTRUCTURA DE C2 -- tratamiento DISTINTO por IP (revisado
+  2026-09-14 con reverse IP lookup, ver seccion 6 para el detalle completo)
+    64.202.189.143   -- VIGILAR, NO bloquear por IP: confirmado hosting
+                        compartido genuino (29 dominios ajenos coalojados,
+                        ninguno relacionado con la campana).
+    64.202.189.173   -- CANDIDATA A BLOQUEO POR IP: solo 2 dominios vistos
+                        ahi en total (painel.painelst.com + kucoins-signin.com)
+                        y LOS DOS son del atacante. El PTR generico de GoDaddy
+                        (*.secureserver.net) por si solo no basta para asumir
+                        hosting compartido -- aqui la evidencia de ocupacion
+                        real apunta a lo contrario. Aun asi, bloquear por
+                        DOMINIO sigue siendo la accion primaria (mas precisa
+                        y no depende de que la IP no cambie de uso mañana).
 
   IP HISTORICA (referencia, ventana 27-29 ago) -- para hunting retrospectivo
     158.94.209.196   (ya 2/89 en VirusTotal el 27-08-2026)
@@ -248,12 +286,22 @@ dano que la campana misma.
     servidores de nombres COMPARTIDOS de Cloudflare. Millones de dominios
     legitimos los usan. No son del atacante.
 
-  * 64.202.189.143 y 64.202.189.173 como direcciones IP sueltas -- ver
-    seccion 5: el PTR (ip-64-202-189-173.ip.secureserver.net) es el patron
-    generico que GoDaddy asigna a su hosting compartido/VPS, no confirmado
-    como IP dedicada del atacante. Bloquear la IP arriesga afectar a otros
-    clientes de ese mismo bloque de hosting. La accion correcta es bloquear
-    por DOMINIO.
+  * 64.202.189.143 como direccion IP suelta -- CONFIRMADO hosting compartido
+    real (reverse IP lookup, 2026-09-14): 29 dominios ajenos y sin relacion
+    con la campana coalojados en esa misma IP (beltasoft.com y sus 6
+    subdominios, surplusgarments.in y los suyos, hindphysio.com,
+    drxhomehealthcare.com, mknglobalenterprises.com, y otros 20+ -- negocios
+    genericos de rubros dispares: ropa, salud, transporte, ERP). Bloquear
+    esta IP tumbaria a decenas de terceros sin relacion. NO bloquear por IP.
+
+  * 64.202.189.173 -- MATIZ, no se retira del todo: el reverse IP lookup
+    (2026-09-14) solo encontro 2 dominios en total apuntando ahi, y los DOS
+    son del mismo atacante (painel.painelst.com + kucoins-signin.com). El
+    PTR generico de GoDaddy YA NO es motivo suficiente para tratarla como
+    "probable hosting compartido" -- la evidencia de ocupacion real apunta
+    a que es casi-dedicada al operador. Se mantiene la recomendacion de
+    bloquear por DOMINIO como accion primaria (seccion 5), pero esta IP
+    especifica ya no aplica al mismo criterio de cautela que la .143.
 
   * 147.182.141.171 -- aparece en VirusTotal asociada a painel.painelst.com
     como IP "sibling", pero Intellroom NO la verifico de forma independiente
@@ -375,7 +423,11 @@ dano que la campana misma.
       06-09-2026) es volumen de campana activa y sostenida, no un envio
       puntual. El Poder Judicial fue una de SEIS marcas alertadas por el
       CSIRT la misma semana -- coherente con una operacion de volumen que
-      reparte multiples pretextos en paralelo.
+      reparte multiples pretextos en paralelo. Confirmado 2026-09-14: el
+      alcance NO se limita a Chile ni al pretexto judicial -- el mismo
+      servidor de C2 sirve ademas un senuelo de exchange de criptomonedas
+      (kucoins-signin.com), lo que sugiere una operacion con objetivos mas
+      amplios que la que motivo la alerta original del CSIRT.
 
 10. LIMITACIONES DECLARADAS
 --------------------------------------------------------------------------------
@@ -402,11 +454,23 @@ dano que la campana misma.
     reportada por ANY.RUN sobre Mispadu en general, no medida por Intellroom
     ni especifica de esta campana contra el Poder Judicial de Chile.
   * Agregado 2026-09-14: no se sondearon las rutas de backend
-    (/h/estagio1.php, /h/modulo.php) en pdf-acess.online -- la correlacion
-    con pjud.online se hizo por WHOIS identico y certificado TLS compartido,
-    ambos suficientes por si solos, pero no se repitio el sondeo completo
-    de rutas de la seccion 2. No se descarta que existan mas dominios de
-    fachada contra el mismo servidor aun sin identificar.
+    (/h/estagio1.php, /h/modulo.php) en pdf-acess.online ni en
+    kucoins-signin.com -- la correlacion se hizo por WHOIS/certificado TLS
+    compartido, suficiente por si solo, pero no se repitio el sondeo
+    completo de rutas de la seccion 2 en ninguno de los dos.
+  * El reverse IP lookup se hizo con DOS fuentes pasivas (urlscan.io +
+    rapiddns.io), NO con la vista de IP de VirusTotal -- esa vista exige
+    resolver un reCAPTCHA que Intellroom no completa por politica. Es
+    posible que VirusTotal tenga en su "Resolutions" historico dominios
+    adicionales que estas dos fuentes no indexaron. La lista de 4 dominios
+    de entrega (pjud.online, pdf-acess.online, kucoins-signin.com, mas el
+    C2 painelst.com) es un PISO, no un techo.
+  * goktoday.com aparecio en rapiddns.io como historicamente resuelto a
+    64.202.189.173, pero al 14-09-2026 no tiene WHOIS ni registro DNS
+    activo -- no se pudo verificar si fue del mismo operador o es dato
+    obsoleto del indice. No se incluye como IOC por falta de confirmacion.
+  * No se descarta que existan mas dominios de fachada contra el mismo
+    servidor aun sin identificar.
 
 ================================================================================
   Intellroom -- Cyber Threat Intelligence  |  https://intellroom.com

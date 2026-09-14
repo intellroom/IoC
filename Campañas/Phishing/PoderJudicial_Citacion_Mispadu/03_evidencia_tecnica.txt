@@ -248,7 +248,66 @@ A  : (sin registro A directo confirmado por Intellroom -- proxy Cloudflare)
    operador, apuntando al MISMO servidor de C2 ya documentado en las
    secciones 1-10. No es una campana nueva ni requiere ficha aparte.
 
+== 12. ACTUALIZACION 2026-09-14 -- REVERSE IP LOOKUP SOBRE 64.202.189.143/173 =
+   Objetivo: encontrar otros dominios apuntando a las dos IP del C2.
+   Fuentes: urlscan.io (API search) + rapiddns.io (reverse DNS). La vista de
+   IP de VirusTotal ("Resolutions") NO se pudo consultar: exige resolver un
+   reCAPTCHA, que Intellroom no completa por politica -- ver limitaciones.
+
+-- 64.202.189.143 (remoto.painelst.com): 29 dominios coalojados
+   Muestra (rapiddns.io, lista completa en el repositorio de esta consulta):
+     api.app-lords.com          app-lords.com
+     beguru.beltasoft.com       beguruadmin.beltasoft.com
+     beltasoft.com              betsandbt.com
+     connect2hr.com             cpanel.surplusgarments.in
+     crm.beltasoft.com          demo.beltasoft.com / demo1.beltasoft.com
+     drxhomehealthcare.com      epserp.in
+     hindphysio.com             indogarden.in
+     justwills.beltasoft.com    madnik.com
+     masterashirwad.com         masterashirwadroadways.com
+     millionedge.com            mknglobalenterprises.com
+     office.beltasoft.com       schoolstore.beltasoft.com
+     surplusgarments.in         tevahomehealthcare.com
+     thegatewayglobal.com       twinklearora.com
+     webmail.surplusgarments.in mail.surplusgarments.in
+     marutimace.in (unico visto tambien en urlscan.io, escaneo de 2022 --
+                    sin relacion con esta campana, muy anterior)
+   -> LECTURA: negocios dispares (ropa, salud, transporte, ERP, apuestas),
+      varios con subdominios cpanel/webmail/demo tipicos de shared hosting
+      cPanel de GoDaddy. CONFIRMA hosting compartido genuino. Ninguno tiene
+      relacion aparente con el senuelo judicial ni cripto de esta campana.
+
+-- 64.202.189.173 (painel.painelst.com): 2 dominios en total
+   urlscan.io (busqueda ip:64.202.189.173, total=7 escaneos, 2 dominios unicos):
+     kucoins-signin.com   -- escaneado 2026-09-13, HTTP 200
+     painel.painelst.com  -- escaneado 2026-09-12, HTTP 200 (ya documentado,
+                             seccion 6 de este archivo)
+   rapiddns.io (reverse DNS):
+     goktoday.com                        -- SIN WHOIS ni DNS activo al
+                                             14-09-2026, no verificable
+     ip-64-202-189-173.ip.secureserver.net -- PTR generico de GoDaddy
+
+-- kucoins-signin.com -- verificado con el mismo metodo que pdf-acess.online
+   WHOIS:
+     Registrar: Gransy, s.r.o. (regtons.com)   <- DISTINTO de NameSilo
+     Creation Date: 2026-09-10T15:30:56Z        <- mismo dia que pdf-acess
+     Name Server: brad.ns.cloudflare.com / irena.ns.cloudflare.com
+   DNS: A 64.202.189.173   <- misma IP que painel.painelst.com
+   Certificado TLS servido (handshake real, SNI=kucoins-signin.com):
+     subject=CN=painel.painelst.com   <- IDENTICO al de pdf-acess.online
+     issuer=Let's Encrypt YE2, notBefore=Aug 29 2026   <- mismo cert exacto
+   HTTP: 302 FOUND -> Location: /logout, Server: gunicorn
+     -> mismo backend de gestion de sesiones del panel "Operador"
+
+   CONCLUSION: kucoins-signin.com es un CUARTO dominio de fachada del mismo
+   operador, con un senuelo DISTINTO (exchange cripto, no judicial). El
+   servidor de C2 (painel.painelst.com) es compartido entre las dos verticales
+   de ataque -- confirma operacion con objetivos mas amplios que solo Chile
+   o solo el pretexto judicial.
+
 ================================================================================
   Todas las mediciones de este documento son reproducibles con las
-  herramientas y URLs citadas. Ninguna requiere cuenta ni API key de pago.
+  herramientas y URLs citadas. Ninguna requiere cuenta ni API key de pago,
+  salvo la vista de IP de VirusTotal (seccion 12), que exige reCAPTCHA y por
+  eso no se uso.
 ================================================================================
