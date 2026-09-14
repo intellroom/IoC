@@ -1,0 +1,89 @@
+================================================================================
+  IOCs PARA BLOQUEO -- Suplantacion Poder Judicial de Chile -> Mispadu
+  Fecha: 2026-09-14  |  TLP:CLEAR  |  Fuente: Intellroom CTI (intellroom/IoC)
+  Contexto: marca alertada por el CSIRT Nacional de Chile el 2026-09-08 (junto a
+           Itau/MetLife/Lider/Outlook/GTD Telsur), sin IOC publicado para esta.
+  Atribucion: Mispadu (grupo Malteiro / SAMBA SPIDER) -- confianza ALTA por
+             coincidencia de rutas de backend con la firma que documenta
+             any.run/malware-trends/mispadu/ (ver ficha, seccion 4).
+  Defanged: reemplazar  [.] -> .  y  hxxp -> http  al aplicar.
+  Ficha completa: PoderJudicial_Citacion_Mispadu_14092026.txt
+================================================================================
+
+[BLOQUEAR -- verificado]  DNS / proxy / URL filter / EDR   (dominio senuelo/entrega)
+pjud[.]online
+    # Registrado 01-09-2026 (NameSilo), registrante "Lisboa lima" (BR), correo
+    # desechable. Sirve el kit de entrega (/h/estagio1.php, /h/modulo.php).
+    # Sin ningun uso legitimo.
+
+[BLOQUEAR -- verificado]  DNS / proxy / URL filter / EDR   (C2, incluye subdominios)
+painelst[.]com
+remoto.painelst[.]com
+painel.painelst[.]com
+    # Panel "Operador" de control remoto. Registrado 27-08-2026 (Dynadot).
+    # 41 muestras distintas se comunicaron con remoto.painelst[.]com entre el
+    # 02 y el 06-09-2026 (VirusTotal). 2/89 motores ya lo marcan Malware.
+
+[VIGILAR -- NO bloquear por IP directamente]  hosting GoDaddy, posible compartido
+64.202.189.143     # remoto.painelst.com -- PTR generico *.secureserver.net
+64.202.189.173     # painel.painelst.com -- PTR generico *.secureserver.net
+    # No verificado si es IP dedicada al atacante o hosting compartido de
+    # GoDaddy. Bloquear por DOMINIO (arriba), no por estas direcciones.
+
+[REFERENCIA -- hunting retrospectivo, ventana 27-29 ago]
+158.94.209.196
+    # IP anterior de remoto.painelst.com. Ya 2/89 en VirusTotal el 27-08-2026
+    # (posible IP reciclada de otra campana). Util para buscar hacia atras
+    # quien la resolvio en esa ventana.
+
+[BLOQUEAR / DETECTAR -- hash de archivo]  SHA-256
+0308f63951e10230b46ec104fe3c0f3ec122c44761cf73653f127be9d87186b1
+    # PJud1774PDF-XLXM38.zip -- 612 bytes -- 19/65 en VirusTotal.
+    # Unico hash verificado completo por Intellroom de las 41 muestras.
+
+[DETECTAR -- patron de nombre de archivo]
+PJud1774PDF-*.zip
+DOC-KVMPAS.zip
+dhlib.dll
+    # Al menos 8 variantes del primer patron identificadas entre 02 y
+    # 06-09-2026. El "1774" opera como numero de causa falso.
+
+[DETECTAR -- rutas de backend, firma documentada de Mispadu por ANY.RUN]
+/h/estagio1.php
+/h/modulo.php?f=
+/registrar.php?acao=log
+    # Coinciden con la firma que any.run publica para rastrear Mispadu:
+    # url:"/h/modulo.php?f=" or url:"/h/estagio?1.php" or
+    # url:"/registrar.php?dominio=" -- aplicar contra CUALQUIER dominio,
+    # no solo pjud.online. El dominio rota; el patron de ruta no.
+
+[NO ES IOC -- NO bloquear jamas]  marca suplantada e infraestructura compartida
+pjud.cl                              # dominio REAL del Poder Judicial de Chile
+cortney.ns.cloudflare.com    porter.ns.cloudflare.com   # NS de painelst.com
+irma.ns.cloudflare.com       jake.ns.cloudflare.com     # NS de pjud.online
+    # Los NS son compartidos por millones de dominios legitimos en Cloudflare.
+    # pjud.cl es la VICTIMA institucional, no el atacante.
+
+PERFIL DEL MALWARE -- para dimensionar la respuesta:
+No es solo un kit de robo de credenciales por formulario: es un DROPPER con
+evasion activa de sandbox (long-sleeps, detect-debug-environment,
+checks-network-adapters) que instala PERSISTENCIA y hace CREDENTIAL DUMPING
+del sistema operativo, roba cookies de sesion web y credenciales de gestores
+de contrasenas (confirmado en sandbox CAPE + Zenbox via VirusTotal). El perfil
+publico de Mispadu agrega overlays bancarios e interceptacion de OTP -- no
+confirmado en esta muestra especifica, pero es la capacidad de la familia.
+
+[DETECTAR -- comportamiento, no valor de red]
+Sandbox: archivo que hace WMI queries + chequea adaptadores de red + duerme
+         largo (>varios minutos) antes de actuar + detecta entorno de debug
+         -> patron de evasion anti-analisis de esta familia.
+
+Correo/descarga: archivo .zip con nombre que combina "PJud"/"PJUD" + numeros +
+         sufijo alfanumerico aleatorio, ofrecido como documento de una causa.
+
+NOTA OPERATIVA -- por que la lista de dominios no basta:
+La infraestructura de entrega y C2 de esta campana tiene 13-18 dias de vida.
+Mispadu opera como Malware-as-a-Service (grupo Malteiro): el kit se reutiliza
+entre campanas y paises, y el dominio del dia siguiente sera distinto. Lo que
+sobrevive es el PATRON de rutas de backend (arriba) y el comportamiento del
+dropper -- cargarlos como regla de deteccion, no solo la blocklist de dominios.
