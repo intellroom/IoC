@@ -1,0 +1,365 @@
+================================================================================
+  FICHA CTI -- Suplantacion del Poder Judicial de Chile distribuyendo Mispadu
+  Intellroom CTI  |  2026-09-14  |  TLP:CLEAR
+  Contexto: el CSIRT Nacional de Chile publico una alerta de campana fraudulenta
+  contra el Poder Judicial la semana del 08-09-2026, junto a otras cinco marcas
+  (Itau, MetLife, Lider, Outlook, GTD Telsur) -- sin ficha propia hasta ahora.
+  Verificacion, correlacion de infraestructura y atribucion: Intellroom, 2026-09-14
+================================================================================
+
+1. RESUMEN
+--------------------------------------------------------------------------------
+Campana de distribucion de malware que suplanta al PODER JUDICIAL DE CHILE con
+un senuelo tipo "citacion/notificacion judicial". La victima descarga un ZIP
+nombrado como si fuera el documento de una causa ("PJud1774PDF-XXXXXX.zip"); el
+ZIP dropea una DLL (dhlib.dll) que roba credenciales, cookies de sesion web y
+contrasenas guardadas, con tecnicas activas de evasion de sandbox, y reporta a
+un panel de control remoto ("Operador" / "Dispositivo") en portugues brasileno.
+
+No es un kit de phishing sin carga -- es MALWARE con capacidades de troyano
+bancario. 41 muestras distintas (variantes del ZIP y de la DLL) se comunicaron
+con la infraestructura de control entre el 02 y el 06 de septiembre de 2026.
+
+HALLAZGO CENTRAL -- ATRIBUCION CON CONFIANZA ALTA, no solo similitud tematica:
+las rutas de backend que sirve el dominio senuelo (/h/estagio1.php,
+/h/modulo.php?f=..., /registrar.php?acao=log&...) COINCIDEN LITERALMENTE con
+las firmas de trafico que ANY.RUN documenta publicamente para rastrear
+campanas de MISPADU, el troyano bancario LATAM operado por el grupo Malteiro
+(alias SAMBA SPIDER). No es una coincidencia de nombre: es el mismo patron de
+endpoints de su infraestructura de entrega. Ver seccion 4.
+
+  Analisis por OSINT pasivo, peticiones HTTP sin ejecucion de codigo, y lectura
+  de reportes de sandbox PUBLICOS (CAPE Sandbox, Zenbox via VirusTotal). Ningun
+  archivo se ejecuto en equipos de Intellroom. No se envio ningun dato a la
+  infraestructura del atacante.
+
+2. CADENA DEL ATAQUE
+--------------------------------------------------------------------------------
+  [1] SENUELO -- no observado directamente
+      Se infiere una notificacion (correo, SMS o mensaje) simulando una
+      citacion o notificacion del Poder Judicial, con el nombre del archivo
+      ("PJud1774PDF...") como unica pista del pretexto: "1774" opera como
+      numero de causa falso para dar verosimilitud. El mismo pretexto
+      -- "citacion del Poder Judicial" -- ya se uso en Chile en 2023 para
+      distribuir Mekotio (otro troyano bancario LATAM, familia distinta),
+      documentado en el propio historico de Intellroom. No se afirma relacion
+      entre ambos casos, solo que el pretexto se reutiliza en la region.
+
+  [2] ENTREGA -- dominio senuelo tras Cloudflare
+      pjud.online -- registrado 01-09-2026 en NameSilo (Registrant: "Lisboa
+      lima", pais BR, correo desechable fubocax1@deltajohnsons.com), NS de
+      Cloudflare. Sirve las rutas de backend del kit:
+        /h/estagio1.php            (HTTP 404 al sondear sin sesion valida)
+        /h/modulo.php?f=...&t=...
+        /registrar.php?acao=log&status=estagio2|estagio4|au3_init_ok|au3_inicio
+      "Estagio" = etapa, "acao"/"registrar...log" = accion/registro de log, en
+      portugues -- el backend deja ver el idioma de quien lo programo, aunque
+      el senuelo esta en espanol y apunta a Chile.
+
+  [3] DESCARGA -- ZIP con nombre de documento judicial
+      Patron confirmado en VirusTotal: PJud1774PDF-<sufijo>.zip (al menos 8
+      variantes de sufijo entre el 02 y el 06-09-2026) y DOC-KVMPAS.zip.
+      El primero verificado por Intellroom pesa 612 bytes -- un contenedor
+      minimo, consistente con la cadena RAR/ZIP -> HTA -> VBA -> AutoIT que
+      ANY.RUN documenta para esta familia (ver seccion 4); Intellroom NO abrio
+      el ZIP para confirmar ese contenido paso a paso.
+
+  [4] EJECUCION -- dropper con evasion activa
+      La cadena termina dropeando dhlib.dll (PE_DLL, confirmado en el reporte
+      de sandbox). Comportamiento confirmado por DOS sandboxes independientes
+      (CAPE Sandbox y Zenbox, via VirusTotal) sobre la muestra
+      0308f63951e10230b46ec104fe3c0f3ec122c44761cf73653f127be9d87186b1:
+        - long-sleeps, detect-debug-environment, checks-network-adapters
+          (evasion de sandbox / maquina virtual)
+        - obfuscated, persistence, calls-wmi, crypto
+
+  [5] ROBO DE CREDENCIALES
+      El arbol de comportamiento (Malware Behavior Catalog) confirma Credential
+      Access activo: OS Credential Dumping, robo de cookies de sesion web,
+      credenciales sin proteger y credenciales de gestores de contrasenas
+      (ver tabla MITRE, seccion 7). Es exactamente el perfil descrito por
+      ANY.RUN para Mispadu: credenciales de Chrome/Firefox via DPAPI, overlays
+      falsos sobre banca en linea, e interceptacion de cookies de sesion y OTP.
+
+  [6] CONTROL REMOTO -- panel "Operador"
+      El malware reporta a painelst.com (registrado 27-08-2026 en Dynadot),
+      con dos subdominios operativos:
+        remoto.painelst.com  -- Apache/Ubuntu, IP 64.202.189.143 (GoDaddy)
+        painel.painelst.com  -- gunicorn/Python, IP 64.202.189.173 (GoDaddy)
+      Ambos sirven el mismo login ("Operador - Login"), en portugues:
+      "Painel de controle remoto para gerenciamento e monitoramento de
+      dispositivos em tempo real" -- rol "Operador" administrando "Dispositivo"
+      (equipos infectados), con 2FA por autenticador y Cloudflare Turnstile
+      como anti-bot. 2/89 motores de VirusTotal (Fortinet, Sophos) ya lo
+      clasifican "Malware".
+
+3. LINEA DE TIEMPO
+--------------------------------------------------------------------------------
+  2026-08-27 15:51 UTC  painelst.com registrado (Dynadot), NS Cloudflare
+  2026-08-27            remoto.painelst.com resuelve a 158.94.209.196
+                         (ya 2/89 en VirusTotal ese mismo dia -- IP reciclada)
+  2026-08-29 00:30 UTC  cert TLS de painel.painelst.com (Let's Encrypt)
+  2026-08-29 17:24 UTC  cert TLS de remoto.painelst.com; muda a 64.202.189.143
+  2026-09-01            pjud.online registrado (NameSilo), NS Cloudflare
+  2026-09-01 22:59 UTC  cert TLS de pjud.online (Cloudflare/Google Trust Svcs)
+  2026-09-02            pjud.online escaneado por un tercero (urlscan.io,
+                         tag "hybridanalysis"); /h/estagio1.php -> 404
+  2026-09-02 -> 09-06   ventana con 41 muestras distintas (PJud1774PDF-*.zip,
+                         DOC-KVMPAS.zip, dhlib.dll) comunicandose con
+                         remoto.painelst.com, segun VirusTotal
+  2026-09-08 14:14 UTC  el CSIRT Chile publica alerta de campana fraudulenta
+                         contra 6 marcas, incluido el Poder Judicial (misma
+                         semana que Itau/ACF26-01184 y MetLife/ACF26-01185)
+  2026-09-12            painel.painelst.com escaneado por un tercero en
+                         urlscan.io (visibilidad publica)
+  2026-09-14            verificacion y correlacion Intellroom
+
+  Del registro de painelst.com a la primera muestra comunicandose: 6 dias.
+  Del registro de pjud.online a la alerta del CSIRT: 7 dias.
+
+4. ATRIBUCION -- MISPADU (grupo Malteiro / SAMBA SPIDER)
+--------------------------------------------------------------------------------
+  CONFIANZA: ALTA (coincidencia de infraestructura documentada por un tercero
+  independiente), NO CONFIRMADA POR ANALISIS DE CODIGO PROPIO.
+
+  ANY.RUN (any.run/malware-trends/mispadu/) publica la siguiente consulta para
+  rastrear campanas activas de Mispadu en su Threat Intelligence Lookup:
+
+    url:"/gerar/gerar.php" or url:"/registrar.php?dominio=" or
+    url:"/h/modulo.php?f=" or url:"/h/estagio?1.php" or
+    url:"/api/source-file.php?f=" or url:"/api/upload-source.php?"
+
+  Dos de esas rutas COINCIDEN LITERAL con lo observado en pjud.online:
+    /h/modulo.php?f=...          <->  /h/modulo.php?f=
+    /h/estagio1.php              <->  /h/estagio?1.php
+    /registrar.php?acao=log...   <->  /registrar.php?dominio=  (mismo endpoint
+                                       base /registrar.php, parametro distinto)
+
+  Esto no es una coincidencia de nombre de campana: es el mismo patron de
+  endpoints de la infraestructura de entrega que un analista independiente ya
+  asocio, con volumen de muestras, a esta familia especifica.
+
+  Lo que el perfil publico de Mispadu aporta y encaja con lo observado aqui:
+    - Operado por el grupo MALTEIRO (alias SAMBA SPIDER), un modelo de
+      Malware-as-a-Service (MaaS), no un actor unico -- consistente con que
+      esta campana reutilice infraestructura/kit de otros.
+    - Historial confirmado contra Chile: expansion 2023 a "Bolivia, Chile,
+      Mexico, Peru y Portugal", con mas de 90.000 credenciales bancarias
+      robadas de 17.500 sitios ese ano (cifra reportada por ANY.RUN, no
+      verificada de forma independiente por Intellroom).
+    - Cadena de infeccion tipica documentada: RAR/ZIP -> archivo HTA -> script
+      VBA -> AutoIT -> DLL con shellcode cifrado (XOR) -> C2. Compatible con
+      lo observado (ZIP de 612 bytes -> dhlib.dll), aunque Intellroom NO abrio
+      el ZIP para confirmar el paso HTA/VBA/AutoIT especifico de esta muestra.
+    - Perfil de robo: credenciales de Chrome/Firefox via DPAPI, overlays falsos
+      sobre banca en linea, interceptacion de cookies de sesion y OTP,
+      keylogging -- coincide con el Credential Access confirmado por sandbox
+      en la seccion 7 (OS Credential Dumping, Steal Web Session Cookie,
+      Credentials from Password Stores).
+    - Filtra por idioma/locale antes de activarse (portugues, espanol, o
+      geolocalizacion IP de la region objetivo) -- explica por que un kit
+      programado en portugues ataca con senuelo en espanol dirigido a Chile.
+    - Coordinacion documentada con Grandoreiro (Operacion Saci, nov-2024) --
+      no se afirma relacion con esta campana especifica.
+
+  LO QUE NO SE VERIFICO: Intellroom no ejecuto la muestra en un sandbox
+  propio, no comparo el hash contra una base de firmas de Mispadu conocida
+  como tal (solo contra motores AV genericos en VirusTotal, que NO nombran a
+  Mispadu en las 19/65 detecciones), y no confirmo los pasos intermedios de la
+  cadena HTA/VBA/AutoIT. La atribucion se apoya en la coincidencia de rutas
+  de backend, que es un indicador fuerte pero no equivalente a un analisis de
+  codigo o una firma YARA propia.
+
+5. INDICADORES
+--------------------------------------------------------------------------------
+  DOMINIO SENUELO / ENTREGA -- bloquear
+    pjud.online
+
+  DOMINIO DE CONTROL (C2) -- bloquear
+    painelst.com  (incluye remoto.painelst.com y painel.painelst.com)
+
+  IP DE LA INFRAESTRUCTURA DE C2 -- vigilar, NO bloquear por IP sola
+    64.202.189.143   (remoto.painelst.com, GoDaddy, PTR generico *.secureserver.net)
+    64.202.189.173   (painel.painelst.com, GoDaddy, PTR generico *.secureserver.net)
+    -> ver seccion 6: el PTR generico de GoDaddy sugiere hosting compartido,
+       no verificado como dedicado. Bloquear por DOMINIO, no por estas IP.
+
+  IP HISTORICA (referencia, ventana 27-29 ago) -- para hunting retrospectivo
+    158.94.209.196   (ya 2/89 en VirusTotal el 27-08-2026)
+
+  HASH VERIFICADO (SHA-256) -- bloquear / detectar
+    0308f63951e10230b46ec104fe3c0f3ec122c44761cf73653f127be9d87186b1
+      PJud1774PDF-XLXM38.zip · 612 bytes · 19/65 en VirusTotal
+
+  PATRON DE NOMBRE DE ARCHIVO -- detectar
+    PJud1774PDF-*.zip   |   DOC-KVMPAS.zip   |   dhlib.dll (dropped)
+
+  RUTAS DE BACKEND (firma de Mispadu, confirmar tambien contra otros dominios)
+    /h/estagio1.php   /h/modulo.php?f=...   /registrar.php?acao=log&status=...
+
+  Detalle con la accion por linea en: iocs.txt
+  Mediciones crudas y reproducibles en: 03_evidencia_tecnica.txt
+
+6. LO QUE NO ES UN IOC
+--------------------------------------------------------------------------------
+Esta seccion existe porque publicar estos valores como indicadores causa mas
+dano que la campana misma.
+
+  * pjud.cl -- el dominio REAL del Poder Judicial de Chile. Es la MARCA
+    SUPLANTADA, la victima institucional, no infraestructura del atacante.
+    Se anota para que nadie lo confunda con pjud.online ni lo sume a una
+    blocklist por asociacion.
+
+  * cortney.ns.cloudflare.com / porter.ns.cloudflare.com (NS de painelst.com)
+    e irma.ns.cloudflare.com / jake.ns.cloudflare.com (NS de pjud.online) --
+    servidores de nombres COMPARTIDOS de Cloudflare. Millones de dominios
+    legitimos los usan. No son del atacante.
+
+  * 64.202.189.143 y 64.202.189.173 como direcciones IP sueltas -- ver
+    seccion 5: el PTR (ip-64-202-189-173.ip.secureserver.net) es el patron
+    generico que GoDaddy asigna a su hosting compartido/VPS, no confirmado
+    como IP dedicada del atacante. Bloquear la IP arriesga afectar a otros
+    clientes de ese mismo bloque de hosting. La accion correcta es bloquear
+    por DOMINIO.
+
+  * 147.182.141.171 -- aparece en VirusTotal asociada a painel.painelst.com
+    como IP "sibling", pero Intellroom NO la verifico de forma independiente
+    (WHOIS/PTR propios). Se anota como dato de tercero, sin confirmar.
+
+7. MITRE ATT&CK
+--------------------------------------------------------------------------------
+  Confirmadas por sandbox (CAPE Sandbox + Zenbox via VirusTotal, muestra
+  0308f639...) -- IDs leidos directamente del reporte, no inferidos:
+
+    T1047      Windows Management Instrumentation      Execution
+    T1059      Command and Scripting Interpreter (x5)   Execution
+    T1106      Native API                               Execution
+    T1112      Modify Registry                          Persistence
+    T1547      Boot or Logon Autostart Execution (x2)    Persistence / Priv. Esc.
+    T1055      Process Injection (8 hits)                Priv. Esc. / Evasion
+    T1027      Obfuscated Files or Information (3)       Defense Evasion
+    T1202      Indirect Command Execution                Defense Evasion
+    T1003      OS Credential Dumping                     Credential Access
+    T1539      Steal Web Session Cookie                  Credential Access
+    T1552      Unsecured Credentials (2)                 Credential Access
+    T1555      Credentials from Password Stores          Credential Access
+    T1012      Query Registry                            Discovery
+    T1033      System Owner/User Discovery               Discovery
+    T1057      Process Discovery (2)                     Discovery
+    T1082      System Information Discovery (12 hits)    Discovery
+
+  Inferidas del perfil de campana (entrega y C2, no observadas en el sandbox
+  del ZIP inicial):
+
+    T1566        Phishing (entrega -- vector exacto NO observado)
+    T1204.002    User Execution: Malicious File
+    T1583.001    Acquire Infrastructure: Domains (pjud.online, painelst.com)
+    T1656        Impersonation (marca del Poder Judicial de Chile)
+    T1071.001    Application Layer Protocol: Web Protocols (C2 via HTTPS)
+    T1105        Ingress Tool Transfer (descarga del ZIP/payload)
+    T1497        Virtualization/Sandbox Evasion (long-sleeps,
+                 detect-debug-environment, checks-network-adapters)
+
+  Del perfil publico de Mispadu (ANY.RUN), no verificadas en esta muestra:
+
+    T1185        Browser Session Hijacking (overlays bancarios)
+    T1056.002    GUI Input Capture (keylogging)
+    T1560        Archive Collected Data (RAR/ZIP como contenedor inicial)
+
+8. RECOMENDACIONES
+--------------------------------------------------------------------------------
+  Inmediato
+    1. Bloquear pjud.online y painelst.com (incluye subdominios) en DNS,
+       proxy y filtro de URL/EDR.
+    2. NO bloquear las IP de GoDaddy directamente -- bloquear por dominio
+       (ver seccion 6). Si se necesita bloqueo de IP, verificar antes que no
+       sea hosting compartido (WHOIS + PTR + busqueda de otros dominios en
+       la misma IP).
+    3. Distribuir el hash SHA-256 verificado y el patron de nombre
+       "PJud1774PDF-*.zip" / "dhlib.dll" a EDR y filtro de correo/descarga.
+    4. Buscar hacia atras en proxy/DNS quien resolvio pjud.online o
+       painelst.com desde el 27-08-2026. Un bloqueo hoy no dice nada sobre
+       quien ya se infecto.
+    5. Si hay equipos con indicios de ejecucion: aislar, rotar TODAS las
+       credenciales de banca en linea, correo y gestores de contrasenas del
+       equipo (el malware roba de multiples fuentes, no solo una), y revisar
+       actividad reciente en esas cuentas.
+
+  Estructural
+    6. Cargar la consulta de ANY.RUN (seccion 4) como regla de deteccion
+       de trafico saliente: URLs con /h/estagio*.php, /h/modulo.php?f=,
+       /registrar.php?acao=log o ?dominio=, /gerar/gerar.php,
+       /api/source-file.php?f= o /api/upload-source.php? hacia CUALQUIER
+       dominio no confiable -- el patron de endpoints sobrevive a la
+       rotacion de dominios, que en esta familia es constante.
+    7. Vigilancia de abuso de marca sobre "pjud"/"poder judicial" fuera de
+       pjud.cl y sus subdominios oficiales.
+    8. El vector de entrega (correo, SMS, o enlace) no consta. Si aparece,
+       ese remitente/canal es el indicador que mas vale y no esta en esta
+       ficha.
+    9. Evaluar aviso al CSIRT Nacional y/o al Poder Judicial con estos IOCs,
+       dado que la alerta publica del 08-09-2026 no incluyo indicadores
+       especificos para esta marca.
+
+9. VALORACION
+--------------------------------------------------------------------------------
+  Sofisticacion tecnica ......... MEDIA-ALTA
+      No es un redirector de una linea: es malware con evasion activa de
+      sandbox (3 tecnicas confirmadas), persistencia, inyeccion de proceso
+      y robo de credenciales de multiples fuentes.
+
+  Eficacia del diseno ........... ALTA
+      El senuelo -- "citacion/documento del Poder Judicial" -- apela a miedo
+      y urgencia legal, un patron ya efectivo en la region (mismo pretexto
+      que uso Mekotio en Chile en 2023). El backend en portugues sugiere un
+      kit reutilizado entre campanas/paises, no construido a medida para
+      esta.
+
+  Impacto potencial ............. ALTO
+      Robo confirmado de cookies de sesion web, credenciales de gestores de
+      contrasenas y dumping de credenciales del sistema operativo. Segun el
+      perfil de Mispadu, puede escalar a overlays de banca en linea e
+      interceptacion de OTP -- toma de cuenta bancaria completa.
+
+  Persistencia ................... MEDIA
+      La infraestructura de entrega/C2 es desechable (13-18 dias de vida al
+      momento de esta ficha), pero el malware SI instala persistencia en el
+      equipo infectado (T1547) -- la campana como dominio es efimera, la
+      infeccion en un equipo comprometido no lo es.
+
+  Alcance ........................ 41 muestras distintas en 5 dias (02 al
+      06-09-2026) es volumen de campana activa y sostenida, no un envio
+      puntual. El Poder Judicial fue una de SEIS marcas alertadas por el
+      CSIRT la misma semana -- coherente con una operacion de volumen que
+      reparte multiples pretextos en paralelo.
+
+10. LIMITACIONES DECLARADAS
+--------------------------------------------------------------------------------
+  * No se observo el senuelo original (correo/SMS/mensaje). El vector de
+    entrega es inferencia a partir del nombre del archivo.
+  * Intellroom NO ejecuto ninguna muestra. Toda la evidencia de
+    comportamiento viene de reportes de sandbox PUBLICOS (CAPE Sandbox y
+    Zenbox) leidos via VirusTotal, no de analisis propio.
+  * La atribucion a Mispadu se apoya en coincidencia de RUTAS de backend
+    documentadas por un tercero (ANY.RUN), no en analisis de codigo, hash
+    conocido de la familia, ni firma YARA propia de Intellroom. Se declara
+    como confianza ALTA, no como hecho confirmado.
+  * No se verifico si las IP 64.202.189.143/173 (GoDaddy) son hosting
+    compartido o dedicado al atacante -- se tratan con cautela por el
+    patron de PTR generico.
+  * 147.182.141.171 es un dato de VirusTotal sin verificacion independiente
+    de Intellroom.
+  * No se interactuo con el panel /login de painelst.com mas alla de leer
+    el HTML servido -- no se intento autenticacion ni se exploto nada.
+  * Solo se verifico el hash SHA-256 completo de UNA de las 41 muestras
+    (PJud1774PDF-XLXM38.zip); las demas se listan por nombre y fecha segun
+    la tabla de VirusTotal, sin hash individual confirmado por Intellroom.
+  * La cifra de "90.000 credenciales robadas de 17.500 sitios en 2023" es
+    reportada por ANY.RUN sobre Mispadu en general, no medida por Intellroom
+    ni especifica de esta campana contra el Poder Judicial de Chile.
+
+================================================================================
+  Intellroom -- Cyber Threat Intelligence  |  https://intellroom.com
+  Fuentes: VirusTotal (dominio, relaciones, sandbox) · urlscan.io ·
+           any.run/malware-trends/mispadu/ · CSIRT Nacional de Chile (contexto)
+================================================================================

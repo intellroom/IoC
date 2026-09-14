@@ -1,0 +1,205 @@
+================================================================================
+  EVIDENCIA TECNICA -- Suplantacion Poder Judicial de Chile -> Mispadu
+  Recolectada: 2026-09-14  |  TLP:CLEAR  |  Intellroom CTI
+  Metodo: OSINT pasivo (WHOIS, DNS, certificados TLS, crt.sh, urlscan.io) +
+          lectura de reportes de sandbox PUBLICOS en VirusTotal (CAPE Sandbox,
+          Zenbox). NO se ejecuto ningun archivo en equipos de Intellroom. NO se
+          envio ningun dato a la infraestructura del atacante.
+================================================================================
+
+== 1. RESOLUCION DNS ==========================================================
+-- painelst.com (apex, dominio de C2)
+NS : cortney.ns.cloudflare.com.  porter.ns.cloudflare.com.
+A  : (sin registro A directo en el apex)
+
+-- remoto.painelst.com
+A  : 64.202.189.143   (GoDaddy, PTR: sin PTR verificado directo por Intellroom)
+
+-- painel.painelst.com
+A  : 64.202.189.173   (GoDaddy, PTR segun VirusTotal: ip-64-202-189-173.ip.secureserver.net)
+
+-- pjud.online (dominio senuelo/entrega)
+NS : irma.ns.cloudflare.com.  jake.ns.cloudflare.com.
+A  : (sin registro A directo confirmado por Intellroom -- proxy Cloudflare)
+
+== 2. REGISTRO DE DOMINIO (WHOIS) =============================================
+-- painelst.com
+   Registrar: Dynadot Inc / Dynadot LLC
+   Creation Date: 2026-08-27T15:51:55Z
+   Updated Date: 2026-08-27T16:00:49Z
+   Registrar Expiration: 2027-08-27T15:51:55Z
+   -> 18 dias de antiguedad al momento de esta verificacion.
+
+-- pjud.online
+   Registrar: NameSilo, LLC
+   Creation Date: 2026-09-01 (dos registros WHOIS distintos: 23:50:36Z y
+                              07:00:00Z segun el servidor consultado)
+   Updated Date: 2026-09-03 / 2026-09-06 (segun servidor consultado)
+   Registrant Name: Lisboa lima
+   Registrant Country: BR
+   Registrant Email: fubocax1@deltajohnsons.com   (dominio de correo desechable)
+   Registrant Phone: +55.84256697
+   -> 13 dias de antiguedad al momento de esta verificacion. Registrante
+      brasileno con datos minimos y correo de un dominio desechable -- sin
+      intento de aparentar legitimidad.
+
+== 3. CERTIFICADOS TLS (verificados directo + crt.sh) =========================
+-- remoto.painelst.com
+   issuer=C=US, O=Let's Encrypt, CN=YE2
+   subject=CN=remoto.painelst.com
+   notBefore=Aug 29 17:24:53 2026 GMT
+   notAfter=Nov 27 17:24:52 2026 GMT
+   SAN: DNS:remoto.painelst.com   (certificado individual, no wildcard)
+
+-- painel.painelst.com
+   issuer=C=US, O=Let's Encrypt, CN=YE2
+   subject=CN=painel.painelst.com
+   notBefore=Aug 29 00:30:36 2026 GMT
+   notAfter=Nov 27 00:30:35 2026 GMT
+   SAN: DNS:painel.painelst.com   (certificado individual, no wildcard)
+
+   -> Un certificado dedicado por subdominio, emitidos con 17 horas de
+      diferencia el mismo dia: consistente con infraestructura montada de una
+      sola vez, dos dias despues del registro del dominio.
+
+-- pjud.online (segun urlscan.io, no verificado directo por Intellroom)
+   issuer: WE1 (Cloudflare / Google Trust Services)
+   tlsValidFrom: 2026-09-01T22:59:45.000Z
+   -> emitido el mismo dia del registro del dominio.
+
+== 4. HISTORIAL DE CERTIFICADOS (crt.sh, Certificate Transparency) ============
+   29132151863  Let's Encrypt YE2  2026-08-29T00:30:36  painel.painelst.com
+   29164367689  Let's Encrypt YE2  2026-08-29T17:24:53  remoto.painelst.com
+   -> Solo estos dos subdominios tienen certificado publico emitido para
+      painelst.com. Sin evidencia de otros subdominios activos al momento
+      de esta verificacion.
+
+== 5. HTTP -- CONTENIDO SERVIDO (curl, UA de navegador real, sin JS) ==========
+-- https://remoto.painelst.com/login
+   HTTP/1.1 200 OK
+   Server: Apache/2.4.58 (Ubuntu)
+   Content-Type: text/html; charset=UTF-8
+   <title>Operador - Login</title>
+   Recursos externos: cdnjs.cloudflare.com/.../font-awesome/6.5.1/...
+                       challenges.cloudflare.com/turnstile/v0/api.js
+   Texto (PT-BR, extracto): "Painel de controle remoto para gerenciamento
+   e monitoramento de dispositivos em tempo real." / campos "usuario"/"senha"
+   / 2FA "Verificacao em duas etapas" / "Secure Terminal v3.2 · TLS 1.3 · AES-256"
+
+-- https://painel.painelst.com/login
+   HTTP/1.1 200 OK
+   Server: gunicorn
+   Strict-Transport-Security: max-age=31536000
+   Content-Length: 18089
+   <title>Operador - Login</title>
+   Recursos: /static/vendor/fontawesome.min.css (servido localmente, no CDN)
+   Texto (PT-BR, extracto): "Painel de Controle Remoto" / "Acesse o painel de
+   gerenciamento e controle de dispositivos conectados" / "256-bit Encryption
+   · 99.9% Uptime · 24/7 Monitoring"
+
+   -> Mismo titulo exacto en los dos subdominios, con backend distinto
+      (Apache/PHP-like vs Python/gunicorn) -- panel replicado o con dos
+      componentes (front operativo + backend de gestion).
+
+== 6. urlscan.io (busqueda pasiva, sin someter URL propia) ====================
+-- painel.painelst.com  (escaneado por un tercero, no por Intellroom)
+   uuid: 01a096d7-60d3-7008-9969-a51ff8ab8fbe
+   Fecha del escaneo: 2026-09-12T18:18:19Z
+   apexDomainAgeDays: 16 (al momento de ese escaneo)
+   language: pt
+   server: gunicorn
+   ip: 64.202.189.173
+   ptr: ip-64-202-189-173.ip.secureserver.net
+   asnname: GO-DADDY-COM-LLC
+   status: 200
+
+-- pjud.online/h/estagio1.php  (escaneado por un tercero, tag "hybridanalysis")
+   uuid: 01a06628-5915-750a-8983-bd4f25d69703
+   Fecha del escaneo: 2026-09-02T07:25:20Z (via ?r=3F1477F15398D1)
+   apexDomainAgeDays: 1 (al momento de ese escaneo -- confirma registro 01-09)
+   server: cloudflare
+   ip: 172.67.206.246
+   status: 404
+
+== 7. VIRUSTOTAL -- DOMINIO remoto.painelst.com (relations, sin autenticar) ===
+   Community score: 2/89 vendors -- Fortinet: Malware, Sophos: Malware,
+                    alphaMountain.ai: Suspicious, SOCRadar: Suspicious
+   Tags: newly registered websites, spyware and malware,
+         Suspicious/Newly Registered (alphaMountain.ai)
+   Passive DNS Replication:
+     2026-08-29  0/89   64.202.189.143
+     2026-08-27  2/89   158.94.209.196   <- IP ya senalada el mismo dia
+   Siblings: painel.painelst.com (64.202.189.173 / 147.182.141.171)
+   Communicating Files: 41 (ver seccion 8)
+
+== 8. VIRUSTOTAL -- ARCHIVOS QUE SE COMUNICARON CON remoto.painelst.com ======
+   (columna: fecha de escaneo | deteccion | tipo | nombre)
+   2026-09-02  23/55  Win32 DLL  dhlib.dll
+   2026-09-03  19/65  ZIP        PJud1774PDF-XLXM38.zip   <- hash verificado (ver 9)
+   2026-09-03  47/70  Win32 DLL  dhlib.dll
+   2026-09-03  20/65  ZIP        PJud1774PDF-G7S0HT.zip
+   2026-09-06  26/65  ZIP        DOC-KVMPAS.zip
+   2026-09-02  24/55  Win32 DLL  dhlib.dll
+   2026-09-04  20/64  ZIP        PJud1774PDF-R00B2T.zip
+   2026-09-04  16/51  ZIP        PJud1774PDF-GG0WRQ.zip
+   2026-09-04  20/65  ZIP        PJud1774PDF-7UZ1PJ.zip
+   2026-09-02  31/62  Win32 DLL  dhlib.dll
+   ... (41 en total; tabla completa visible en la interfaz publica de VT sin
+       necesidad de cuenta, https://www.virustotal.com/gui/domain/remoto.painelst.com/relations)
+
+== 9. VIRUSTOTAL -- ARCHIVO 0308f639...87186b1 (unico hash verificado a fondo)
+   Nombre: PJud1774PDF-XLXM38.zip
+   Tamano: 612 bytes
+   Deteccion: 19/65
+   Tags: zip, long-sleeps, detect-debug-environment
+   Ultimo analisis: ~10 dias antes de esta verificacion (2026-09-14)
+
+   -- Sandboxes (2 independientes, ambos corrieron la muestra):
+      CAPE Sandbox: 0 alertas / 10 MITRE signatures / 5 IDS / 14 Sigma /
+                    47 dropped-file refs / 47 network refs
+      Zenbox:       0 alertas / 2 MITRE signatures / 0 IDS / 4 Sigma /
+                    2 dropped-file refs / 1 network ref
+
+   -- Activity Summary (agregado de ambos sandboxes):
+      Mitre Signatures: 4 HIGH / 71 MEDIUM / 29 LOW / 10 INFO
+      IDS Rules: 2 MEDIUM / 3 LOW
+      Sigma Rules: 7 HIGH / 7 MEDIUM
+      Dropped Files: 1 XML / 21 OTHER / 1 TEXT / 1 LNK / 1 PE_DLL
+      Network comms: 28 HTTP / 8 DNS / 9 IP / 2 JA3
+
+   -- Behavior Tags: calls-wmi, checks-network-adapters, crypto,
+      detect-debug-environment, long-sleeps, obfuscated, persistence
+
+   -- MITRE ATT&CK Tactics confirmadas (IDs leidos directo del reporte):
+      Execution (7 tecnicas): T1047, T1059 (x5), T1064, T1106
+      Persistence (3 tecnicas): T1112, T1547 (x2)
+      Privilege Escalation (3 tecnicas): T1055 (x8), T1547 (x2)
+      Stealth/Defense Evasion (11 tecnicas): T1027 (x3), T1055 (x8), T1064 (x2),
+                                              T1202
+      Credential Access (6 tecnicas): T1003, T1539, T1552 (x2), T1555
+      Discovery (6 tecnicas): T1012, T1033, T1057 (x2), T1082 (x12)
+      (Collection, Command and Control, Defense Evasion adicional e Impact
+       tambien listados en la matriz completa de VT; no capturados linea por
+       linea en esta verificacion -- ver la URL publica arriba para el detalle)
+
+== 10. ANY.RUN -- PERFIL PUBLICO DE MISPADU (any.run/malware-trends/mispadu/) =
+   Operador: grupo Malteiro (alias SAMBA SPIDER) -- modelo Malware-as-a-Service
+   Historial: descubierto 2019 (ESET, Brasil/Mexico); expansion 2023 a
+              "Bolivia, Chile, Mexico, Peru y Portugal"; coordinacion con
+              Grandoreiro documentada en Operacion Saci (nov-2024)
+   Cadena de infeccion tipica: RAR/ZIP -> HTA -> VBA -> AutoIT -> DLL con
+              shellcode cifrado (XOR) -> C2
+   Consulta de rastreo publicada por ANY.RUN (Threat Intelligence Lookup):
+      url:"/gerar/gerar.php" or url:"/registrar.php?dominio=" or
+      url:"/h/modulo.php?f=" or url:"/h/estagio?1.php" or
+      url:"/api/source-file.php?f=" or url:"/api/upload-source.php?"
+
+   -> COINCIDENCIA LITERAL con las rutas observadas en pjud.online:
+      /h/modulo.php?f=...  y  /h/estagio1.php  (seccion 6 y ficha principal,
+      seccion 4). Es la base de la atribucion con confianza ALTA declarada
+      en la ficha -- no verificada por analisis de codigo propio.
+
+================================================================================
+  Todas las mediciones de este documento son reproducibles con las
+  herramientas y URLs citadas. Ninguna requiere cuenta ni API key de pago.
+================================================================================
