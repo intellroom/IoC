@@ -199,6 +199,55 @@ A  : (sin registro A directo confirmado por Intellroom -- proxy Cloudflare)
       seccion 4). Es la base de la atribucion con confianza ALTA declarada
       en la ficha -- no verificada por analisis de codigo propio.
 
+== 11. ACTUALIZACION 2026-09-14 -- SEGUNDO DOMINIO DE FACHADA, MISMO C2 =======
+   Verificado horas despues del analisis inicial (secciones 1-10 arriba).
+
+-- WHOIS pdf-acess.online (identico a pjud.online, seccion 2)
+   Registrar: NameSilo, LLC
+   Creation Date: 2026-09-10T15:01:07Z (dos registros WHOIS: 15:01:07Z y
+                                        07:00:00Z segun servidor consultado)
+   Registrant Name: Lisboa lima          <- IDENTICO a pjud.online
+   Registrant Country: BR                <- IDENTICO
+   Registrant Email: fubocax1@deltajohnsons.com  <- IDENTICO
+   Registrant Phone: +55.84256697        <- IDENTICO
+   Name Server: deborah.ns.cloudflare.com / neil.ns.cloudflare.com
+                (distintos de los NS de pjud.online, pero mismo registrador)
+
+-- DNS
+   A: 64.202.189.173   <- MISMA IP que painel.painelst.com (seccion 1)
+
+-- Certificado TLS servido (handshake real contra pdf-acess.online:443,
+   SNI=pdf-acess.online -- el propio curl fallo por mismatch, confirmando
+   que el cert NO corresponde a este dominio):
+   subject=CN=painel.painelst.com
+   issuer=C=US, O=Let's Encrypt, CN=YE2
+   notBefore=Aug 29 00:30:36 2026 GMT
+   -> El servidor NO tiene certificado propio para pdf-acess.online: sirve
+      el certificado de painel.painelst.com sin importar el SNI solicitado.
+      Confirma que es el MISMO proceso/servidor respondiendo, no una copia.
+
+-- HTTP (curl -k, ignorando el mismatch de certificado)
+   HTTP/1.1 200 OK
+   Server: gunicorn
+   Content-Length: 18089           <- IDENTICO byte a byte a painel.painelst.com
+   <title>Operador - Login</title> <- IDENTICO
+
+-- crt.sh pdf-acess.online: sin resultados -- confirma que nunca se emitio
+   un certificado propio para este dominio.
+
+-- urlscan.io (escaneado por un tercero, tag "@ecarlesi" + "possiblethreat")
+   uuid: 01a08edd-f688-76cb-aedf-99f70b1b4294
+   Fecha del escaneo: 2026-09-11T05:08:39Z
+   apexDomainAgeDays: 0 (registrado el dia anterior, confirma el WHOIS)
+   tlsValidFrom: 2026-09-10T14:11:41Z (certificado del PROXY de Cloudflare
+                 en el borde; distinto del certificado de origen arriba)
+   server: cloudflare (en el borde) / gunicorn (en el origen real)
+   status: 404 (en la ruta escaneada, "/")
+
+   CONCLUSION: pdf-acess.online es un TERCER dominio de fachada del mismo
+   operador, apuntando al MISMO servidor de C2 ya documentado en las
+   secciones 1-10. No es una campana nueva ni requiere ficha aparte.
+
 ================================================================================
   Todas las mediciones de este documento son reproducibles con las
   herramientas y URLs citadas. Ninguna requiere cuenta ni API key de pago.

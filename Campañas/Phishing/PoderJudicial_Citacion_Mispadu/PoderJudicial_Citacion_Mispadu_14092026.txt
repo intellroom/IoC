@@ -5,6 +5,11 @@
   contra el Poder Judicial la semana del 08-09-2026, junto a otras cinco marcas
   (Itau, MetLife, Lider, Outlook, GTD Telsur) -- sin ficha propia hasta ahora.
   Verificacion, correlacion de infraestructura y atribucion: Intellroom, 2026-09-14
+  ACTUALIZACION 2026-09-14 (mismo dia, horas despues): se agrego un TERCER
+  dominio de fachada -- pdf-acess.online -- tras confirmar que sirve el
+  certificado TLS CN=painel.painelst.com: es el MISMO servidor de C2, no una
+  campana nueva. Ver secciones 2, 3, 5 y 9. La ficha original no se reescribe
+  en silencio; el registro es acumulativo.
 ================================================================================
 
 1. RESUMEN
@@ -55,6 +60,21 @@ endpoints de su infraestructura de entrega. Ver seccion 4.
       "Estagio" = etapa, "acao"/"registrar...log" = accion/registro de log, en
       portugues -- el backend deja ver el idioma de quien lo programo, aunque
       el senuelo esta en espanol y apunta a Chile.
+
+      SEGUNDO DOMINIO DE FACHADA (agregado 2026-09-14, mismo operador):
+      pdf-acess.online -- registrado 10-09-2026 en NameSilo, con WHOIS
+      IDENTICO al de pjud.online: mismo registrante "Lisboa lima", mismo
+      correo desechable fubocax1@deltajohnsons.com, mismo telefono
+      +55.84256697. NO tiene certificado TLS propio (ausente en crt.sh); el
+      handshake TLS de pdf-acess.online:443 sirve el certificado
+      CN=painel.painelst.com -- es decir, resuelve al MISMO servidor fisico
+      de C2 (64.202.189.173), no a infraestructura nueva. El nombre
+      ("pdf-acess" = typosquat de "pdf-access") mantiene el mismo gancho que
+      "PJud1774PDF-*.zip": un documento PDF de la causa. Sirve el mismo panel
+      "Operador - Login" en portugues, HTML byte a byte identico (18.089
+      bytes) al de painel.painelst.com. Ya escaneado por un tercero
+      (urlscan.io, tag "possiblethreat") el 11-09-2026, con 0 dias de
+      antiguedad en ese momento.
 
   [3] DESCARGA -- ZIP con nombre de documento judicial
       Patron confirmado en VirusTotal: PJud1774PDF-<sufijo>.zip (al menos 8
@@ -110,12 +130,23 @@ endpoints de su infraestructura de entrega. Ver seccion 4.
   2026-09-08 14:14 UTC  el CSIRT Chile publica alerta de campana fraudulenta
                          contra 6 marcas, incluido el Poder Judicial (misma
                          semana que Itau/ACF26-01184 y MetLife/ACF26-01185)
+  2026-09-10 15:01 UTC  pdf-acess.online registrado (NameSilo), MISMO WHOIS
+                         que pjud.online (registrante, correo, telefono)
+  2026-09-10 14:11 UTC  cert TLS del proxy Cloudflare de pdf-acess.online
+                         (el origen sigue sirviendo el cert de painel.*)
+  2026-09-11            pdf-acess.online escaneado por un tercero (urlscan.io,
+                         tag "possiblethreat"), 0 dias de antiguedad
   2026-09-12            painel.painelst.com escaneado por un tercero en
                          urlscan.io (visibilidad publica)
-  2026-09-14            verificacion y correlacion Intellroom
+  2026-09-14            verificacion y correlacion Intellroom (painelst.com +
+                         pjud.online); MISMO DIA, mas tarde: se confirma que
+                         pdf-acess.online es un TERCER dominio del mismo
+                         operador -- mismo WHOIS, mismo servidor de C2
 
   Del registro de painelst.com a la primera muestra comunicandose: 6 dias.
   Del registro de pjud.online a la alerta del CSIRT: 7 dias.
+  Del registro de pjud.online al de pdf-acess.online: 9 dias -- el operador
+  sigue registrando dominios de fachada nuevos contra la misma infraestructura.
 
 4. ATRIBUCION -- MISPADU (grupo Malteiro / SAMBA SPIDER)
 --------------------------------------------------------------------------------
@@ -174,6 +205,8 @@ endpoints de su infraestructura de entrega. Ver seccion 4.
 --------------------------------------------------------------------------------
   DOMINIO SENUELO / ENTREGA -- bloquear
     pjud.online
+    pdf-acess.online   (agregado 2026-09-14: mismo WHOIS que pjud.online,
+                        resuelve al mismo servidor de C2 -- ver seccion 2)
 
   DOMINIO DE CONTROL (C2) -- bloquear
     painelst.com  (incluye remoto.painelst.com y painel.painelst.com)
@@ -300,6 +333,13 @@ dano que la campana misma.
     9. Evaluar aviso al CSIRT Nacional y/o al Poder Judicial con estos IOCs,
        dado que la alerta publica del 08-09-2026 no incluyo indicadores
        especificos para esta marca.
+    10. Agregado 2026-09-14 -- monitorear pasivamente CUALQUIER dominio nuevo
+        que resuelva a 64.202.189.143/173 o sirva un certificado con CN
+        remoto.painelst.com / painel.painelst.com: el operador ya demostro
+        que registra dominios de fachada adicionales contra el MISMO
+        servidor (pjud.online -> pdf-acess.online en 9 dias). Bloquear el
+        SERVIDOR (por dominio C2, seccion 5) protege contra el proximo
+        dominio de fachada sin esperar a identificarlo uno por uno.
 
 9. VALORACION
 --------------------------------------------------------------------------------
@@ -321,11 +361,15 @@ dano que la campana misma.
       perfil de Mispadu, puede escalar a overlays de banca en linea e
       interceptacion de OTP -- toma de cuenta bancaria completa.
 
-  Persistencia ................... MEDIA
-      La infraestructura de entrega/C2 es desechable (13-18 dias de vida al
-      momento de esta ficha), pero el malware SI instala persistencia en el
-      equipo infectado (T1547) -- la campana como dominio es efimera, la
-      infeccion en un equipo comprometido no lo es.
+  Persistencia ................... MEDIA-ALTA (revisado 2026-09-14)
+      La infraestructura de ENTREGA es desechable por dominio individual
+      (pjud.online, pdf-acess.online), pero el SERVIDOR DE C2 detras de
+      ambos (painel.painelst.com) es el MISMO desde el 27-08-2026 y sigue
+      activo -- el operador rota el dominio de fachada que reparte, no el
+      backend que controla. Bloquear un dominio de entrega no afecta al
+      siguiente que apunte al mismo servidor. Ademas el malware SI instala
+      persistencia en el equipo infectado (T1547) -- la campana como dominio
+      es efimera, la infeccion en un equipo comprometido no lo es.
 
   Alcance ........................ 41 muestras distintas en 5 dias (02 al
       06-09-2026) es volumen de campana activa y sostenida, no un envio
@@ -357,6 +401,12 @@ dano que la campana misma.
   * La cifra de "90.000 credenciales robadas de 17.500 sitios en 2023" es
     reportada por ANY.RUN sobre Mispadu en general, no medida por Intellroom
     ni especifica de esta campana contra el Poder Judicial de Chile.
+  * Agregado 2026-09-14: no se sondearon las rutas de backend
+    (/h/estagio1.php, /h/modulo.php) en pdf-acess.online -- la correlacion
+    con pjud.online se hizo por WHOIS identico y certificado TLS compartido,
+    ambos suficientes por si solos, pero no se repitio el sondeo completo
+    de rutas de la seccion 2. No se descarta que existan mas dominios de
+    fachada contra el mismo servidor aun sin identificar.
 
 ================================================================================
   Intellroom -- Cyber Threat Intelligence  |  https://intellroom.com

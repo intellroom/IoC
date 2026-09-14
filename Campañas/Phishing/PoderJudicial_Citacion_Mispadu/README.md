@@ -15,6 +15,17 @@ robo de credenciales, que reporta a un panel de control remoto en portugués bra
 
 ---
 
+## 🔴 Actualización 2026-09-14 (mismo día, horas después): un tercer dominio, mismo C2
+
+`pdf-acess.online` (registrado 10-09-2026) tiene el **mismo WHOIS exacto** que `pjud.online`
+— mismo registrante, correo desechable y teléfono — y **no tiene certificado TLS propio**: el
+servidor le responde con el certificado de `painel.painelst.com`. Es el **mismo servidor
+físico de C2**, con un tercer nombre de fachada (typosquat de "pdf-access", mismo gancho que
+"PJud1774PDF"). No es una campaña nueva — esta ficha se amplía en vez de fragmentarse.
+Detalle completo en la sección 11 de [`03_evidencia_tecnica.txt`](03_evidencia_tecnica.txt).
+
+---
+
 ## El hallazgo que cambia la ficha: no es solo "suplantación al PJUD"
 
 ANY.RUN publica esta consulta para rastrear campañas activas de **Mispadu**, el troyano
