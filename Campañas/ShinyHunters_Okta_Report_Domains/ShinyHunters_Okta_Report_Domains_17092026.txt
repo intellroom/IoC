@@ -1,0 +1,383 @@
+================================================================================
+  "POTENCIAL CAMPAÑA SHINYHUNTERS" -- 317 DOMINIOS .REPORT RECIEN REGISTRADOS,
+  33 CONFIRMADOS DE FORMA INDEPENDIENTE COMO COINCIDENCIA CON UN TENANT REAL
+  DE OKTA (imitacion de subdominio <identificador>.okta.com)
+  Fecha del hallazgo (fuente): 17-09-2026  |  Verificado: 17-09-2026  |  TLP: CLEAR
+  Fuentes: X / @0x534c (Steven Lim, cuenta verificada, 17-09-2026), verificacion
+           DNS independiente y chequeo HTTP pasivo de Intellroom CTI (17-09-2026)
+           sobre una lista de 317 dominios .report entregada por el usuario
+================================================================================
+
+RESUMEN
+--------------------------------------------------------------------------------
+Un investigador independiente (Steven Lim, @0x534c, cuenta verificada en X)
+publico el 17-09-2026 una correlacion KQL (Microsoft Defender Advanced Hunting)
+entre subdominios de okta.com y dominios ".report" recien registrados,
+declarando 77 coincidencias donde el identificador es igual en ambos lados
+(ej. "lyrahealth.report" junto a "lyrahealth.okta.com"). Titulo textual del
+post: "Potential ShinyHunters campaign targeting 77 Okta customers" -- la
+palabra "Potential" es del propio autor, NO es una atribucion confirmada por
+un vendor de inteligencia de amenazas.
+
+Intellroom recibio por separado una lista de 317 dominios ".report" (columnas
+domain/created/registrar) y hasta ese momento NO tenia forma de saber si esa
+lista era la misma que uso el investigador, ni si la atribucion a ShinyHunters
+tenia sustento. Se hicieron DOS verificaciones independientes antes de publicar
+esta ficha:
+
+  1. Se confirmo que la lista de 317 dominios que llego a Intellroom ES la
+     MISMA fuente subyacente que uso Steven Lim: 9 fechas de creacion +
+     registrador, cruzadas contra los 9 dominios unicos visibles en la captura
+     de su post, calzan EXACTO una vez ajustado un offset horario constante de
+     +8h entre el timestamp UTC del CSV y el de su tabla (ver seccion 3).
+
+  2. Se reprodujo la logica de correlacion de forma INDEPENDIENTE -- sin
+     reusar la fuente que declara el propio query ("crt.name", que NO es el
+     agregador publico estandar crt.sh y no se pudo verificar que exista) --
+     resolviendo por DNS cada uno de los 317 identificadores como
+     "<identificador>.okta.com". RESULTADO: **33 de los 317** enrutan a una
+     celda especifica y activa de Okta ("ok<N>-crtrs.tng.okta.com", N=1..14,
+     o el portal de soporte real sobre Salesforce Siteforce) -- el resto
+     enruta al front-door generico de Okta, que responde IGUAL para
+     practicamente cualquier texto inventado (ver seccion 2, es un hallazgo
+     metodologico importante). Esos 33 son el conjunto que esta ficha declara
+     como IOC; los otros 284 NO se incluyen (seccion 1).
+
+Confianza en que 33 identificadores de ".report" coinciden de forma NO
+coincidental con un tenant Okta real y activo: ALTA (verificado de forma
+independiente por Intellroom, con metodo propio, no solo tomado del post).
+Confianza en la atribucion a ShinyHunters como actor: BAJA / NO CONFIRMADA.
+El propio autor la declara "potencial"; el patron (dominio senuelo que copia
+el nombre del tenant Okta real de una empresa, para vishing de soporte/IT)
+es indistinguible de las TTP recientes de ShinyHunters Y de Scattered Spider,
+dos grupos cuyo modus operandi se ha ido fusionando durante 2026 segun
+multiples reportes de terceros (ver seccion 5). No hay forma de diferenciar
+cual de los dos -- o si es un tercer operador imitando a ambos -- solo con
+esta correlacion de dominios.
+
+LINEA DE TIEMPO
+--------------------------------------------------------------------------------
+2026-08-17/31  (CONTEXTO, campaña DISTINTA) ReliaQuest/Flare.io reportan una
+               campaña YA CONFIRMADA de ShinyHunters: 61 dominios bajo el TLD
+               ".claims" (no ".report") imitando 48 marcas, TODOS registrados
+               a traves de UN SOLO registrador, ninguno usado todavia --
+               notificados via H-ISAC/FS-ISAC/RH-ISAC antes de activarse.
+               Se cita como precedente de modus operandi, NO como la misma
+               infraestructura.
+
+2026-08-18     Primeros dominios ".report" de la lista completa de 317 (fuera
+               del conjunto de 33 confirmados).
+
+2026-08-20     03:57 UTC. "fathom.report" -- el mas antiguo de los 33 dominios
+               CONFIRMADOS por esta ficha como coincidencia con un tenant Okta
+               real.
+
+2026-08-20 -- 2026-09-16
+               Registro continuo (NO un solo dia de rafaga) de los 33 dominios
+               confirmados, a traves de 13 registradores distintos (Dynadot 8,
+               NameCheap 7, Cloudflare 6, GoDaddy 3, Porkbun 2, y 6 mas con 1
+               cada uno). Contrasta con la campaña ".claims" de agosto, que
+               uso un unico registrador -- ver seccion 5.
+
+2026-09-16     06:38 UTC. "erc.report" -- el mas reciente de los 33 dominios
+               confirmados.
+
+2026-09-17     ~09:1x hora local del post (declarado "hace 49-50 minutos" al
+               momento de la captura). Steven Lim (@0x534c) publica en X el
+               hallazgo con una captura de Microsoft Defender Advanced Hunting:
+               77 coincidencias declaradas, 10 filas visibles en la captura
+               (9 dominios .report unicos). Post de baja traccion al momento
+               de esta ficha: 3 "me gusta", 231 vistas, 0 respuestas, 0
+               reposteos. URL: https://x.com/0x534c/status/2100554716820156781
+
+2026-09-17     Intellroom recibe la lista de 317 dominios por separado, la
+               cruza contra la captura del post (calce exacto en 9/9 dominios
+               visibles, ajustando el huso horario), y reproduce la
+               correlacion completa por DNS propio: 33/317 confirmados,
+               1 de los 9 visibles en la captura del post ("52.report" /
+               "52.okta.com") NO se pudo reconfirmar hoy por este metodo
+               (ver seccion 3). Se hace ademas un chequeo HTTP pasivo
+               (solo cabeceras, sin descargar contenido) sobre los 33
+               dominios confirmados (seccion 4).
+
+--------------------------------------------------------------------------------
+1. LO QUE **NO** ES UN IOC  (leer antes que las tablas)
+--------------------------------------------------------------------------------
+
+  Los otros 284 dominios ".report" de la lista original de 317  ->
+  NO SE CONFIRMARON COMO PARTE DE ESTE PATRON, NO SON IOC DE ESTA FICHA
+
+  La gran mayoria son palabras genericas sueltas (ej. "ray.report",
+  "tom.report" -- espera, "tom" SI calzo, ver nota* --, "piano.report",
+  "cup.report", nombres de paises/gentilicios, terminos de SEO) tipicas de
+  redes de registro masivo especulativo/SEO, sin relacion demostrable con
+  Okta ni con ninguna marca. Tratarlas como ruido de fondo del mismo TLD,
+  NO como infraestructura de esta campaña. (*Nota: "tom.report" SI aparece
+  en el conjunto de 33 confirmados -- el ejemplo de arriba es solo para
+  ilustrar que palabras cortas y comunes pueden calzar por azar con un
+  tenant real; no se excluye automaticamente por parecer generica.)
+
+  "ok-crtr-tls1-nlb-36253386bec48ce6.elb.us-east-1.amazonaws.com" y las IPs
+  detras de ese hostname  ->  NO SON INFRAESTRUCTURA DEL ATACANTE, ES EL
+  FRONT-DOOR GENERICO Y LEGITIMO DE OKTA
+
+  Es el balanceador de carga que Okta usa como respuesta por defecto para
+  CUALQUIER subdominio "*.okta.com" que se consulte, exista o no como tenant
+  real -- se verifico que responde igual para docenas de identificadores
+  claramente inventados. Bloquearlo o tratarlo como IOC afectaria trafico
+  legitimo de Okta a escala masiva.
+
+  Los 9 subdominios "<identificador>.okta.com" citados en esta ficha
+  (support.okta.com, lyrahealth.okta.com, rbx.okta.com, etc.)  ->  NO SE
+  BLOQUEAN COMO SI FUERAN INFRAESTRUCTURA DEL ATACANTE
+
+  Son el OBJETIVO/la identidad suplantada (el tenant real de Okta de cada
+  empresa), no el atacante. Aparecen aqui como evidencia de a que
+  organizaciones apunta el patron, no como algo que una tercera
+  organizacion deba bloquear.
+
+  "52.report" / "52.okta.com"  ->  DECLARADO POR LA FUENTE ORIGINAL, NO
+  RECONFIRMADO DE FORMA INDEPENDIENTE HOY
+
+  Steven Lim lo muestra como una de sus 77 coincidencias. Al verificar hoy
+  por DNS propio, "52.okta.com" enruta al front-door generico (no a una
+  celda especifica), igual que un identificador inventado. Puede deberse a
+  que su fuente ("crt.name") usa un criterio distinto (ej. un certificado
+  historico ya no vigente), a que el tenant fue dado de baja entre su
+  verificacion y la nuestra, o a un falso positivo de su lado. NO se incluye
+  en el listado de IOCs confirmados; se declara por transparencia.
+
+  El "cluster" de 7 dominios con prefijo "be-" (be-review, be-monitor,
+  be-check, be-process, be-verify, be-status, be-info)  ->  OBSERVACION DE
+  NOMENCLATURA SOLAMENTE, NO CONFIRMADO POR EL METODO DE ESTA FICHA
+
+  Comparten un prefijo que sigue un patron tipico de pretexto de phishing
+  ("verificar", "revisar", "confirmar el estado"), pero NINGUNO de los 7
+  aparece en el conjunto de 33 confirmados por correlacion con un tenant
+  Okta real. Podrian ser una campaña distinta, o simplemente coincidencia de
+  nomenclatura. Se declara, no se integra a los IOCs de esta ficha.
+
+--------------------------------------------------------------------------------
+2. EL HALLAZGO METODOLOGICO: POR QUE NO BASTA CON "RESUELVE EN OKTA.COM"
+--------------------------------------------------------------------------------
+
+El primer intento de Intellroom de reproducir la correlacion fue resolver
+"<identificador>.okta.com" por DNS para los 317 identificadores. RESULTADO
+INICIAL: 317 de 317 "resolvieron" -- es decir, la prueba no discriminaba nada,
+porque "*.okta.com" tiene un front-door generico (el NLB de la seccion 1) que
+responde para CUALQUIER texto, exista o no como cliente real.
+
+La señal que SI discrimina: cuando el identificador corresponde a un tenant
+realmente aprovisionado, el CNAME apunta a una CELDA ESPECIFICA de Okta
+("ok1-crtrs.tng.okta.com" hasta "ok14-crtrs.tng.okta.com", segun el cliente),
+o en el caso de "support.okta.com" -- el portal de soporte oficial de Okta,
+no un cliente -- a infraestructura de Salesforce Siteforce. Cuando el
+identificador NO corresponde a un cliente real, cae en el front-door
+generico. Aplicando este criterio: 33 de 317.
+
+--------------------------------------------------------------------------------
+3. LOS 33 DOMINIOS CONFIRMADOS  (identificador ".report" == tenant Okta real)
+--------------------------------------------------------------------------------
+
+Ordenados por fecha de registro. Zona horaria del CSV original: UTC.
+
+Creado (UTC)         Registrador                          Dominio .report      -> Celda Okta confirmada
+2026-08-20 03:57:00  NameCheap, Inc.                       fathom.report        -> ok2-crtrs.tng.okta.com
+2026-08-20 17:24:44  Global Domain Group LLC                offerup.report       -> ok2-crtrs.tng.okta.com
+2026-08-21 05:45:32  Cloudflare, Inc.                       cp.report            -> ok7-crtrs.tng.okta.com
+2026-08-22 13:01:25  Sav.com, LLC                           sp.report            -> ok7-crtrs.tng.okta.com
+2026-08-23 13:30:43  Porkbun LLC                            monday.report        -> ok7-crtrs.tng.okta.com
+2026-08-23 17:33:29  Cloudflare, Inc.                       training.report      -> ok3-crtrs.tng.okta.com
+2026-08-25 20:48:33  Dynadot Inc                            visits.report        -> ok7-crtrs.tng.okta.com
+2026-08-26 02:10:43  Cloudflare, Inc                        purple.report        -> ok2-crtrs.tng.okta.com
+2026-08-27 06:42:12  Cloudflare, Inc                        alfred.report        -> ok2-crtrs.tng.okta.com
+2026-08-27 15:28:46  Super Registry Ltd                     parity.report        -> ok9-crtrs.tng.okta.com
+2026-08-29 15:37:27  DevExpanse Ltd d/b/a Regery.com         apk.report           -> ok4-crtrs.tng.okta.com
+2026-08-30 14:53:41  Cloudflare, Inc                        carat.report         -> ok6-crtrs.tng.okta.com
+2026-08-31 21:10:41  Name.com, Inc                          ahrefs.report        -> ok14-crtrs.tng.okta.com
+2026-08-31 23:40:41  NameCheap, Inc.                        probe.report         -> ok7-crtrs.tng.okta.com
+2026-09-01 07:29:16  Spaceship, Inc.                        101.report           -> ok14-crtrs.tng.okta.com
+2026-09-02 00:13:58  Cloudflare, Inc.                       applied.report       -> ok11-crtrs.tng.okta.com
+2026-09-03 15:41:06  NameCheap, Inc.                        bullish.report       -> ok12-crtrs.tng.okta.com
+2026-09-04 12:56:22  OVH SAS                                 sami.report          -> ok4-crtrs.tng.okta.com
+2026-09-05 19:08:37  Dynadot Inc                            discounttire-retail.report -> ok7-crtrs.tng.okta.com
+2026-09-06 14:28:30  NameCheap, Inc.                        gen.report           -> ok7-crtrs.tng.okta.com  [ver seccion 4: HTTP responde 200 con redirect /login/?next=/]
+2026-09-07 15:46:22  NameCheap, Inc.                        neo.report           -> ok3-crtrs.tng.okta.com
+2026-09-07 16:47:28  GoDaddy.com, LLC                        ams.report           -> ok14-crtrs.tng.okta.com
+2026-09-07 20:12:51  Dynadot Inc                            unum.report          -> ok3-crtrs.tng.okta.com
+2026-09-08 14:54:04  Porkbun LLC                             support.report       -> support.okta.com (soporte OFICIAL de Okta, no un cliente -- via Salesforce Siteforce)
+2026-09-08 20:11:09  Dynadot Inc                            inspire.report       -> ok6-crtrs.tng.okta.com
+2026-09-09 20:22:41  NameCheap, Inc.                        yolo.report          -> ok7-crtrs.tng.okta.com
+2026-09-10 20:52:40  Dynadot Inc                            hcahealthcare.report -> ok3-crtrs.tng.okta.com
+2026-09-10 22:17:38  Dynadot Inc                            rbx.report           -> ok1-crtrs.tng.okta.com
+2026-09-11 20:01:56  GoDaddy.com, LLC                        tom.report           -> ok2-crtrs.tng.okta.com
+2026-09-12 00:25:08  NameCheap, Inc.                        stash.report         -> ok6-crtrs.tng.okta.com
+2026-09-12 18:37:25  Dynadot Inc                            expeditors.report    -> ok3-crtrs.tng.okta.com
+2026-09-14 18:45:01  Dynadot Inc                            lyrahealth.report    -> ok5-crtrs.tng.okta.com
+2026-09-16 06:38:34  GoDaddy.com, LLC                        erc.report           -> ok10-crtrs.tng.okta.com
+
+Identificadores que coinciden con nombres de empresas reales reconocibles
+(coincidencia de nombre -- NO se confirma de forma independiente que la
+organizacion sea la titular exacta del tenant sin acceso adicional):
+hcahealthcare (HCA Healthcare, operador hospitalario), lyrahealth (Lyra
+Health, beneficios de salud mental), expeditors (Expeditors International,
+logistica), discounttire-retail (Discount Tire), unum (Unum, seguros),
+ahrefs (Ahrefs, herramienta SEO), offerup (OfferUp), y posiblemente rbx
+(Roblox) y monday (monday.com) por el identificador corto usado
+internamente. Sector predominante entre las marcas reconocibles: salud,
+seguros y logistica -- organizaciones grandes, con soporte/IT tercerizable,
+consistentes con el pretexto de vishing de "soporte tecnico" que tanto
+ShinyHunters como Scattered Spider documentan usar contra tenants Okta.
+
+Cruce contra la captura del post original (9 dominios unicos visibles de
+los 77 declarados): 8 de 9 calzan exacto con este metodo independiente
+(support, rbx, erc, monday, probe, lyrahealth, inspire, 101). El noveno
+("52.report") no se reconfirmo -- ver seccion 1.
+
+--------------------------------------------------------------------------------
+4. VERIFICACION HTTP PASIVA DE INTELLROOM  (17-09-2026, solo cabeceras)
+--------------------------------------------------------------------------------
+
+Se hizo una peticion HEAD estandar (sin descargar cuerpo, sin seguir a paginas
+de login) a "https://<dominio>/" para los 33 dominios confirmados. NINGUN
+archivo fue descargado ni se ingreso ningun dato en ningun formulario.
+
+  gen.report       200, con redireccion a "/login/?next=/" -- patron de URL
+                   tipico de un flujo de autenticacion de aplicacion web.
+                   ES EL HALLAZGO DE MAYOR PRIORIDAD DE ESTA SECCION: sugiere
+                   contenido activo tipo formulario de login, a diferencia
+                   del resto. NO SE VISITO el formulario ni se inspecciono
+                   su contenido -- se declara la observacion de cabecera
+                   solamente.
+  alfred, applied, bullish, carat, cp, monday, parity, support, tom,
+  visits           200 (responden, sin mas detalle de cabecera relevante
+                   capturado en este chequeo).
+  ahrefs, erc, offerup                                    404.
+  apk                                                      403.
+  101, ams, discounttire-retail, expeditors, fathom,
+  hcahealthcare, inspire, lyrahealth, neo, probe, purple,
+  rbx, sami, sp, stash, training, unum, yolo               sin respuesta
+                   HTTPS al momento del chequeo (podrian no tener servidor
+                   web configurado todavia -- consistente con el patron de
+                   ShinyHunters de PRE-REGISTRAR dominios antes de activarlos
+                   para la campaña de vishing, visto en la campaña .claims
+                   de agosto) -- NO implica que esten inactivos como
+                   dominio, solo que no respondieron una conexion HTTPS hoy.
+
+--------------------------------------------------------------------------------
+5. TTP Y CRUCE CON PATRONES CONOCIDOS  (coincidencia de patron, NO atribucion)
+--------------------------------------------------------------------------------
+
+El patron -- pre-registrar en bloque dominios cuyo identificador copia el
+nombre de un subdominio SSO/Okta real de empresas reales, sin usarlos de
+inmediato -- coincide con:
+
+  - ShinyHunters: campaña ".claims" confirmada por ReliaQuest/Flare.io en
+    agosto de 2026 (61 dominios, 48 marcas, UN solo registrador, vishing de
+    IT/soporte/legal). Fuente: flare.io, securityboulevard.com, health-isac.org.
+  - Scattered Spider: uso documentado del patron "SSO-empresa[.]com" y
+    dominios que imitan portales Okta para vishing de soporte tecnico contra
+    Salesforce/Okta. Fuente: reliaquest.com, darkreading.com.
+  - Multiples reportes de 2026 (Dark Reading, ReliaQuest, GBHackers) describen
+    que las TTP de ambos grupos se han fusionado o colaborado durante 2026 --
+    o sea, el patron de dominio por si solo NO permite diferenciar cual de
+    los dos esta detras, ni descarta un tercer operador que imite a ambos.
+
+Diferencia estructural con la campaña ".claims" confirmada: esa uso UN SOLO
+registrador; esta usa 13 registradores distintos entre los 33 confirmados, y
+el registro es continuo a lo largo de 4 semanas (no una rafaga de un dia).
+Puede indicar un operador mas cuidadoso con el OPSEC (evitar el patron de
+"un solo registrador" que permitio correlacionar y notificar la campaña de
+agosto tan rapido), un operador distinto imitando el mismo TTP, o both/mezcla
+de fuentes. NO SE RESUELVE en esta ficha -- se declara la diferencia.
+
+Lo que SI se puede afirmar sin atribuir a nadie: el operador detras de estos
+33 dominios invirtio tiempo en identificar el identificador EXACTO del tenant
+Okta real de cada organizacion objetivo antes de registrar el dominio --no
+son nombres al azar-- lo que indica reconocimiento previo dirigido, no un
+registro masivo oportunista sin objetivo.
+
+--------------------------------------------------------------------------------
+6. MITRE ATT&CK
+--------------------------------------------------------------------------------
+T1591.002   Gather Victim Org Information: Business Relationships /
+            identificacion del identificador real del tenant Okta de cada
+            organizacion objetivo, paso previo al registro del dominio.
+T1583.001   Acquire Infrastructure: Domains  (33+ dominios ".report" en 13
+            registradores).
+T1036.005   Masquerading: Match Legitimate Name or Location  (el
+            identificador del dominio copia exacto el del tenant Okta real).
+T1598       Phishing for Information / T1656 Impersonation  (consistente con
+            el pretexto de vishing de soporte/IT documentado en ShinyHunters
+            y Scattered Spider contra tenants Okta).
+T1608       Stage Capabilities  (dominios pre-registrados, activacion
+            declarada como todavia no confirmada para la mayoria -- ver
+            seccion 4).
+T1566       Phishing  (vector declarado por el precedente .claims, NO
+            confirmado con contenido real en esta lista salvo la señal
+            parcial de "gen.report", seccion 4).
+
+--------------------------------------------------------------------------------
+7. ACCIONES RECOMENDADAS
+--------------------------------------------------------------------------------
+
+PARA CUALQUIER ORGANIZACION QUE USE OKTA:
+
+1. Verificar si el identificador de SU PROPIO tenant Okta (la parte antes de
+   ".okta.com" en la URL de login de su empresa) aparece en la lista de 33
+   dominios confirmados de la seccion 3. Si aparece, tratar como intento de
+   reconocimiento/pre-posicionamiento dirigido contra su organizacion
+   especificamente -- avisar a IT/soporte sobre vishing entrante que se haga
+   pasar por personal interno o de Okta.
+2. Capacitar a mesa de ayuda/soporte tecnico sobre el pretexto documentado
+   (llamadas haciendose pasar por empleados pidiendo reset de MFA/password),
+   dado el precedente confirmado de ambos grupos contra tenants Okta.
+3. Si su organizacion NO aparece en la lista de 33 pero usa Okta, esta lista
+   es un snapshot de 317 dominios ".report"; el patron puede repetirse con
+   otros TLD -- monitorear registros nuevos que combinen su identificador de
+   tenant con TLD poco comunes.
+4. NO bloquear el listado completo de 317 dominios como si todos fueran
+   maliciosos (seccion 1) -- concentrar la respuesta en los 33 confirmados.
+
+PARA EQUIPOS DE THREAT INTEL / SOC:
+
+5. "gen.report" merece verificacion adicional prioritaria por el redirect a
+   "/login/?next=/" observado (seccion 4) -- Intellroom NO visito el
+   formulario ni capturo su contenido.
+6. Repetir esta misma metodologia (resolver "<identificador>.okta.com" y
+   clasificar celda especifica vs. front-door generico) es reproducible por
+   cualquier equipo con acceso a un feed de dominios recien registrados por
+   TLD -- no depende de la fuente "crt.name" que declara el post original,
+   cuya naturaleza exacta Intellroom no pudo verificar.
+
+--------------------------------------------------------------------------------
+8. LO QUE NO SE PUDO VERIFICAR  (declarado, no omitido)
+--------------------------------------------------------------------------------
+
+- La atribucion a ShinyHunters como actor. El propio autor del post la
+  declara "potencial"; Intellroom no encontro corroboracion de un vendor de
+  inteligencia de amenazas o de un segundo investigador independiente para
+  ESTA lista especifica de dominios ".report" (si existe, no goza de
+  suficiente traccion/indexacion publica al momento de esta ficha).
+- Que servicio es exactamente "crt.name" (la fuente que declara el query
+  original de Steven Lim) -- no es el agregador publico estandar crt.sh, y
+  no se encontro documentacion publica de ese nombre exacto.
+- El contenido de las paginas detras de los 33 dominios (seccion 4 es solo
+  cabeceras HTTP, ningun formulario fue completado ni se descargo cuerpo).
+- Los 68 dominios restantes de los 77 que declara el post original -- solo
+  10 filas (9 dominios unicos) eran visibles en la captura obtenida.
+- Por que "52.report"/"52.okta.com" no se reconfirmo con el metodo de esta
+  ficha (seccion 1) -- se declara la discrepancia, no se resuelve.
+- Si existe alguna victima que ya haya recibido una llamada de vishing
+  usando alguno de estos 33 dominios como pretexto -- no hay reporte publico
+  de una organizacion especifica afectada por ESTA lista al momento de esta
+  ficha (a diferencia de la campaña .claims de agosto, que si tuvo
+  notificacion formal via ISACs).
+
+================================================================================
+  Intellroom Threat Intelligence  --  https://intellroom.com
+  Analisis pasivo. Verificacion DNS publica + una peticion HTTP HEAD estandar
+  por dominio (sin descargar contenido, sin enviar datos a ningun formulario).
+  Ningun dominio de esta lista fue registrado, comprado ni contactado por
+  ningun otro medio por Intellroom.
+================================================================================
