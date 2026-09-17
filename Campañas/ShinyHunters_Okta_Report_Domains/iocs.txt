@@ -1,0 +1,102 @@
+================================================================================
+  IOCs / ACCIONES -- "Potencial campaña ShinyHunters", 33 dominios .report
+  que copian el identificador real de un tenant Okta
+  Fecha: 2026-09-17  |  TLP:CLEAR  |  Fuente: Intellroom CTI (intellroom/IoC)
+  Ficha completa: ShinyHunters_Okta_Report_Domains_17092026.txt
+  Origen: X / @0x534c (Steven Lim, 17-09-2026) -- "Potential ShinyHunters
+  campaign" (atribucion del propio autor, no confirmada). Verificado y
+  ampliado de forma independiente por Intellroom (17-09-2026): de 317
+  dominios .report entregados, 33 confirman por DNS propio una coincidencia
+  real con la celda especifica de un tenant Okta (no con el front-door
+  generico, que responde para cualquier texto -- ver ficha completa, sec. 2).
+================================================================================
+
+[BLOQUEAR]  confianza MEDIA -- son dominios senuelo sin uso legitimo posible
+            (no son sitios legitimos comprometidos ni hosting compartido, asi
+            que bloquear no arrastra a terceros), pero NO todos muestran
+            contenido activo hoy (ver columna de estado HTTP) y la atribucion
+            a un actor nombrado NO esta confirmada.
+101[.]report            # -> 101.okta.com (celda ok14) | Spaceship, Inc. | 2026-09-01 | HTTP: sin respuesta hoy
+ahrefs[.]report          # -> ahrefs.okta.com (celda ok14) | Name.com, Inc | 2026-08-31 | HTTP: 404
+alfred[.]report          # -> alfred.okta.com (celda ok2) | Cloudflare, Inc | 2026-08-27 | HTTP: 200
+apk[.]report              # -> apk.okta.com (celda ok4) | DevExpanse/Regery.com | 2026-08-29 | HTTP: 403
+applied[.]report          # -> applied.okta.com (celda ok11) | Cloudflare, Inc. | 2026-09-02 | HTTP: 200
+ams[.]report               # -> ams.okta.com (celda ok14) | GoDaddy.com, LLC | 2026-09-07 | HTTP: sin respuesta hoy
+bullish[.]report          # -> bullish.okta.com (celda ok12) | NameCheap, Inc. | 2026-09-03 | HTTP: 200
+carat[.]report             # -> carat.okta.com (celda ok6) | Cloudflare, Inc | 2026-08-30 | HTTP: 200
+cp[.]report                 # -> cp.okta.com (celda ok7) | Cloudflare, Inc. | 2026-08-21 | HTTP: 200
+discounttire-retail[.]report # -> discounttire-retail.okta.com (celda ok7) | Dynadot Inc | 2026-09-05 | HTTP: sin respuesta hoy -- posible impersonacion de Discount Tire
+erc[.]report                # -> erc.okta.com (celda ok10) | GoDaddy.com, LLC | 2026-09-16 (el mas reciente) | HTTP: 404
+expeditors[.]report         # -> expeditors.okta.com (celda ok3) | Dynadot Inc | 2026-09-12 | HTTP: sin respuesta hoy -- posible impersonacion de Expeditors International
+fathom[.]report              # -> fathom.okta.com (celda ok2) | NameCheap, Inc. | 2026-08-20 (el mas antiguo) | HTTP: sin respuesta hoy
+gen[.]report                  # -> gen.okta.com (celda ok7) | NameCheap, Inc. | 2026-09-06 | HTTP: 200, REDIRECT A /login/?next=/ -- PRIORIDAD, ver ficha sec.4
+hcahealthcare[.]report       # -> hcahealthcare.okta.com (celda ok3) | Dynadot Inc | 2026-09-10 | HTTP: sin respuesta hoy -- posible impersonacion de HCA Healthcare (sector salud)
+inspire[.]report              # -> inspire.okta.com (celda ok6) | Dynadot Inc | 2026-09-08 | HTTP: sin respuesta hoy
+lyrahealth[.]report           # -> lyrahealth.okta.com (celda ok5) | Dynadot Inc | 2026-09-14 | HTTP: sin respuesta hoy -- posible impersonacion de Lyra Health (sector salud mental)
+monday[.]report                # -> monday.okta.com (celda ok7) | Porkbun LLC | 2026-08-23 | HTTP: 200 -- posible impersonacion de monday.com
+neo[.]report                    # -> neo.okta.com (celda ok3) | NameCheap, Inc. | 2026-09-07 | HTTP: sin respuesta hoy
+offerup[.]report                # -> offerup.okta.com (celda ok2) | Global Domain Group LLC | 2026-08-20 | HTTP: 404 -- posible impersonacion de OfferUp
+parity[.]report                  # -> parity.okta.com (celda ok9) | Super Registry Ltd | 2026-08-27 | HTTP: 200
+probe[.]report                    # -> probe.okta.com (celda ok7) | NameCheap, Inc. | 2026-08-31 | HTTP: sin respuesta hoy
+purple[.]report                    # -> purple.okta.com (celda ok2) | Cloudflare, Inc | 2026-08-26 | HTTP: sin respuesta hoy
+rbx[.]report                        # -> rbx.okta.com (celda ok1) | Dynadot Inc | 2026-09-10 | HTTP: sin respuesta hoy -- posible impersonacion de Roblox
+sami[.]report                        # -> sami.okta.com (celda ok4) | OVH SAS | 2026-09-04 | HTTP: sin respuesta hoy
+sp[.]report                           # -> sp.okta.com (celda ok7) | Sav.com, LLC | 2026-08-22 | HTTP: sin respuesta hoy
+stash[.]report                        # -> stash.okta.com (celda ok6) | NameCheap, Inc. | 2026-09-12 | HTTP: sin respuesta hoy
+tom[.]report                           # -> tom.okta.com (celda ok2) | GoDaddy.com, LLC | 2026-09-11 | HTTP: 200
+training[.]report                      # -> training.okta.com (celda ok3) | Cloudflare, Inc. | 2026-08-23 | HTTP: sin respuesta hoy
+unum[.]report                           # -> unum.okta.com (celda ok3) | Dynadot Inc | 2026-09-07 | HTTP: sin respuesta hoy -- posible impersonacion de Unum (seguros)
+visits[.]report                          # -> visits.okta.com (celda ok7) | Dynadot Inc | 2026-08-25 | HTTP: 200
+yolo[.]report                             # -> yolo.okta.com (celda ok7) | NameCheap, Inc. | 2026-09-09 | HTTP: sin respuesta hoy
+
+[VIGILAR -- caso especial, portal OFICIAL de Okta imitado, no un cliente]
+support[.]report                          # -> support.okta.com (portal de soporte OFICIAL de Okta, sobre infraestructura Salesforce Siteforce) | Porkbun LLC | 2026-09-08 | HTTP: 200
+
+[VIGILAR -- declarado por la fuente original, NO reconfirmado hoy]
+52[.]report                                # Steven Lim lo muestra como coincidencia con 52.okta.com; verificado hoy por Intellroom, 52.okta.com enruta al front-door generico (no a una celda especifica). Ver ficha, seccion 1.
+
+[NO BLOQUEAR -- es el objetivo/identidad suplantada, no el atacante]
+support[.]okta[.]com, rbx[.]okta[.]com, erc[.]okta[.]com, monday[.]okta[.]com,
+probe[.]okta[.]com, lyrahealth[.]okta[.]com, inspire[.]okta[.]com,
+101[.]okta[.]com, y el resto de los 33 subdominios *.okta.com listados arriba
+                                           # Son los tenants REALES de Okta de
+                                           # cada organizacion. Verificados por
+                                           # Intellroom como infraestructura
+                                           # genuina de Okta (celdas ok1-ok14
+                                           # .tng.okta.com / AWS). Bloquearlos
+                                           # afectaria el acceso legitimo de
+                                           # los empleados de esas empresas.
+
+[NO ES IOC -- front-door generico y legitimo de Okta]
+ok-crtr-tls1-nlb-36253386bec48ce6[.]elb[.]us-east-1[.]amazonaws[.]com
+18[.]209[.]113[.]128, 18[.]209[.]113[.]130, 18[.]209[.]113[.]131
+                                           # Responde igual para CUALQUIER
+                                           # identificador bajo *.okta.com,
+                                           # inventado o real. Es de Okta, no
+                                           # del atacante. NO bloquear -- corta
+                                           # trafico legitimo masivo.
+
+[NO ES IOC -- ruido de fondo del mismo TLD, no correlaciona con ningun tenant Okta]
+Los otros 284 dominios ".report" de la lista original de 317 entregada a
+Intellroom (palabras genericas: ray, piano, cup, gentilicios, terminos SEO,
+el cluster "be-*" de 7 dominios -- ver ficha completa seccion 1 para el
+detalle de por que ese cluster se declara aparte)
+                                           # No se confirmo relacion con Okta
+                                           # ni con ninguna marca por el
+                                           # metodo de esta ficha. Tratar como
+                                           # ruido de registro masivo/SEO del
+                                           # mismo TLD, no como IOC de esta
+                                           # campaña especifica.
+
+[DETECTAR -- para organizaciones que usan Okta]
+Llamadas entrantes a mesa de ayuda/soporte tecnico pidiendo reset de MFA o
+password, especialmente si el identificador de tenant de su organizacion
+aparece en la lista de 33 dominios confirmados arriba
+                                           # Pretexto documentado de vishing
+                                           # contra tenants Okta, tanto por
+                                           # ShinyHunters como por Scattered
+                                           # Spider (ver ficha, seccion 5).
+Registro de nuevos dominios que combinen el identificador de tenant Okta de
+su organizacion con TLD poco comunes (no solo .report)
+                                           # El patron es reproducible con
+                                           # cualquier TLD barato.
