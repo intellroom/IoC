@@ -1,0 +1,80 @@
+{
+  "_nota": "Banners capturados por Shodan mediante consulta pasiva a su API (21-09-2026). Evidencia cruda del listado de directorio. Ningun archivo fue descargado y el servidor NO fue contactado por Intellroom.",
+  "ip_str": "54.94.226.216",
+  "org": "Amazon Data Services Brazil",
+  "isp": "Amazon.com, Inc.",
+  "asn": "AS16509",
+  "country": "Brazil",
+  "city": "São Paulo",
+  "hostnames": [
+    "ec2-54-94-226-216.sa-east-1.compute.amazonaws.com"
+  ],
+  "tags": [
+    "open-dir",
+    "cloud"
+  ],
+  "ports": [
+    80
+  ],
+  "last_update": "2026-09-21T15:40:35.935996",
+  "cloud": {
+    "region": "sa-east-1",
+    "service": "EC2",
+    "provider": "Amazon"
+  },
+  "banner": {
+    "port": 80,
+    "timestamp": "2026-09-21T15:40:35.935996",
+    "product": "SimpleHTTPServer",
+    "version": "0.6",
+    "data": "HTTP/1.0 200 OK\r\nServer: SimpleHTTP/0.6 Python/3.14.4\r\nDate: Mon, 21 Sep 2026 15:40:35 GMT\r\nContent-type: text/html; charset=utf-8\r\nContent-Length: 924\r\n\r\n",
+    "http": {
+      "title": "Directory listing for /",
+      "server": "SimpleHTTP/0.6 Python/3.14.4",
+      "status": 200,
+      "html": "<!DOCTYPE HTML>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<style type=\"text/css\">\n:root {\ncolor-scheme: light dark;\n}\n</style>\n<title>Directory listing for /</title>\n</head>\n<body>\n<h1>Directory listing for /</h1>\n<hr>\n<ul>\n<li><a href=\".bash_history\">.bash_history</a></li>\n<li><a href=\".bash_logout\">.bash_logout</a></li>\n<li><a href=\".bashrc\">.bashrc</a></li>\n<li><a href=\".cache/\">.cache/</a></li>\n<li><a href=\".local/\">.local/</a></li>\n<li><a href=\".profile\">.profile</a></li>\n<li><a href=\".ssh/\">.ssh/</a></li>\n<li><a href=\"BACKUP/\">BACKUP/</a></li>\n<li><a href=\"c2_modules/\">c2_modules/</a></li>\n<li><a href=\"http-server-80.log\">http-server-80.log</a></li>\n<li><a href=\"http-server-8080.log\">http-server-8080.log</a></li>\n<li><a href=\"payload.bin\">payload.bin</a></li>\n<li><a href=\"transfer/\">transfer/</a></li>\n<li><a href=\"usermode_font_driver.exe\">usermode_font_driver.exe</a></li>\n</ul>\n<hr>\n</body>\n</html>\n"
+    }
+  },
+  "historial": [
+    {
+      "timestamp": "2026-08-12T11:46:07.302752",
+      "port": 443,
+      "product": "AWS ELB",
+      "http_title": null,
+      "http_server": "awselb/2.0",
+      "primera_linea": "HTTP/1.1 404 Not Found"
+    },
+    {
+      "timestamp": "2026-08-14T17:51:58.648311",
+      "port": 80,
+      "product": "AWS ELB",
+      "http_title": "301 Moved Permanently",
+      "http_server": "awselb/2.0",
+      "primera_linea": "HTTP/1.1 301 Moved Permanently"
+    },
+    {
+      "timestamp": "2026-08-17T12:00:21.738603",
+      "port": 443,
+      "product": "AWS ELB",
+      "http_title": null,
+      "http_server": "awselb/2.0",
+      "primera_linea": "HTTP/1.1 404 Not Found"
+    },
+    {
+      "timestamp": "2026-09-15T20:47:34.832181",
+      "port": 80,
+      "product": "SimpleHTTPServer",
+      "http_title": "Directory listing for /",
+      "http_server": "SimpleHTTP/0.6 Python/3.14.4",
+      "primera_linea": "HTTP/1.0 200 OK"
+    },
+    {
+      "timestamp": "2026-09-21T15:40:35.935996",
+      "port": 80,
+      "product": "SimpleHTTPServer",
+      "http_title": "Directory listing for /",
+      "http_server": "SimpleHTTP/0.6 Python/3.14.4",
+      "primera_linea": "HTTP/1.0 200 OK"
+    }
+  ]
+}

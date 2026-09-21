@@ -1,0 +1,389 @@
+================================================================================
+  PRESUNTO C2 PROPIO "EREBUS" EN UN DIRECTORIO ABIERTO (AWS SAO PAULO)
+  54[.]94[.]226[.]216 : 80 (dir. abierto) / 8080 (C2 segun la fuente)
+  AS16509 Amazon EC2 (sa-east-1)  --  sin victimas identificadas ni atribucion
+  Fecha: 21-09-2026  |  TLP: CLEAR
+  Fuentes: X / @Yusufcancakiir (post del 21-09-2026, 19:10 UTC), Shodan API
+           (banners del 15-09 y 21-09-2026 + historial), ARIN RDAP, ipinfo.io,
+           AlienVault OTX, GreyNoise (comunidad), MITRE ATT&CK (matriz vigente)
+================================================================================
+
+RESUMEN
+--------------------------------------------------------------------------------
+Un investigador independiente (Yusuf Can Cakir, @Yusufcancakiir) publico en X,
+el 21-09-2026 a las 19:10 UTC, el hallazgo de un servidor expuesto que aloja
+lo que describe como un C2 propio llamado "Erebus": un servidor en Python, un
+implante de Windows en Rust, un agente PowerShell mas antiguo, payloads,
+.bash_history, rastros de desarrollo y codigo de exfiltracion por Telegram.
+Advierte que el agente PowerShell y la version nueva (Rust +
+Python) no usan el mismo protocolo, y lo lee como etapas distintas del
+desarrollo: la nueva se comunica por TCP/8080 con JSON con prefijo de largo y
+una capa XOR simple. No lo conecta con ningun actor conocido y lo presenta como
+un hallazgo menor.
+
+Intellroom lo contrasto de forma PASIVA con datos que el autor del post no
+controla: los banners de Shodan de la misma direccion (consulta por API, sin
+tocar el servidor). Confirman lo esencial:
+
+  1. El servidor existe y estaba expuesto: HTTP en el puerto 80 con banner
+     SimpleHTTP/0.6 Python/3.14.4 (python -m http.server) y titulo "Directory
+     listing for /", en una instancia EC2 de AWS Sao Paulo (sa-east-1, AS16509).
+  2. El listado de la raiz (14 entradas al 21-09) contiene tres de los
+     artefactos que nombra el post -- usermode_font_driver.exe, payload.bin y
+     .bash_history -- mas c2_modules/, transfer/, BACKUP/, .ssh/ y dos logs de
+     servidores HTTP (http-server-80.log y http-server-8080.log).
+  3. La exposicion observada abarca al menos 5 dias y 19 horas: el directorio
+     abierto aparece por primera vez el 15-09-2026 a las 20:47 UTC y sigue en el
+     banner del 21-09-2026 a las 15:40 UTC.
+  4. El material se sigue tocando: entre el 15-09 y el 21-09 se agregaron
+     usermode_font_driver.exe y BACKUP/. Lo ve Shodan, sin depender del post, y
+     es coherente con la lectura del investigador (un C2 en distintas etapas).
+
+Lo que NO se sabe (seccion 9): quien lo opera ni con que fin (criminal, ejercicio
+ofensivo autorizado o laboratorio de desarrollo), si existe alguna victima, si el
+servidor de control sigue activo, y que contienen realmente los archivos.
+Intellroom no descargo, no abrio ni contacto el servidor.
+
+Convencion: "operador" es quien maneja este material, sea o no el dueno del
+servidor; no se sabe cual de las dos cosas es (seccion 9).
+
+Confianza en que la direccion sirviera el 21-09 un directorio abierto con el
+  material descrito (nombres de archivo): ALTA (post + banners de Shodan).
+Confianza en que ese material sea un C2 en preparacion: MEDIA. Solo lo afirma el
+  post; los nombres del listado (c2_modules/, payload.bin) son consistentes.
+Confianza en la descripcion tecnica (Rust, XOR, Telegram): BAJA. Depende de una
+  sola persona y nadie mas vio el contenido.
+Confianza en que sea una amenaza activa contra victimas reales: BAJA. Ninguna
+  victima reportada.
+Confianza en la atribucion a un actor o campana: NULA.
+
+LINEA DE TIEMPO  (horas en UTC)
+--------------------------------------------------------------------------------
+2026-08-12  Shodan ve en esta direccion un balanceador de carga de AWS
+   a 08-17  (awselb/2.0; banners del 12, 14 y 17-08, puertos 443 y 80). Es OTRO
+            cliente de AWS. Entre el 17-08 y el 15-09 no hay banners: no se
+            sabe quien uso la direccion en ese lapso.
+2026-09-15  20:47. Primer banner de Shodan con el directorio abierto ("Directory
+            listing for /", 12 entradas). Ya estan c2_modules/, transfer/,
+            payload.bin, .bash_history y los dos logs HTTP.
+2026-09-21  15:40. Segundo banner (14 entradas). Nuevas: usermode_font_driver.exe
+            y BACKUP/.
+2026-09-21  19:10. @Yusufcancakiir publica el hallazgo en X.
+2026-09-21  ~20:30. Intellroom contrasta el post con datos pasivos (esta ficha).
+            Una respuesta al post (cuenta no evaluada) dice que los dos ultimos
+            hallazgos de este investigador ya estaban caidos cuando llego a
+            verlos. NO verificado, pero coincide con lo efimero de este tipo de
+            infraestructura.
+
+--------------------------------------------------------------------------------
+1. LO QUE NO ES UN IOC  (leer antes que las tablas)
+--------------------------------------------------------------------------------
+
+  api.telegram.org  ->  SERVICIO LEGITIMO ABUSADO: NO SE BLOQUEA EN BLOQUE
+
+  Es el punto de enlace de la API de bots de Telegram y lo usan millones de
+  aplicaciones legitimas. Que el codigo del operador lo use para exfiltrar no
+  lo convierte en infraestructura maliciosa. Bloquearlo en toda una
+  organizacion es una decision de politica, no un hallazgo de esta ficha. Se
+  detecta por COMPORTAMIENTO (seccion 7).
+
+  AS16509 y el bloque /16 de AMAZON-GRU  ->  NUNCA SE BLOQUEAN
+
+  Son de Amazon y contienen miles de clientes legitimos. Solo la direccion
+  puntual de la seccion 3 se bloquea, y con fecha de revision.
+
+  "Erebus"  ->  NOMBRE HOMONIMO, NO ES UNA FIRMA
+
+  El nombre lo usa tambien un framework de comando y control para ejercicios
+  ofensivos autorizados, publicado en GitHub (repositorio KKingZero/ARK; la
+  direccion KKingZero/Erebus redirige a el). Se leyo su README: su servidor es
+  Go, su implante principal esta en C y habla protobuf sobre HTTPS o DNS con
+  AES-256-GCM. No coincide con
+  lo que describe el post (servidor Python, implante Rust, TCP/8080 con JSON +
+  XOR). No hay evidencia de relacion. NO usar el nombre para atribuir ni para
+  escribir reglas.
+
+  .bash_history, .bashrc, .profile, .bash_logout, .ssh/, .cache/, .local/  ->
+  ARCHIVOS DEL HOME DEL SERVIDOR EXPUESTO, NO FIRMAS
+
+  Es el directorio de usuario Linux del servidor expuesto, servido por
+  descuido. No van a aparecer en el equipo de ninguna victima.
+
+  c2_modules/, transfer/, BACKUP/, http-server-80.log, http-server-8080.log  ->
+  NOMBRES EN EL SERVIDOR EXPUESTO, NO FIRMAS
+
+  Describen como trabaja el operador, no que dejaria en una victima. Sirven para
+  entender el caso, no para escribir una regla.
+
+  "SimpleHTTP/0.6 Python/3.14.4" y "Directory listing for /"  ->  NO ES UN IOC
+
+  Es el banner del servidor de archivos que trae Python (python -m http.server).
+  Lo usan millones de servidores de desarrollo legitimos. Sirve para encontrar
+  directorios abiertos, no para acusar a un servidor concreto.
+
+  Puertos 80 y 8080  ->  NO SON FIRMA POR SI SOLOS
+
+  Son puertos de uso corriente para HTTP. Lo llamativo es trafico que NO sea HTTP
+  en el 8080 hacia la direccion de la seccion 3, no el puerto en si.
+
+  fontdrvhost.exe ("Usermode Font Driver Host")  ->  ES EL PROCESO LEGITIMO
+
+  El nombre usermode_font_driver.exe recuerda al componente legitimo de Windows
+  fontdrvhost.exe, que vive en System32 y esta firmado por Microsoft. No
+  confundir ni bloquear el legitimo.
+
+  Fragmentos del token de Telegram  ->  NO SE PUBLICAN
+
+  El autor del post publico el token truncado. Intellroom no lo reconstruye, no
+  lo usa y no lo reproduce: un token completo daria control del bot.
+
+--------------------------------------------------------------------------------
+2. EL LISTADO DE LA RAIZ  (Shodan, 15-09 y 21-09-2026, puerto 80)
+--------------------------------------------------------------------------------
+
+  Entrada                     15-09   21-09   Lo que dice el post
+  usermode_font_driver.exe      --      SI    hash publicado; implante Windows
+                                              (presumiblemente el de Rust)
+  payload.bin                   SI      SI    hash publicado
+  c2_modules/                   SI      SI    no la nombra; por el nombre, los
+                                              modulos del servidor de control
+  transfer/                     SI      SI    no la nombra
+  BACKUP/                       --      SI    no la nombra
+  http-server-80.log            SI      SI    "rastros de desarrollo" (por nombre)
+  http-server-8080.log          SI      SI    idem
+  .bash_history                 SI      SI    la menciona
+  .bash_logout, .bashrc         SI      SI    home de un usuario Linux sin
+  .profile, .ssh/, .cache/      SI      SI    sanear (servido por descuido)
+  .local/                       SI      SI
+
+  Observaciones (interpretacion de Intellroom, no del post):
+  - agente.ps1 NO aparece en la raiz y su ubicacion se desconoce: podria estar en
+    c2_modules/, transfer/ o BACKUP/ (Shodan no lista subcarpetas) o ya no estar.
+  - Los logs http-server-80.log y http-server-8080.log sugieren que el operador
+    levanto servidores de archivos en ambos puertos. El post ubica el canal de
+    control en el 8080, asi que ese puerto pudo servir HTTP en un momento y el
+    protocolo propio en otro. Shodan nunca vio abierto el 8080 (solo 80 y 443 en
+    5 banners) y no se abrieron los logs. Hipotesis, no dato.
+  - Que usermode_font_driver.exe y BACKUP/ aparezcan despues del 15-09 indica
+    trabajo en curso durante la ventana de exposicion.
+
+--------------------------------------------------------------------------------
+3. INDICADORES DE COMPROMISO (IOCs)
+--------------------------------------------------------------------------------
+
+[Red]
+54[.]94[.]226[.]216      Servidor que aloja el material: directorio abierto y,
+                         segun el investigador, canal de control. Instancia EC2 de AWS
+                         Sao Paulo (AS16509). Puertos: 80/tcp (directorio
+                         abierto, visto por Shodan) y 8080/tcp (canal de control
+                         segun el post; Shodan no lo vio).
+
+[SHA-256 -- huellas segun la fuente, no verificadas por Intellroom]
+75bc48f0697f1d593c0533844917ef5a5c36d194fb7d9f78bc073dadc4cb7e16   usermode_font_driver.exe
+44e4539c1ca0c7777637aa15878006b86d11b745714cc354b0a3dace4fa4e5a1   payload.bin
+817d6887da9aaacf14a6523a875bd6cdf45f65b49c2aa7a40c6aa39528a9cccb   agente.ps1
+                         Asignacion archivo-huella tal como la publica el post.
+                         Ninguna tiene reputacion publica al 21-09-2026
+                         (AlienVault OTX: 0 pulsos en las tres).
+
+[Telegram]
+8856141344               ID del bot de exfiltracion (parte numerica del token). El
+                         autor del post publico el token TRUNCADO; Intellroom NO
+                         lo reconstruye ni lo usa.
+
+[Archivos -- nombres que da el investigador]
+usermode_font_driver.exe   implante de Windows (presumiblemente el de Rust)
+payload.bin                carga util; su funcion no se describe
+agente.ps1                 agente PowerShell, version anterior segun el post
+
+--------------------------------------------------------------------------------
+4. EVALUACION DE LA FUENTE Y CONFIANZA  (Admiralty / ICD 203)
+--------------------------------------------------------------------------------
+
+Originador unico del hallazgo: @Yusufcancakiir (X, investigador independiente).
+Fiabilidad de la fuente: B (habitualmente fiable). Se apoya en su historial y no
+en la insignia de X: dos hallazgos suyos anteriores ya estan en este repositorio
+y ninguno fue contradicho. El del 14-09 (OpenDir_Operador_SurAsia) se verifico de
+forma independiente por WHOIS/ASN; el del 09-09 (Pfcloud_OpenDir_Staging)
+coincidio con lo que Intellroom habia medido en Shodan. No se califica A: son dos
+casos.
+
+  Afirmacion                                        Cred.  Base
+  El servidor con directorio abierto existe           1    post + banners Shodan
+                                                           (15-09 y 21-09)
+  Estan los nombres usermode_font_driver.exe,         1    listado de Shodan
+    payload.bin y .bash_history
+  Se agregaron 2 entradas entre el 15 y el 21-09      2    solo Shodan (2 banners)
+  Desarrollo por etapas (agente PowerShell            3    solo el post; el cambio
+    antiguo, luego Rust + Python)                          de Shodan prueba actividad
+  Hay servidor Python, implante Rust, agente          3    solo el post; c2_modules/
+    PowerShell y codigo de exfiltracion Telegram           es consistente
+  Los tres SHA-256 corresponden a esos archivos       3    solo el post; sin
+                                                           reputacion publica
+  Canal: TCP/8080, JSON con prefijo, XOR simple       3    solo el post; Shodan no
+                                                           vio el 8080
+
+  Calificaciones: B1 (existencia y nombres), B2 (entradas agregadas), B3 (el
+  resto). Los banners de Shodan son datos automaticos, independientes del post en
+  cuanto a la observacion; el investigador pudo llegar por un motor de escaneo
+  parecido, asi que no lo son en cuanto al descubrimiento. Shodan corrobora el
+  directorio y los nombres, no que el material sea un C2.
+
+  Juicio 1: es MUY PROBABLE que el 21-09-2026 la direccion sirviera un directorio
+  abierto con el material descrito. Confianza ALTA (post + Shodan).
+  Juicio 2: es PROBABLE que ese material este en desarrollo activo: se agregaron
+  dos entradas entre el 15 y el 21-09. Confianza MEDIA (el cambio lo ve un solo
+  sistema; que sean "etapas" de un C2 solo lo dice el post).
+  Juicio 3: no hay base para juzgar el proposito ni si existen victimas. Una
+  intrusion criminal, un ejercicio ofensivo autorizado y un laboratorio de
+  desarrollo son compatibles con lo observado.
+
+--------------------------------------------------------------------------------
+5. ANALISIS  (interpretacion de Intellroom, separada de lo verificado)
+--------------------------------------------------------------------------------
+
+5.1 Error operativo repetido. Quien opera el servidor dejo su directorio de
+    trabajo servido con python -m http.server. Es el tercer caso de este
+    investigador que Intellroom registra en 12 dias (09-09 Pfcloud, 14-09
+    SurAsia, hoy). En los tres el servidor de archivos es el mismo
+    (SimpleHTTP/0.6) y en este y en el de SurAsia la version de Python coincide
+    (3.14.4), pero es una version reciente y comun: NO se establece relacion.
+    Distinto proveedor, pais y herramientas.
+5.2 Direccion de nube reasignable. La ultima vez que Shodan la vio como
+    balanceador de otro cliente de AWS fue el 17-08, y puede volver a asignarse a
+    un tercero cuando quien la usa libere la instancia. Un bloqueo que se olvida
+    termina castigando a un tercero inocente: por eso el bloqueo lleva fecha de
+    revision (seccion 8).
+5.3 Desarrollo activo. usermode_font_driver.exe no estaba el 15-09 y si el 21-09.
+    Junto con el post (dos etapas de desarrollo) sugiere que el implante de Rust
+    es reciente. Para un defensor significa que las huellas de hoy pueden no
+    servir manana: cada compilacion nueva cambia el SHA-256. Vale mas el
+    comportamiento (seccion 7) que la huella.
+5.4 Nombre del implante. usermode_font_driver.exe imita el vocabulario de
+    fontdrvhost.exe ("Usermode Font Driver Host"), un proceso legitimo presente
+    en todo Windows moderno. Es una inferencia por el nombre (confianza BAJA): el
+    post no dice que sea un disfraz. Renombrar binarios como procesos de Windows
+    es una tecnica comun y no es firma de ningun actor.
+5.5 Senales debiles de contexto regional (NO son atribucion). La direccion esta
+    en la region AWS de Sao Paulo y el agente PowerShell se llama "agente.ps1",
+    palabra que existe en espanol y en portugues. Juntas no alcanzan para hablar
+    de objetivo ni de origen; se dejan por si aparece un segundo dato. Confianza
+    BAJA.
+
+--------------------------------------------------------------------------------
+6. MITRE ATT&CK  (verificado en attack.mitre.org el 21-09-2026, matriz v19.2)
+--------------------------------------------------------------------------------
+Solo tecnicas que respalda el post; lo inferido va marcado. Nombre y tactica tal
+como figuran en la matriz v19.2, vigente desde el 28-04-2026 (en ella, TA0005 se
+llama Stealth).
+
+  ID          Tecnica                                         Tactica
+  T1059.001   Command and Scripting Interpreter: PowerShell   Execution
+              agente.ps1, agente PowerShell (post)
+  T1095       Non-Application Layer Protocol                  Command and Control
+              protocolo propio sobre TCP: JSON con prefijo de largo (post)
+  T1571       Non-Standard Port                               Command and Control
+              protocolo no HTTP en un puerto que suele llevar HTTP (post + inferencia)
+  T1132.002   Data Encoding: Non-Standard Encoding            Command and Control
+              "capa XOR simple" (post). XOR es ofuscacion, no cifrado robusto
+  T1573.001   Encrypted Channel: Symmetric Cryptography       Command and Control
+              lectura alternativa de la MISMA capa XOR (una sola observacion)
+  T1567       Exfiltration Over Web Service                   Exfiltration
+              codigo de exfiltracion por Telegram (post)
+  T1587.001   Develop Capabilities: Malware                   Resource Development
+              C2 e implantes propios, con rastros de desarrollo (post)
+  T1036       Masquerading                                    Stealth
+              INFERIDO por el nombre usermode_font_driver.exe (confianza BAJA)
+
+  No se asigna ID a la infraestructura en AWS: no se sabe si el operador la
+  alquilo (T1583.003) o la comprometio. Ningun ID fue inventado: los ocho se
+  comprobaron contra la matriz en linea.
+
+--------------------------------------------------------------------------------
+7. DETECCION Y CAZA  (hipotesis a validar antes de desplegar; no son reglas)
+--------------------------------------------------------------------------------
+Aviso: lo que sigue son ideas de busqueda derivadas de esta ficha, redactadas con
+apoyo de IA. NO se incluye ninguna regla lista para usar: el post no da el ancho
+del prefijo de largo, el orden de bytes ni la clave XOR, asi que no hay firma de
+trafico fiable. Validar cada idea en su entorno antes de desplegarla.
+
+Ventana sugerida: desde el 15-09-2026 (primer indicio de este material); el
+17-08-2026 es el limite conservador, porque antes la direccion era de otro cliente.
+
+Trafico
+  - Cualquier conexion saliente a 54[.]94[.]226[.]216, en cualquier puerto.
+  - Sesiones TCP hacia el exterior por el 8080 que NO sean HTTP y se repitan a
+    intervalos regulares (beacon). En Zeek: conn.log con el campo service vacio
+    (mucho ruido: acotar por destino y por horario antes de alertar).
+  - Descargas HTTP contra una direccion numerica, sin nombre de host y sin TLS,
+    por 80 u 8080, cuyo destino sea un .exe o un .bin.
+  - Conexiones a api.telegram.org desde procesos que no son un cliente de
+    Telegram (telemetria de conexiones del EDR). Con inspeccion TLS: rutas que
+    empiecen por /bot8856141344: .
+Equipos
+  - Procesos o archivos llamados usermode_font_driver.exe. El legitimo es
+    fontdrvhost.exe, en System32 y firmado por Microsoft.
+  - Creacion o ejecucion de agente.ps1 y de payload.bin (Sysmon EID 1 y 11;
+    registro de bloques de script de PowerShell, EID 4104).
+  - Los tres SHA-256 de la seccion 3 en el inventario del EDR o antivirus.
+
+--------------------------------------------------------------------------------
+8. ACCIONES RECOMENDADAS
+--------------------------------------------------------------------------------
+  1. BLOQUEAR 54[.]94[.]226[.]216 en salida (firewall, proxy, EDR), cualquier
+     puerto, con FECHA DE REVISION a los 30 dias (21-10-2026). Es una direccion
+     de nube: puede reasignarse, y hasta el 17-08 la vieron como balanceador de
+     otro cliente de AWS.
+  2. BUSCAR HACIA ATRAS conexiones a esa direccion desde el 15-09-2026, primer
+     indicio del material; el 17-08 es el limite conservador. Un acierto entre el
+     17-08 y el 15-09 NO prueba contacto con este material: no hay banners de ese
+     lapso. Sin coincidencias = sin evidencia de contacto.
+  3. Cargar los tres SHA-256 en la lista de bloqueo del EDR o antivirus y barrer
+     el parque. Sin coincidencias = sin evidencia de que estas muestras llegaran.
+  4. Cazar por comportamiento (seccion 7): trafico que no es HTTP en el 8080,
+     api.telegram.org desde procesos ajenos a Telegram, y el nombre
+     usermode_font_driver.exe fuera de System32.
+  5. NO bloquear api.telegram.org ni bloques de AWS a partir de esta ficha.
+  6. Opcional, y lo decide quien reporte: avisar a AWS (contacto de abuso que
+     figura en ARIN para la asignacion: trustandsafety@support.aws.com) y a
+     Telegram (ID de bot 8856141344). Bajar el servidor es la mitigacion mas
+     efectiva para todos.
+  7. Volver a mirar en 24-48 horas si el servidor sigue arriba: este tipo de
+     infraestructura suele desaparecer rapido.
+
+--------------------------------------------------------------------------------
+9. LO QUE NO SE PUDO VERIFICAR  (declarado, no omitido)
+--------------------------------------------------------------------------------
+  - El contenido de cualquier archivo. No se descargo ni se abrio nada, y el
+    servidor no fue contactado. Los SHA-256 son los del post.
+  - Que archivo es cual. El post da nombre y huella pero no dice cual es el
+    implante de Rust; la asignacion "usermode_font_driver.exe = implante" es por
+    el nombre.
+  - La reputacion de las huellas: AlienVault OTX no tiene pulsos para ninguna de
+    las tres. abuse.ch (MalwareBazaar, ThreatFox, URLhaus) y VirusTotal no se
+    pudieron consultar desde este entorno (piden sesion o clave). Una busqueda
+    web abierta tampoco devolvio nada. Es ausencia de dato, no dato de ausencia.
+  - El canal de control en el 8080: Shodan nunca lo vio abierto. No se sabe si
+    estaba cerrado, filtrado, sin escanear o si el protocolo propio no responde
+    a un saludo generico.
+  - El estado actual del servidor. Intellroom no lo sondeo. Shodan lo vio en
+    linea a las 15:40 UTC del 21-09; desde entonces, sin datos.
+  - El token y el bot de Telegram: solo se conoce el ID numerico; no se sabe si
+    el bot esta activo ni a quien pertenece.
+  - Victimas y objetivos: el post no reporta ninguno.
+  - Si el servidor es del operador o un tercero comprometido: el registro de ARIN
+    (AMAZON-GRU) es generico de Amazon y no lo dice.
+  - El proposito: criminal, ejercicio ofensivo autorizado o laboratorio.
+  - Atribucion: ninguna. Nada aqui apunta a un actor o campana nombrada.
+
+--------------------------------------------------------------------------------
+10. REFERENCIAS
+--------------------------------------------------------------------------------
+  Post original:  https://x.com/Yusufcancakiir/status/2102113345306316828
+  Shodan (host):  https://www.shodan.io/host/54.94.226.216
+  ARIN RDAP:      https://rdap.arin.net/registry/ip/54.94.226.216
+  MITRE ATT&CK:   https://attack.mitre.org/
+  Casos previos del mismo investigador en este repositorio: Pfcloud_OpenDir_Staging
+  y OpenDir_Operador_SurAsia (carpeta de campanas).
+  Evidencia cruda de esta ficha: evidencia_shodan_banner.json, los dos
+  listado_shodan_*.html y evidencia.sha256 (sumas de verificacion).
