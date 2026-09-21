@@ -1,0 +1,62 @@
+================================================================================
+  IOCs / ACCIONES -- presunto C2 "Erebus" en directorio abierto (AWS Sao Paulo)
+  54[.]94[.]226[.]216  --  AS16509 Amazon EC2 (sa-east-1)  --  dir. abierto :80
+  Fecha: 2026-09-21  |  TLP:CLEAR  |  Fuente: Intellroom CTI (intellroom/IoC)
+  Ficha completa: Erebus_C2_OpenDir_21092026.txt
+  Origen: X / @Yusufcancakiir (21-09-2026), contrastado de forma pasiva con
+  Shodan (banners del 15-09 y 21-09-2026). Sin descargas ni sondeo activo.
+  No se atribuye a ningun actor ni campana. Sin victimas identificadas.
+================================================================================
+
+INDICADORES PARA BLOQUEO RAPIDO
+
+[BLOQUEAR]  confianza MEDIA (aloja el material descrito; el uso como C2 solo lo afirma el post)
+54[.]94[.]226[.]216           # servidor que aloja el material: directorio abierto
+                              # (:80) y, segun el investigador, canal de control en
+                              # TCP/8080. Instancia EC2 en AWS Sao Paulo: direccion
+                              # de nube publica, NO es hosting compartido, pero PUEDE
+                              # REASIGNARSE. La ultima vez que Shodan la vio como
+                              # balanceador de OTRO cliente de AWS fue el 2026-08-17.
+                              # REVISAR ESTE BLOQUEO A LOS 30 DIAS (2026-10-21).
+
+[BLOQUEAR]  SHA-256, confianza BAJA (una sola fuente, sin reputacion publica)
+75bc48f0697f1d593c0533844917ef5a5c36d194fb7d9f78bc073dadc4cb7e16   # usermode_font_driver.exe (implante Windows, por el nombre)
+44e4539c1ca0c7777637aa15878006b86d11b745714cc354b0a3dace4fa4e5a1   # payload.bin (carga util; funcion no descrita)
+817d6887da9aaacf14a6523a875bd6cdf45f65b49c2aa7a40c6aa39528a9cccb   # agente.ps1 (agente PowerShell, version anterior)
+                              # Sin reputacion publica al 2026-09-21 (OTX: 0 pulsos).
+                              # Se bloquean igual: una huella equivocada no rompe nada.
+                              # Una huella nueva del mismo implante NO queda cubierta.
+
+[DETECTAR -- en equipos]
+Proceso o archivo usermode_font_driver.exe   # el legitimo es fontdrvhost.exe, en System32 y firmado por Microsoft
+Creacion o ejecucion de agente.ps1 y de payload.bin   # Sysmon EID 1 y 11; PowerShell EID 4104
+
+[DETECTAR -- en trafico]
+Conexion saliente a 54[.]94[.]226[.]216, cualquier puerto   # historico desde 2026-09-15 (limite conservador 2026-08-17)
+Sesion TCP no HTTP por el 8080 hacia el exterior, periodica   # posible beacon; no hay firma fiable
+Ruta /bot8856141344: hacia api.telegram.org (con inspeccion TLS)   # bot de exfiltracion, ID 8856141344
+
+[VIGILAR -- NO bloquear ciegamente]
+api.telegram.org              # servicio legitimo abusado para exfiltrar. Bloquearlo
+                              # en bloque es decision de politica de cada organizacion,
+                              # no un hallazgo. Detectar por comportamiento: procesos
+                              # que no son Telegram hablando con el.
+AS16509                       # Amazon (EC2, sa-east-1). Nunca bloquear el ASN ni el
+                              # bloque /16 de AMAZON-GRU.
+
+[NO ES UN IOC -- no crear reglas sobre esto]
+"Erebus" (nombre)             # homonimo: existe un framework de comando y control
+                              # ofensivo autorizado con ese nombre (repositorio
+                              # KKingZero/ARK; KKingZero/Erebus redirige a el), con
+                              # otro stack (Go y C, protobuf sobre HTTPS o DNS).
+                              # Sin relacion evidenciada.
+fontdrvhost.exe               # proceso LEGITIMO de Windows (Usermode Font Driver Host).
+.bash_history, .bashrc, .profile, .bash_logout, .ssh/, .cache/, .local/
+                              # home del servidor expuesto: no van a estar en ninguna victima.
+c2_modules/, transfer/, BACKUP/, http-server-80.log, http-server-8080.log
+                              # carpetas y logs del servidor expuesto.
+"SimpleHTTP/0.6 Python/3.14.4"   # banner del servidor de archivos de Python, no del malware.
+Puertos 80 y 8080             # de uso corriente; no son firma por si solos.
+Token de Telegram (fragmentos)   # NO se publican; solo el ID numerico del bot.
+
+Las ideas de deteccion son hipotesis: validar antes de desplegar (redactado con apoyo de IA).
