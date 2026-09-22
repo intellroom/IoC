@@ -1,6 +1,7 @@
 ================================================================================
   IOCs PARA BLOQUEO -- CrediGestion "Factura Vencida" via Kali365 PhaaS (Power BI)
-  Defanged: [.] -> .   ·   Sin datos de victima (solo infraestructura del actor).
+  Defanged: [.] -> .
+  Sin datos de victima (solo infraestructura del actor).
 ================================================================================
 
 [BLOQUEAR -- dominios del actor]  DNS / proxy / URL filter
