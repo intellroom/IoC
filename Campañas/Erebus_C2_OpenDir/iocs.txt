@@ -1,11 +1,5 @@
 ================================================================================
   IOCs / ACCIONES -- presunto C2 "Erebus" en directorio abierto (AWS Sao Paulo)
-  54[.]94[.]226[.]216  --  AS16509 Amazon EC2 (sa-east-1)  --  dir. abierto :80
-  Fecha: 2026-09-21  |  TLP:CLEAR  |  Fuente: Intellroom CTI (intellroom/IoC)
-  Ficha completa: Erebus_C2_OpenDir_21092026.txt
-  Origen: X / @Yusufcancakiir (21-09-2026), contrastado de forma pasiva con
-  Shodan (banners del 15-09 y 21-09-2026). Sin descargas ni sondeo activo.
-  No se atribuye a ningun actor ni campana. Sin victimas identificadas.
 ================================================================================
 
 INDICADORES PARA BLOQUEO RAPIDO
