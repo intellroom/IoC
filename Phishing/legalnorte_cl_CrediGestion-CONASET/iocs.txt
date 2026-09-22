@@ -1,10 +1,6 @@
 ================================================================================
   IOCs PARA BLOQUEO -- Phishing 2a oleada "legalnorte.cl"
-  Senuelos: CrediGestion (factura vencida) + CONASET (multa de transito)
-  Deteccion: 2026-08-31 / 2026-09-01  |  TLP:CLEAR  |  Fuente: Intellroom CTI (intellroom/IoC)
   Defanged: reemplazar  [.] -> .   y   hxxp -> http   al aplicar.
-  Organizacion receptora: REDACTADA. Analisis completo en 01092026.txt / README.md
-  NOTA: esta oleada ENTREGA MALWARE en desktop (a diferencia de la 1a oleada).
 ================================================================================
 
 [BLOQUEAR -- alta confianza]  dominios REGISTRADOS por el atacante (DNS/proxy)

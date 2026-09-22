@@ -1,8 +1,6 @@
 ================================================================================
   IOCs PARA BLOQUEO -- Phishing "Factura Vencida" (suplantacion CrediGestion)
-  Fecha: 2026-08-27  |  TLP:CLEAR  |  Fuente: Intellroom CTI (intellroom/IoC)
   Defanged: reemplazar  [.] -> .   y   hxxp -> http   al aplicar.
-  Organizacion receptora: REDACTADA. Analisis completo en 28082026.txt / README.md
 ================================================================================
 
 [BLOQUEAR -- alta confianza]  URL filter / proxy / WAF

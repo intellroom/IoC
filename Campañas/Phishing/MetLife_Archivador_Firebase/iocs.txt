@@ -1,10 +1,6 @@
 ================================================================================
   IOCs PARA BLOQUEO -- "MetLife | Archivador" alojado en Firebase
-  Fecha: 2026-09-09  |  TLP:CLEAR  |  Fuente: Intellroom CTI (intellroom/IoC)
-  Origen del dato: CSIRT Nacional de Chile, alerta ACF26-01185 (2026-09-08),
-                   verificado y ampliado por Intellroom el 2026-09-09.
   Defanged: reemplazar  [.] -> .  y  hxxp -> http  al aplicar.
-  Ficha completa: MetLife_Archivador_Firebase_09092026.txt
 ================================================================================
 
 [BLOQUEAR -- verificado]  DNS / proxy / URL filter   (SUBDOMINIO exacto)

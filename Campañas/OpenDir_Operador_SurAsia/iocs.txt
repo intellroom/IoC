@@ -1,12 +1,5 @@
 ================================================================================
   IOCs / ACCIONES -- Servidor de operador con toolkit ofensivo multi-producto
-  66.179.31[.]191 : 8898  --  AS399629 BL Networks (Singapur)  --  dir. abierto
-  Fecha: 2026-09-15  |  TLP:CLEAR  |  Fuente: Intellroom CTI (intellroom/IoC)
-  Ficha completa: OpenDir_Operador_SurAsia_14092026.txt
-  Origen: X / @Yusufcancakiir (14-09-2026), verificado de forma independiente
-  y ampliado por Intellroom (15-09-2026: el directorio sigue activo, 557
-  entradas en la raiz vs. lo parcial visible en las capturas originales).
-  No se atribuye a ningun actor ni campana nombrada.
 ================================================================================
 
 [BLOQUEAR]  confianza ALTA

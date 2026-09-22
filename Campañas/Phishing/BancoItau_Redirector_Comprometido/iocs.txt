@@ -1,10 +1,6 @@
 ================================================================================
   IOCs PARA BLOQUEO -- Phishing Banco Itau Chile (redirector en sitio comprometido)
-  Fecha: 2026-09-09  |  TLP:CLEAR  |  Fuente: Intellroom CTI (intellroom/IoC)
-  Origen del dato: CSIRT Nacional de Chile, alerta ACF26-01184 (2026-09-08),
-                   verificado y clasificado por Intellroom el 2026-09-09.
   Defanged: reemplazar  [.] -> .  y  hxxp -> http  al aplicar.
-  Ficha completa: BancoItau_Redirector_Comprometido_09092026.txt
 ================================================================================
 
 [BLOQUEAR -- verificado]  DNS / proxy / URL filter / EDR   (bloquear por DOMINIO)

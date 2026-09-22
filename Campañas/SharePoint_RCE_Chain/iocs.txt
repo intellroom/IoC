@@ -1,9 +1,6 @@
 ================================================================================
   IOCs / ACCIONES -- SharePoint on-premise: cadena de RCE no autenticada
   CVE-2026-55040 (bypass JWT) + CVE-2026-63520 (RCE via BCS)
-  Fecha: 2026-08-27  |  TLP:CLEAR  |  Fuente: Intellroom CTI (intellroom/IoC)
-  Ficha completa: SharePoint_RCE_Chain_27082026.txt
-  *** SharePoint Online / Microsoft 365 NO afectado. Solo on-premise. ***
 ================================================================================
 
 [PARCHEAR -- accion primaria; esta cadena NO tiene blocklist util]

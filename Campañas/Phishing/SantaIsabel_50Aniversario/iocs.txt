@@ -1,8 +1,6 @@
 ================================================================================
   IOCs PARA BLOQUEO -- Phishing "Santa Isabel 50 aniversario" (robo de tarjeta)
-  Fecha: 2026-08-31  |  TLP:CLEAR  |  Fuente: Intellroom CTI (intellroom/IoC)
   Defanged: reemplazar  [.] -> .  y  hxxp -> http  al aplicar.
-  Ficha completa: SantaIsabel_50Aniversario_31082026.txt
 ================================================================================
 
 [BLOQUEAR -- verificado]  DNS / proxy / URL filter / EDR   (bloquear por DOMINIO)
