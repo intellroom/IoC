@@ -1,14 +1,6 @@
 ================================================================================
   IOCs / ACCIONES -- "Potencial campaña ShinyHunters", 33 dominios .report
   que copian el identificador real de un tenant Okta
-  Fecha: 2026-09-17  |  TLP:CLEAR  |  Fuente: Intellroom CTI (intellroom/IoC)
-  Ficha completa: ShinyHunters_Okta_Report_Domains_17092026.txt
-  Origen: X / @0x534c (Steven Lim, 17-09-2026) -- "Potential ShinyHunters
-  campaign" (atribucion del propio autor, no confirmada). Verificado y
-  ampliado de forma independiente por Intellroom (17-09-2026): de 317
-  dominios .report entregados, 33 confirman por DNS propio una coincidencia
-  real con la celda especifica de un tenant Okta (no con el front-door
-  generico, que responde para cualquier texto -- ver ficha completa, sec. 2).
 ================================================================================
 
 [BLOQUEAR]  confianza MEDIA -- son dominios senuelo sin uso legitimo posible

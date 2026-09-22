@@ -1,17 +1,6 @@
 ================================================================================
   IOCs PARA BLOQUEO -- Suplantacion Poder Judicial de Chile -> Mispadu
-  Fecha: 2026-09-14  |  TLP:CLEAR  |  Fuente: Intellroom CTI (intellroom/IoC)
-  Contexto: marca alertada por el CSIRT Nacional de Chile el 2026-09-08 (junto a
-           Itau/MetLife/Lider/Outlook/GTD Telsur), sin IOC publicado para esta.
-  Atribucion: Mispadu (grupo Malteiro / SAMBA SPIDER) -- confianza ALTA por
-             coincidencia de rutas de backend con la firma que documenta
-             any.run/malware-trends/mispadu/ (ver ficha, seccion 4).
   Defanged: reemplazar  [.] -> .  y  hxxp -> http  al aplicar.
-  Ficha completa: PoderJudicial_Citacion_Mispadu_14092026.txt
-  ACTUALIZACION 2026-09-14: se agrego pdf-acess[.]online, mismo operador
-  (WHOIS identico) y MISMO servidor de C2 que pjud.online.
-  SEGUNDA ACTUALIZACION 2026-09-14: reverse IP lookup encontro un cuarto
-  dominio, kucoins-signin[.]com (senuelo de exchange cripto, MISMO cert).
 ================================================================================
 
 [BLOQUEAR -- verificado]  DNS / proxy / URL filter / EDR   (dominio senuelo/entrega)

@@ -1,8 +1,6 @@
 ================================================================================
   IOCs PARA BLOQUEO -- Conversores de PDF falsos -> ClickFix -> Infostealers
-  Fecha: 2026-08-27  |  TLP:CLEAR  |  Fuente: Intellroom CTI (intellroom/IoC)
   Defanged: reemplazar  [.] -> .  al aplicar.
-  Ficha completa: Conversores_PDF_Falsos_27082026.txt
 ================================================================================
 
 [BLOQUEAR -- verificados]  DNS / proxy / URL filter

@@ -1,8 +1,6 @@
 ================================================================================
   IOCs PARA BLOQUEO -- Smishing "abono / compensacion" -> casino ilegal (Chile)
-  Fecha: 2026-09-05  |  TLP:CLEAR  |  Fuente: Intellroom CTI (intellroom/IoC)
   Defanged: reemplazar  [.] -> .  y  hxxp -> http  al aplicar.
-  Ficha completa: Smishing_Abono_Compensacion_CL_05092026.txt
 ================================================================================
 
 [BLOQUEAR -- verificado vivo 2026-09-05]  DNS / proxy / URL filter  (por DOMINIO)

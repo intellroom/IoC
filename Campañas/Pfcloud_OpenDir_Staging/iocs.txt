@@ -1,14 +1,5 @@
 ================================================================================
   IOCs / ACCIONES -- Servidor de operador con kit contra FortiGate 60F
-  176.65.148.208 : 8080  --  AS51396 Pfcloud UG  --  directorio abierto
-  Fecha: 2026-09-11  |  TLP:CLEAR  |  Fuente: Intellroom CTI (intellroom/IoC)
-  Ficha completa: Pfcloud_OpenDir_Staging_10092026.txt
-  *** Actualizacion v2: el contenido del directorio SI se obtuvo (banner Shodan).
-      Los archivos NO se descargaron. No se atribuye actor. ***
-  *** Actualizacion v3 (11-09): corroboracion externa de @Yusufcancakiir (X,
-      09-09-2026), que leyo el contenido. Suma CVEs, componente QNAP y foco en
-      documentos financieros. No verificado por Intellroom de primera mano.
-      SIGUE SIN HABER HASH de muestra en ninguna fuente (OTX/ThreatFox/VT/externo). ***
 ================================================================================
 
 [BLOQUEAR]  confianza ALTA
