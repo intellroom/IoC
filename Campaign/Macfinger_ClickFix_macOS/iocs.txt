@@ -5,85 +5,45 @@ Defanged: los dominios y URLs van con [.] y hxxp.
 
 INDICADORES PARA BLOQUEO RAPIDO
 
-[BLOQUEAR]  confianza ALTA -- servidores de descarga del payload (C2)
-45[.]131[.]215[.]56           # C2 de la compilacion VIGENTE (b96ad0785c08).
-                              # hxxp://45[.]131[.]215[.]56/8031e818c7a46?force=1
-                              # AS203273 NetCrafters OU. Observado por Intellroom.
-45[.]150[.]33[.]128           # C2 de la compilacion anterior (4f9db6afd06a).
-                              # hxxp://45[.]150[.]33[.]128/92961f75b259df2?force=1
-                              # (y /d4c8083a7d97, /2286de55f9afd segun SANS)
-                              # AS210644 Aeza Group, sancionado por OFAC.
-                              # Publicado por SANS ISC y confirmado por Intellroom
-                              # dentro del propio payload.
-                              # REVISAR AMBOS BLOQUEOS A LOS 60 DIAS (2026-11-22).
-
-[BLOQUEAR]  confianza ALTA -- dominios del cargador (desechables, sin terceros)
-misty-whirl-beacon-doa[.]life       # tercer cargador, visto el 2026-09-23 21:02 UTC. 185.173.144.58
-                                    # AS203273 NetCrafters OU. Coexiste con el siguiente.
-ashen-trace-zephyr-draeix[.]life    # activo al 2026-09-23 (visto 20:36 y de nuevo despues). 138.124.60.214
-velvet-otter-glagceis[.]life        # anterior, el que publico SANS. 62.60.155.142
-skaedbraearaquiet[.]life            # misma familia. 193.188.22.246
-
-[BLOQUEAR]  confianza MEDIA
-95[.]163[.]153[.]80           # puerto 8133. Solo lo publica SANS, NO verificado por
-                              # Intellroom. AS210644 Aeza Group.
-beroniw[.]com                 # redirector del segundo inyector, ruta /hwkOP5. Hace
-                              # cloaking. Bloquear el dominio, NUNCA el rango de
-                              # Cloudflare que lo sirve.
-
-[BLOQUEAR]  SHA-256 -- payload del navegador, verificados por Intellroom
+[BLOQUEAR]
+hxxp://45[.]131[.]215[.]56/8031e818c7a46?force=1                   # C2 vigente
+hxxp://45[.]150[.]33[.]128/92961f75b259df2?force=1                 # C2 anterior
+hxxp://45[.]150[.]33[.]128/d4c8083a7d97?force=1                    # C2 anterior (SANS)
+hxxp://45[.]150[.]33[.]128/2286de55f9afd?force=1                   # C2 anterior (SANS)
+hxxps://beroniw[.]com/hwkOP5                                       # redirector
+45[.]131[.]215[.]56                                                # C2 vigente, AS203273
+45[.]150[.]33[.]128                                                # C2 anterior, AS210644
+95[.]163[.]153[.]80                                                # puerto 8133 (SANS, sin verificar)
+misty-whirl-beacon-doa[.]life                                      # cargador
+ashen-trace-zephyr-draeix[.]life                                   # cargador
+velvet-otter-glagceis[.]life                                       # cargador
+skaedbraearaquiet[.]life                                           # cargador
+beroniw[.]com                                                      # redirector
 4f9db6afd06aab4045d89a679191e154cc8cd283392d1f3bd16ac31347e1c3ac   # ext-b.4f9db6afd06a.js
 b96ad0785c0861c24cb9bed7fbfb71368748944bd5c74878788dd1f907a866d6   # ext-b.b96ad0785c08.js
-                              # El hash CAMBIA en cada compilacion: estas huellas
-                              # envejecen rapido. Sirven para busqueda retroactiva.
+6606a5f18184b224a56c9cb658fa26f7fce45099da548a30a8db2c5f2c70377c   # payload (SANS)
+9d87b41c2b29ccbeac851b98f1a7dce4ab4781fec0cbc55fa6f93a6299a3d564   # payload (SANS)
+b68cdb1b46502fbce67ce3f8110682936d06afd2116af096e30abd4c8376b6dc   # payload (SANS)
+1a3765e8cb0055ec31693b8f82ce9744106dee08368259661600b072c6805af4   # payload (SANS)
 
-[BLOQUEAR]  SHA-256 -- publicados por SANS ISC, NO contrastados por Intellroom
-6606a5f18184b224a56c9cb658fa26f7fce45099da548a30a8db2c5f2c70377c
-9d87b41c2b29ccbeac851b98f1a7dce4ab4781fec0cbc55fa6f93a6299a3d564
-b68cdb1b46502fbce67ce3f8110682936d06afd2116af096e30abd4c8376b6dc
-1a3765e8cb0055ec31693b8f82ce9744106dee08368259661600b072c6805af4
-                              # SANS asocia el payload final a una variante de
-                              # Atomic macOS Stealer (AMOS).
+Revisar los bloqueos de IP el 2026-11-22.
 
-[DETECTAR -- en equipos macOS]
-Proceso curl con las banderas -kfsSL hacia una IP literal   # descarga del payload
-Archivo oculto de 6 caracteres creado y ejecutado en /tmp   # patron /tmp/.XXXXXX
-Ejecucion de bash sobre un archivo recien creado en /tmp    # cadena curl -> bash -> rm -f
-Uso de history -d y de fc -p /dev/null                      # borrado del historial de shell
-Cadena literal "I am not a robot - reCAPTCHA Verification ID:"   # senuelo del comando
+[DETECTAR]
+curl -kfsSL hacia una IP literal                  # descarga del payload (macOS)
+archivo oculto en /tmp ejecutado con bash         # patron /tmp/.XXXXXX
+history -d  /  fc -p /dev/null                    # borrado de historial
+"I am not a robot - reCAPTCHA Verification ID:"   # senuelo del comando
+/t.js?site=<32 hex>                               # cargador en el navegador
+ext-b.<12 hex>.js  /  ext.<12 hex>.js             # payload, variantes B y A
+POST /collect                                     # telemetria
 
-[DETECTAR -- en navegador / proxy]
-Peticion a /t.js con parametro ?site=<32 hexadecimales>     # cargador de la campana
-Peticion a ext-b.<12 hex>.js o ext.<12 hex>.js              # payload, variantes B y A
-Peticion a t.<12 hex>.js y POST a /collect                  # telemetria de la campana
-Dominios .life de registro reciente sirviendo JavaScript    # heuristica, no firma
+[VIGILAR -- NO bloquear]
+sitios que cargan el script                       # victimas, se avisa
+AS203273  /  AS210644  /  Cloudflare              # no bloquear el ASN completo
 
-[DETECTAR -- en el sitio web propio]
-Etiqueta <script src> hacia un dominio que no es del sitio  # revisar el HTML servido
-Etiqueta <script src="data:text/javascript;base64,...">     # segundo inyector
-Clave __ab_v en localStorage                                # marca del test A/B del kit
+[NO ES UN IOC]
+www[.]gstatic[.]com/recaptcha/                    # recurso legitimo de Google
+Googlebot, GPTBot, ClaudeBot, AhrefsBot           # bots que el kit evade
 
-[VIGILAR -- NO bloquear ciegamente]
-Los sitios que cargan el script      # son PYMEs REALES COMPROMETIDAS. Bloquearlos
-                                     # castiga a la victima y no toca al atacante.
-                                     # Se avisa, no se bloquea.
-AS203273 (NetCrafters OU)            # se bloquean las IPs nombradas, no el ASN.
-AS210644 (Aeza Group)                # idem. Sancionado por OFAC: que su espacio
-                                     # aparezca en la red propia es un hallazgo de
-                                     # cumplimiento, no solo de seguridad.
-Cloudflare                           # nunca el ASN ni el rango.
-www[.]gstatic[.]com/recaptcha/       # recurso LEGITIMO de Google que el kit incrusta.
-
-[NO ES UN IOC -- no crear reglas sobre esto]
-"analytics", __analyticsUrl, __analyticsSite   # el disfraz del kit.
-reCAPTCHA, google.com/intl/*/policies/         # marca y enlaces legitimos suplantados.
-Googlebot, GPTBot, ClaudeBot, AhrefsBot, ...   # aparecen porque el kit los EVADE.
-/tmp, curl, bash                               # normales del sistema por si solos.
-"ClickFix"                                     # nombre de la tecnica, no del actor.
-
-Metodo de enumeracion en urlscan.io:
-  hash:<sha256 del archivo>  (exacto)   o   filename:"ext-b.<12 hex>.js"  (amplio)
-  Los 12 hex del nombre son el prefijo del SHA-256 del propio archivo.
-
-Fuente primaria: SANS ISC, diario 33360 (Brad Duncan, 2026-09-22).
-Las ideas de deteccion son hipotesis: validar antes de desplegar (redactado con apoyo de IA).
+Detalle en Macfinger_ClickFix_macOS_23092026.txt. Fuente primaria: SANS ISC 33360.
+Deteccion: hipotesis a validar antes de desplegar (redactado con apoyo de IA).
