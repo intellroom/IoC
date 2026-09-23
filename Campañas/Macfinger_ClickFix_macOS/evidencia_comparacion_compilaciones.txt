@@ -1,0 +1,37 @@
+EVIDENCIA: las dos compilaciones del payload y la migracion del C2
+Campana Macfinger  ·  Intellroom Threat Intelligence  ·  2026-09-23  ·  TLP:CLEAR
+================================================================================
+
+                        COMPILACION VIEJA            COMPILACION ACTUAL
+  Nombre                ext-b.4f9db6afd06a.js        ext-b.b96ad0785c08.js
+  SHA-256               4f9db6afd06aab4045d89a67     b96ad0785c0861c24cb9bed7
+                        9191e154cc8cd283392d1f3b     fbfb71368748944bd5c74878
+                        d16ac31347e1c3ac             788dd1f907a866d6
+  Tamano                167.174 bytes                192.742 bytes
+  Obtenida de           urlscan.io /responses/       el cargador vigente
+                        (en gzip; hay que            (contacto directo con la
+                        descomprimir)                infraestructura)
+  Vista en              velvet-otter-glagceis[.]life ashen-trace-zephyr-draeix[.]life
+  C2 / payload          45.150.33.128                45.131.215.56
+                        /92961f75b259df2?force=1     /8031e818c7a46?force=1
+  ASN del C2            AS210644 Aeza Group          AS203273 NetCrafters OU
+  Variante base64 -D    no aparece en las cadenas    si
+  /collect              si                           si
+  Cadenas descifradas   451                          423
+
+LO QUE ESTO DEMUESTRA
+  1. En las DOS compilaciones, los 12 hexadecimales del nombre son los 12 primeros
+     del SHA-256 del contenido. La regla no es una coincidencia de un caso.
+  2. La URL del C2 de la compilacion vieja es IDENTICA a una de las publicadas por
+     Brad Duncan en SANS ISC (diario 33360, 2026-09-22). Esto une de forma verificable
+     la campana que Intellroom observo con la que SANS nombro "Macfinger".
+  3. Entre una compilacion y otra, el servidor de descarga cambio de proveedor:
+     de Aeza Group (AS210644, sancionado por OFAC el 2025-07-01) a NetCrafters OU
+     (AS203273). Los dominios del cargador ya estaban en NetCrafters.
+
+METODO (igual en las dos)
+  Se extrajeron solo el arreglo de cadenas, el decodificador y la IIFE de rotacion,
+  se audito que no contuvieran llamadas de red, archivos ni DOM, y se ejecutaron
+  aislados en Node. El cuerpo del payload no se ejecuto en ningun momento.
+  Los payloads NO se publican en este repositorio: solo sus huellas.
+================================================================================

