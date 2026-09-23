@@ -6,4 +6,4 @@
 
 **Contenido:** [`04122023.txt`](04122023.txt) · [`20240925.txt`](20240925.txt)
 
-Ver también el análisis de infraestructura de un operador ligado a Akira en [`Campañas/OpenDir_Operador_SurAsia/`](../../Campañas/OpenDir_Operador_SurAsia/) (14-09-2026).
+Ver también el análisis de infraestructura de un operador ligado a Akira en [`Campaign/OpenDir_Operador_SurAsia/`](../../Campaign/OpenDir_Operador_SurAsia/) (14-09-2026).

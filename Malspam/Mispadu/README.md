@@ -6,4 +6,4 @@
 
 **Contenido:** [`23032023.txt`](23032023.txt) — resumen + hashes. **[`TTP Mispadu.png`](TTP%20Mispadu.png)** — diagrama de TTP.
 
-Ver también la campaña más reciente [`Campañas/Phishing/PoderJudicial_Citacion_Mispadu/`](../../Campañas/Phishing/PoderJudicial_Citacion_Mispadu/), que reusa este mismo malware.
+Ver también la campaña más reciente [`Campaign/Phishing/PoderJudicial_Citacion_Mispadu/`](../../Campaign/Phishing/PoderJudicial_Citacion_Mispadu/), que reusa este mismo malware.
