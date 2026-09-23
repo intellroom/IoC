@@ -1,0 +1,44 @@
+EVIDENCIA: consulta de enumeracion en urlscan.io
+Campana Macfinger  ·  Intellroom Threat Intelligence  ·  2026-09-23  ·  TLP:CLEAR
+================================================================================
+
+CONSULTA
+  filename:"ext-b.4f9db6afd06a.js"
+  https://urlscan.io/search/#filename%3A%22ext-b.4f9db6afd06a.js%22
+
+RESULTADO AL 2026-09-23 (via API v1/search, size=100)
+  total: 589        has_more: false      ventana observada: ~2 dias
+
+PERFIL DE LAS VICTIMAS (identidades NO se publican, ver regla de redaccion)
+  Sitios de PYME de todo el mundo sobre WordPress, en hosting compartido y en nubes
+  de bajo costo. Paises observados en la primera pagina: US, IT, PK, DE, GB, TR, BR,
+  AR, CL, IN, ID, NL, FR, ES, ZA, KE, TH, VN, BD, KR.
+  Servidores: LiteSpeed, Apache, nginx, hcdn, Sucuri/Cloudproxy, cloudflare.
+  Proveedores mas repetidos: Hostinger, Oracle Cloud, Cloudflare, GoDaddy, IONOS,
+  DreamHost, Namecheap, Hetzner, 20i.
+  Edad de los dominios victima: entre 105 y 3.964 dias. Son sitios establecidos, no
+  dominios creados para la campana.
+
+CONSULTA AMPLIADA (2026-09-23 21:02 UTC)
+  filename:"ext-b.4f9db6afd06a.js" OR (domain:velvet-otter-glagceis.life AND filename:"t.js")
+  total: 650   dominios unicos: 326   paginado completo con search_after
+  Ojo: la API devuelve has_more=false aunque queden resultados. Hay que paginar
+  hasta que el numero bajado iguale al total, no confiar en ese campo.
+  TLD mas frecuentes: com 174, br 19, in 9, net 9, org 9, it 8, fr 7, de 6, uk 6.
+  Sitios .cl en esta consulta: 4. Con el cargador nuevo (ashen-trace o la
+  compilacion b96ad0785c08) aparecen 2 .cl mas: 6 en total.
+  Estado en vivo de los 6 al cierre: 5 siguen sirviendo el cargador, 1 ya no lo
+  muestra en el HTML servido. Identidades NO se publican.
+
+CONTRASTE
+  El unico resultado que NO es una victima es un scan directo del archivo sobre un
+  dominio de la propia campana (skaedbraearaquiet[.]life), enviado por otro
+  investigador. Devolvio HTTP 404: esa compilacion ya habia rotado ahi.
+
+HALLAZGO DE VEREDICTO
+  El scan que sirvio de punto de partida tiene, en urlscan.io:
+      verdicts.overall.score = 0        verdicts.overall.malicious = false
+      verdicts.urlscan.categories = []  verdicts.urlscan.brands = []
+  El motor de veredictos NO marca esta campana. Un triage que filtre por ese campo la
+  descarta entera.
+================================================================================

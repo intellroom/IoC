@@ -1,0 +1,33 @@
+EVIDENCIA: el hash del nombre de archivo es el SHA-256 del contenido
+Campana Macfinger  ·  Intellroom Threat Intelligence  ·  2026-09-23  ·  TLP:CLEAR
+================================================================================
+
+1. REGISTRO DE urlscan.io (scan del 2026-09-23 06:46 UTC, victima redactada)
+   Recursos servidos por el cargador, con el hash que urlscan calculo del cuerpo:
+
+     https://velvet-otter-glagceis.life/t.js?site=<32 hex>   200   889 B
+     https://velvet-otter-glagceis.life/t.4b1009ff6c3f.js    200   2200 B
+         sha256 = 4b1009ff6c3f89b4f4cb...
+     https://velvet-otter-glagceis.life/ext-b.4f9db6afd06a.js  200  166.109 B
+         sha256 = 4f9db6afd06aab4045d8...
+
+   Los 12 caracteres del nombre coinciden exactamente con los 12 primeros del SHA-256.
+
+2. RESPUESTA DEL PROPIO SERVIDOR (2026-09-23 20:3x UTC)
+   Al pedir la compilacion anterior al cargador vigente, devuelve HTTP 404 con este
+   cuerpo, textual y sin editar:
+
+     // Extended script B version mismatch. Requested: 4f9db6afd06a, Current: b96ad0785c08
+
+   De ahi salen dos hechos:
+     - "ext-b" significa "Extended script B", la variante B del test A/B del kit.
+     - El hexadecimal es un numero de compilacion, y el servidor lo valida.
+
+3. CONSECUENCIA PARA LA CAZA
+   Buscar  filename:"ext-b.<hash>.js"  en urlscan.io enumera los sitios que sirvieron
+   ESA compilacion exacta. Al 2026-09-23 la consulta filename:"ext-b.4f9db6afd06a.js"
+   devolvia 589 resultados en una ventana de unos dos dias.
+
+   Limite declarado: al rotar la compilacion el hash cambia y la consulta envejece.
+   El pivote duradero es  /t.js?site=  y, sobre todo, los dos ASN.
+================================================================================
