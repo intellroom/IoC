@@ -1,0 +1,123 @@
+EVIDENCIA: historico de la campana, compilaciones, C2 y cargadores
+Campana Macfinger  ·  Intellroom Threat Intelligence  ·  2026-09-24  ·  TLP:CLEAR
+================================================================================
+
+METODO (sin contacto con la infraestructura del atacante)
+--------------------------------------------------------------------------------
+  1. Pivote: filename:"t.4b1009ff6c3f.js" en urlscan.io. Es el archivo de telemetria
+     del kit y no cambio con las rotaciones: supera los 10.000 scans.
+  2. Muestra diaria del 15-ago al 24-sep: tres scans por dia; de cada uno se tomaron
+     los servidores que entregan t.js, t.<hash>.js, ext.<hash>.js y ext-b.<hash>.js.
+  3. Cada compilacion se bajo desde urlscan.io/responses/<sha256>/ (en gzip). Solo se
+     acepto un cuerpo si su SHA-256 empieza con los 12 hex del nombre del archivo: la
+     regla del kit sirve de control de integridad y descarta, por ejemplo, un 404.
+  4. C2 de cada compilacion: se ejecutaron SOLO el arreglo de cadenas, el decodificador
+     y la rotacion del ofuscador, tras auditar que no llamen red, DOM ni archivos.
+     El payload no se ejecuto en ningun momento.
+  5. Proveedor de cada IP: dig + ipinfo.io, el 2026-09-24.
+
+COMPILACIONES Y C2 (cada fase del test A/B comparte C2)
+--------------------------------------------------------------------------------
+  C2  hxxp://45[.]131[.]215[.]56/8031e818c7a46?force=1
+      ext-b.b96ad0785c08.js    2026-09-24 -> 2026-09-24   sha256 b96ad0785c0861c24cb9bed7fbfb71368748944bd5c74878788dd1f907a866d6
+      ext.fb58e796b418.js      2026-09-24 -> 2026-09-24   sha256 fb58e796b418693eb03826313f0dd8de8398e9096ae37396dfa494067018943b
+  C2  hxxp://95[.]163[.]152[.]97/5f9f7408b4174fa?force=1
+      ext.2b99703d6bf4.js      2026-09-11 -> 2026-09-20   sha256 2b99703d6bf4b57f3dd3cab646d3093ce034484076012df0d12e4253f0c730d1
+      ext-b.34cf2a5fb213.js    2026-09-11 -> 2026-09-23   sha256 34cf2a5fb213316f4af0f0330078c10c809bb65e18b944bcfa00745a97a24f90
+  C2  hxxp://45[.]150[.]33[.]128/92961f75b259df2?force=1
+      ext.f80aba3a8cb6.js      2026-09-22 -> 2026-09-23   sha256 f80aba3a8cb64ea3b102f0ffe6df4af8d4e65aa8a154c952f47ca92f02ab364e
+      ext-b.4f9db6afd06a.js    2026-09-22 -> 2026-09-23   sha256 4f9db6afd06aab4045d89a679191e154cc8cd283392d1f3bd16ac31347e1c3ac
+  C2  hxxp://62[.]60[.]216[.]43/4a9ea479fe5fa?force=1
+      ext-b.bce41e30b5e3.js    2026-09-18 -> 2026-09-19   sha256 bce41e30b5e356f4a6e0d4ef8dec12a5f5ae941368d760696d31d17e0d33629b
+      ext.e773b63bcf87.js      2026-09-18 -> 2026-09-23   sha256 e773b63bcf873c7f99d4888a005c247ad7f4c9a1884a4ebae1a540e9f8105ed8
+  C2  hxxp://62[.]60[.]156[.]226/6c5c3cb8a9b?force=1
+      ext-b.246e94baca7e.js    2026-09-14 -> 2026-09-20   sha256 246e94baca7ed6d359017dca2e2355529aad83bca6453f5622e9b06825b86fd0
+      ext.a25def992771.js      2026-09-14 -> 2026-09-16   sha256 a25def9927713eb2906656f5720b933bccef5df07f4b32b6b306545845e7b5f7
+  C2  hxxp://62[.]60[.]155[.]172/9908ac6247?force=1
+      ext.79dc6d7ae233.js      2026-08-31 -> 2026-09-03   sha256 79dc6d7ae23349ceadef93511b16ff16bfea790e654995d4a2945b83b77385a1
+      ext-b.a83426f6ee31.js    2026-08-31 -> 2026-09-02   sha256 a83426f6ee3135afd6195f3727e5d482c2deae84f1b32fc2f31db8ca11452a53
+  C2  hxxp://46[.]226[.]162[.]241/411f7d3bff31a?force=1
+      ext-b.69c10e7bc29b.js    2026-08-06 -> 2026-08-08   sha256 69c10e7bc29b3c0abf8c6aa0ded4bb3f742099ed656ccd7e799f36428740b072
+
+  La regla de nombre (12 hex = inicio del SHA-256) se cumple en las 13 compilaciones.
+
+CARGADORES (servidores del kit), del mas reciente al mas antiguo
+--------------------------------------------------------------------------------
+  primera vez visto   dominio                              IP               proveedor
+  2026-09-24          vale-quaiyn-jtbn8[.]life             178.236.240.153  NetCrafters AS203273
+  2026-09-24          hollow-badger-moasfraum[.]life       193.233.246.170  Aeza AS216246
+  2026-09-24          ashen-kindle-ridge-pruior[.]life     178.236.240.85   NetCrafters AS203273
+  2026-09-23          misty-whirl-beacon-doa[.]life        185.173.144.58   NetCrafters AS203273
+  2026-09-23          ashen-trace-zephyr-draeix[.]life     138.124.60.214   NetCrafters AS203273
+  2026-09-22          velvet-otter-glagceis[.]life         62.60.155.142    NetCrafters AS203273
+  2026-09-22          krestmoais-reed[.]life               193.233.201.114  Aeza AS210644
+  2026-09-22          fern-crane-ziankroaum[.]life         193.233.201.125  Aeza AS210644
+  2026-09-21          brisk-forge-willow-caium[.]life      89.208.107.148   Aeza AS210644
+  2026-09-20          skaedbraearaquiet[.]life             193.188.22.246   Aeza AS210644
+  2026-09-19          grove-kaee-j4jgh[.]lol               -                no resuelve hoy
+  2026-09-19          cabskaiyn-crane[.]life               193.29.225.202   Aeza AS210644
+  2026-09-18          gaezskoynbrisk[.]com                 213.176.112.40   Aeza AS210644
+  2026-09-18          coral-weave-wren-veis[.]com          193.188.22.110   Aeza AS210644
+  2026-09-17          misty-arc-rook-sleoor[.]com          213.165.32.150   Aeza AS210644
+  2026-09-17          kiln-skioi-c29up[.]com               193.233.208.183  Aeza AS210644
+  2026-09-16          quiet-ridge-slaikdoaen[.]com         178.236.255.241  Aeza AS210644
+  2026-09-15          rerrioara[.]live                     45.137.42.71     NetCrafters AS203273
+  2026-09-15          coral-zephyr-koarseara[.]xyz         178.236.247.59   Aeza AS210644
+  2026-09-14          glacial-sketch-otter-triis[.]live    45.137.42.106    NetCrafters AS203273
+  2026-09-13          ridge-ciosktai[.]site                -                no resuelve hoy
+  2026-09-13          mesa-seen-dcjcj[.]live               194.33.35.30     Aeza AS210644
+  2026-09-12          flaempriarnnois[.]space              -                no resuelve hoy
+  2026-09-11          sable-orbit-wren-fiayn[.]live        193.233.210.81   Aeza AS210644
+  2026-09-11          litseaochre[.]life                   171.22.131.181   NetCrafters AS203273
+  2026-09-10          relmciarnlioix[.]life                2.56.174.245     NetCrafters AS203273
+  2026-09-09          reed-pavcaeor[.]life                 2.56.124.158     NetCrafters AS203273
+  2026-09-09          reed-greogzium[.]life                2.56.124.157     NetCrafters AS203273
+  2026-09-08          quiet-whirl-rook-stoon[.]live        2.56.124.115     NetCrafters AS203273
+  2026-09-08          coral-forge-beacon-glioen[.]live     94.228.162.126   Aeza AS210644
+  2026-09-07          ochre-otter-nernbreoe[.]life         2.56.123.33      NetCrafters AS203273
+  2026-09-07          biobkliaum[.]live                    2.56.122.219     NetCrafters AS203273
+  2026-09-06          badger-kuis-vnex5[.]life             45.141.177.182   Aeza AS210644
+  2026-09-05          moss-froggaee[.]space                -                no resuelve hoy
+  2026-09-04          preokcriix[.]live                    85.192.27.154    Aeza AS210644
+  2026-09-04          ochre-wren-satbais[.]life            81.19.137.183    Aeza AS210644
+  2026-09-04          corrykro[.]icu                       138.124.60.203   NetCrafters AS203273
+  2026-09-03          fallow-willow-diogdaiyn[.]xyz        -                no resuelve hoy
+  2026-09-03          carwowk872[.]life                    62.60.246.211    NetCrafters AS203273
+  2026-09-02          apparatinpi22[.]life                 62.60.156.248    Aeza AS210644
+  2026-09-01          longslimpi[.]life                    213.108.23.160   Aeza AS210644
+  2026-09-01          bladehostpi[.]life                   62.60.156.38     Aeza AS210644
+  2026-08-31          vitamindpi55[.]digital               194.76.217.247   Aeza AS210644
+  2026-08-31          shaltaypi[.]life                     62.60.157.230    Aeza AS210644
+  2026-08-30          electroste99[.]life                  62.60.157.60     Aeza AS210644
+  2026-08-30          buysypi831[.]life                    77.221.140.187   Aeza AS210644
+  2026-08-29          speakingfepi21[.]life                77.221.143.247   Aeza AS210644
+  2026-08-28          zigelpi12[.]life                     91.186.212.186   NetCrafters AS203273
+  2026-08-28          vailora231[.]life                    178.236.245.67   NetCrafters AS203273
+  2026-08-28          soilnopi1122[.]life                  213.108.22.120   Aeza AS210644
+  2026-08-27          buildingpi81[.]xyz                   213.108.22.119   Aeza AS210644
+  2026-08-26          saymto9213[.]life                    46.226.167.18    Aeza AS210644
+  2026-08-26          girlsonpi823[.]life                  193.233.203.114  NetCrafters AS203273
+  2026-08-25          rodgethapi812[.]life                 213.165.48.16    Aeza AS210644
+  2026-08-25          beautiful213[.]life                  193.233.202.203  NetCrafters AS203273
+  2026-08-07          versionpi81[.]icu                    77.110.127.231   NetCrafters AS203273
+
+  Total: 56 dominios. Aeza Group: 30 · NetCrafters: 21 · ya no resuelven: 5.
+  Los que resuelven caen TODOS en esos dos proveedores (tres ASN: AS210644 y AS216246
+  de Aeza, AS203273 de NetCrafters). Lo mismo los 7 C2.
+
+  Excluido: un sitio legitimo comprometido aparecio en la muestra junto a los archivos
+  del kit; en su scan el kit se carga desde un dominio .life del atacante. Es victima.
+
+VOLUMEN DIARIO DE SCANS CON LA TELEMETRIA (11643 en total, del 25-ago al 24-sep)
+--------------------------------------------------------------------------------
+  25-ago     4   26-ago    28   27-ago   188   28-ago   619   29-ago   276   30-ago    95
+  31-ago    33   01-sep   133   02-sep   232   03-sep   518   04-sep   288   05-sep    60
+  06-sep   406   07-sep   430   08-sep   107   09-sep    92   10-sep   480   11-sep   715
+  12-sep    31   13-sep  1040   14-sep   797   15-sep   248   16-sep  1223   17-sep   932
+  18-sep   678   19-sep    28   20-sep   269   21-sep   216   22-sep   555   23-sep   623
+  24-sep   299
+
+  Es lo que urlscan.io vio escanear, no el total de victimas: un piso.
+  Antes del 25-ago la campana ya operaba (compilacion ext-b.69c10e7bc29b, 6 a 8 de
+  agosto, cargador versionpi81[.]icu) con otra version de la telemetria.
+================================================================================

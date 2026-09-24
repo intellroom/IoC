@@ -6,44 +6,118 @@ Defanged: los dominios y URLs van con [.] y hxxp.
 INDICADORES PARA BLOQUEO RAPIDO
 
 [BLOQUEAR]
-hxxp://45[.]131[.]215[.]56/8031e818c7a46?force=1                   # C2 vigente
-hxxp://45[.]150[.]33[.]128/92961f75b259df2?force=1                 # C2 anterior
-hxxp://45[.]150[.]33[.]128/d4c8083a7d97?force=1                    # C2 anterior (SANS)
-hxxp://45[.]150[.]33[.]128/2286de55f9afd?force=1                   # C2 anterior (SANS)
+hxxp://45[.]131[.]215[.]56/8031e818c7a46?force=1                   # C2, 24-sep
+hxxp://95[.]163[.]152[.]97/5f9f7408b4174fa?force=1                 # C2, 11-sep a 23-sep
+hxxp://45[.]150[.]33[.]128/92961f75b259df2?force=1                 # C2, 22-sep a 23-sep
+hxxp://45[.]150[.]33[.]128/d4c8083a7d97?force=1                    # C2 (SANS)
+hxxp://45[.]150[.]33[.]128/2286de55f9afd?force=1                   # C2 (SANS)
+hxxp://62[.]60[.]216[.]43/4a9ea479fe5fa?force=1                    # C2, 18-sep a 23-sep
+hxxp://62[.]60[.]156[.]226/6c5c3cb8a9b?force=1                     # C2, 14-sep a 20-sep
+hxxp://62[.]60[.]155[.]172/9908ac6247?force=1                      # C2, 31-ago a 3-sep
+hxxp://46[.]226[.]162[.]241/411f7d3bff31a?force=1                  # C2, 6-ago a 8-ago
 hxxps://beroniw[.]com/hwkOP5                                       # redirector
-45[.]131[.]215[.]56                                                # C2 vigente, AS203273
-45[.]150[.]33[.]128                                                # C2 anterior, AS210644
+45[.]131[.]215[.]56                                                # C2, AS203273
+95[.]163[.]152[.]97                                                # C2, AS210644
+45[.]150[.]33[.]128                                                # C2, AS210644
+62[.]60[.]216[.]43                                                 # C2, AS203273
+62[.]60[.]156[.]226                                                # C2, AS210644
+62[.]60[.]155[.]172                                                # C2, AS203273
+46[.]226[.]162[.]241                                               # C2, AS210644
 95[.]163[.]153[.]80                                                # puerto 8133 (SANS, sin verificar)
-misty-whirl-beacon-doa[.]life                                      # cargador
-ashen-trace-zephyr-draeix[.]life                                   # cargador
-velvet-otter-glagceis[.]life                                       # cargador
-skaedbraearaquiet[.]life                                           # cargador
+vale-quaiyn-jtbn8[.]life                                           # cargador, 24-sep
+hollow-badger-moasfraum[.]life                                     # cargador, 24-sep
+ashen-kindle-ridge-pruior[.]life                                   # cargador, 24-sep
+misty-whirl-beacon-doa[.]life                                      # cargador, 23-sep
+ashen-trace-zephyr-draeix[.]life                                   # cargador, 23-sep
+velvet-otter-glagceis[.]life                                       # cargador, 22-sep
+krestmoais-reed[.]life                                             # cargador, 22-sep
+fern-crane-ziankroaum[.]life                                       # cargador, 22-sep
+brisk-forge-willow-caium[.]life                                    # cargador, 21-sep
+skaedbraearaquiet[.]life                                           # cargador, 20-sep
+grove-kaee-j4jgh[.]lol                                             # cargador, 19-sep, ya no resuelve
+cabskaiyn-crane[.]life                                             # cargador, 19-sep
+gaezskoynbrisk[.]com                                               # cargador, 18-sep
+coral-weave-wren-veis[.]com                                        # cargador, 18-sep
+misty-arc-rook-sleoor[.]com                                        # cargador, 17-sep
+kiln-skioi-c29up[.]com                                             # cargador, 17-sep
+quiet-ridge-slaikdoaen[.]com                                       # cargador, 16-sep
+rerrioara[.]live                                                   # cargador, 15-sep
+coral-zephyr-koarseara[.]xyz                                       # cargador, 15-sep
+glacial-sketch-otter-triis[.]live                                  # cargador, 14-sep
+ridge-ciosktai[.]site                                              # cargador, 13-sep, ya no resuelve
+mesa-seen-dcjcj[.]live                                             # cargador, 13-sep
+flaempriarnnois[.]space                                            # cargador, 12-sep, ya no resuelve
+sable-orbit-wren-fiayn[.]live                                      # cargador, 11-sep
+litseaochre[.]life                                                 # cargador, 11-sep
+relmciarnlioix[.]life                                              # cargador, 10-sep
+reed-pavcaeor[.]life                                               # cargador, 9-sep
+reed-greogzium[.]life                                              # cargador, 9-sep
+quiet-whirl-rook-stoon[.]live                                      # cargador, 8-sep
+coral-forge-beacon-glioen[.]live                                   # cargador, 8-sep
+ochre-otter-nernbreoe[.]life                                       # cargador, 7-sep
+biobkliaum[.]live                                                  # cargador, 7-sep
+badger-kuis-vnex5[.]life                                           # cargador, 6-sep
+moss-froggaee[.]space                                              # cargador, 5-sep, ya no resuelve
+preokcriix[.]live                                                  # cargador, 4-sep
+ochre-wren-satbais[.]life                                          # cargador, 4-sep
+corrykro[.]icu                                                     # cargador, 4-sep
+fallow-willow-diogdaiyn[.]xyz                                      # cargador, 3-sep, ya no resuelve
+carwowk872[.]life                                                  # cargador, 3-sep
+apparatinpi22[.]life                                               # cargador, 2-sep
+longslimpi[.]life                                                  # cargador, 1-sep
+bladehostpi[.]life                                                 # cargador, 1-sep
+vitamindpi55[.]digital                                             # cargador, 31-ago
+shaltaypi[.]life                                                   # cargador, 31-ago
+electroste99[.]life                                                # cargador, 30-ago
+buysypi831[.]life                                                  # cargador, 30-ago
+speakingfepi21[.]life                                              # cargador, 29-ago
+zigelpi12[.]life                                                   # cargador, 28-ago
+vailora231[.]life                                                  # cargador, 28-ago
+soilnopi1122[.]life                                                # cargador, 28-ago
+buildingpi81[.]xyz                                                 # cargador, 27-ago
+saymto9213[.]life                                                  # cargador, 26-ago
+girlsonpi823[.]life                                                # cargador, 26-ago
+rodgethapi812[.]life                                               # cargador, 25-ago
+beautiful213[.]life                                                # cargador, 25-ago
+versionpi81[.]icu                                                  # cargador, 7-ago
 beroniw[.]com                                                      # redirector
-4f9db6afd06aab4045d89a679191e154cc8cd283392d1f3bd16ac31347e1c3ac   # ext-b.4f9db6afd06a.js
 b96ad0785c0861c24cb9bed7fbfb71368748944bd5c74878788dd1f907a866d6   # ext-b.b96ad0785c08.js
+fb58e796b418693eb03826313f0dd8de8398e9096ae37396dfa494067018943b   # ext.fb58e796b418.js
+f80aba3a8cb64ea3b102f0ffe6df4af8d4e65aa8a154c952f47ca92f02ab364e   # ext.f80aba3a8cb6.js
+34cf2a5fb213316f4af0f0330078c10c809bb65e18b944bcfa00745a97a24f90   # ext-b.34cf2a5fb213.js
+4f9db6afd06aab4045d89a679191e154cc8cd283392d1f3bd16ac31347e1c3ac   # ext-b.4f9db6afd06a.js
+e773b63bcf873c7f99d4888a005c247ad7f4c9a1884a4ebae1a540e9f8105ed8   # ext.e773b63bcf87.js
+2b99703d6bf4b57f3dd3cab646d3093ce034484076012df0d12e4253f0c730d1   # ext.2b99703d6bf4.js
+246e94baca7ed6d359017dca2e2355529aad83bca6453f5622e9b06825b86fd0   # ext-b.246e94baca7e.js
+bce41e30b5e356f4a6e0d4ef8dec12a5f5ae941368d760696d31d17e0d33629b   # ext-b.bce41e30b5e3.js
+a25def9927713eb2906656f5720b933bccef5df07f4b32b6b306545845e7b5f7   # ext.a25def992771.js
+79dc6d7ae23349ceadef93511b16ff16bfea790e654995d4a2945b83b77385a1   # ext.79dc6d7ae233.js
+a83426f6ee3135afd6195f3727e5d482c2deae84f1b32fc2f31db8ca11452a53   # ext-b.a83426f6ee31.js
+69c10e7bc29b3c0abf8c6aa0ded4bb3f742099ed656ccd7e799f36428740b072   # ext-b.69c10e7bc29b.js
 6606a5f18184b224a56c9cb658fa26f7fce45099da548a30a8db2c5f2c70377c   # payload (SANS)
 9d87b41c2b29ccbeac851b98f1a7dce4ab4781fec0cbc55fa6f93a6299a3d564   # payload (SANS)
 b68cdb1b46502fbce67ce3f8110682936d06afd2116af096e30abd4c8376b6dc   # payload (SANS)
 1a3765e8cb0055ec31693b8f82ce9744106dee08368259661600b072c6805af4   # payload (SANS)
 
-Revisar los bloqueos de IP el 2026-11-22.
+Revisar los bloqueos de IP el 2026-11-23.
 
 [DETECTAR]
 curl -kfsSL hacia una IP literal                  # descarga del payload (macOS)
 archivo oculto en /tmp ejecutado con bash         # patron /tmp/.XXXXXX
 history -d  /  fc -p /dev/null                    # borrado de historial
 "I am not a robot - reCAPTCHA Verification ID:"   # senuelo del comando
-/t.js?site=<32 hex>                               # cargador en el navegador
+/t.js?site=<32 hex>  y  t.4b1009ff6c3f.js         # cargador y telemetria
 ext-b.<12 hex>.js  /  ext.<12 hex>.js             # payload, variantes B y A
 POST /collect                                     # telemetria
 
 [VIGILAR -- NO bloquear]
 sitios que cargan el script                       # victimas, se avisa
-AS203273  /  AS210644  /  Cloudflare              # no bloquear el ASN completo
+AS203273  /  AS210644  /  AS216246  /  Cloudflare # no bloquear el ASN completo
 
 [NO ES UN IOC]
 www[.]gstatic[.]com/recaptcha/                    # recurso legitimo de Google
 Googlebot, GPTBot, ClaudeBot, AhrefsBot           # bots que el kit evade
+sitios de victimas vistos junto al kit             # no son infraestructura
 
 Detalle en Macfinger_ClickFix_macOS_23092026.txt. Fuente primaria: SANS ISC 33360.
 Deteccion: hipotesis a validar antes de desplegar (redactado con apoyo de IA).

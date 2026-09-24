@@ -27,7 +27,8 @@ Lo que esta ficha agrega al registro publico, todo medido el 2026-09-23:
   (b) Un C2 NUEVO: 45[.]131[.]215[.]56, en la compilacion vigente del payload.
   (c) La MIGRACION del C2 entre proveedores: de Aeza Group, sancionado por OFAC,
       a NetCrafters OU. Toda la infraestructura observada, la de SANS y la propia,
-      cabe en esos dos ASN.
+      cabe en esos DOS PROVEEDORES, que usan tres ASN (ver seccion 11: el 23-09 esta
+      ficha decia "dos ASN" y era incompleto).
   (d) El METODO de enumeracion de victimas: el nombre del archivo lleva el prefijo
       de su SHA-256, verificado en las dos compilaciones.
   (e) El TEST A/B del kit y su telemetria de conversion.
@@ -154,7 +155,9 @@ score 0 y malicious=false. El veredicto automatico NO detecta esta campana.
 
 4. INFRAESTRUCTURA Y MIGRACION
 --------------------------------------------------------------------------------
-Todas las IPs conocidas de la campana caen en SOLO DOS sistemas autonomos:
+Todas las IPs conocidas de la campana caen en SOLO DOS PROVEEDORES. [Corregido el
+2026-09-24: aqui decia "dos sistemas autonomos". Aeza Group opera ademas AS216246, que
+tambien nombra la accion de OFAC. Lista completa en la seccion 11.]
 
   AS210644  Aeza Group LLC  (sancionado por OFAC el 2025-07-01)
     45[.]150[.]33[.]128       C2 de la compilacion vieja. Amsterdam, NL.
@@ -235,7 +238,8 @@ Todas las IPs conocidas de la campana caen en SOLO DOS sistemas autonomos:
   - Las huellas SHA-256 de archivos que publico SANS. Se reproducen en iocs.txt con
     esa atribucion, no se contrastaron.
   - 95[.]163[.]153[.]80:8133. Solo aparece en SANS.
-  - La variante A (ext.<hash>.js). Solo se analizo la variante B.
+  - [Resuelto el 2026-09-24] La variante A (ext.<hash>.js) se analizo: en cada fase usa
+    el mismo C2 que la variante B. El test A/B cambia la presentacion, no el servidor.
   - El vector de compromiso inicial de los WordPress. No se examino ninguno por
     dentro.
   - La atribucion a un actor con nombre.
@@ -272,4 +276,49 @@ Todas las IPs conocidas de la campana caen en SOLO DOS sistemas autonomos:
   NULA en atribucion.
 
   Redactado con apoyo de IA. Las hipotesis de deteccion se validan antes de desplegar.
+
+11. ACTUALIZACION 2026-09-24: HISTORICO COMPLETO DE LA CAMPANA
+--------------------------------------------------------------------------------
+Detalle, tablas y metodo en evidencia_historico_24092026.txt. Todo se obtuvo SIN
+contactar la infraestructura del atacante: cuerpos bajados de urlscan.io.
+
+  Inicio: la campana opera al menos desde el 2026-08-06 (compilacion
+  ext-b.69c10e7bc29b.js, C2 46[.]226[.]162[.]241, cargador versionpi81[.]icu). La
+  telemetria actual, t.4b1009ff6c3f.js, aparece el 2026-08-25 y no cambio desde entonces.
+
+  Escala: 13 compilaciones, 7 servidores de descarga (C2) y 56 dominios de cargador en
+  nueve terminaciones (.life, .live, .xyz, .com, .icu, .space, .site, .lol, .digital).
+  urlscan.io registra mas de 10.000 scans con la telemetria; sumando el total de cada
+  dia entre el 25-08 y el 24-09 se llega a 11.643.
+
+  C2 por fase, del mas reciente al mas antiguo:
+    45[.]131[.]215[.]56    24-09             NetCrafters AS203273
+    95[.]163[.]152[.]97    11-09 a 23-09     Aeza AS210644
+    45[.]150[.]33[.]128    22-09 a 23-09     Aeza AS210644 (el que publico SANS)
+    62[.]60[.]216[.]43     18-09 a 23-09     NetCrafters AS203273
+    62[.]60[.]156[.]226    14-09 a 20-09     Aeza AS210644
+    62[.]60[.]155[.]172    31-08 a 03-09     NetCrafters AS203273
+    46[.]226[.]162[.]241   06-08 a 08-08     Aeza AS210644
+
+  Proveedores: los 7 C2 y los 51 cargadores que aun resuelven caen TODOS en Aeza Group
+  (AS210644 y AS216246) o NetCrafters OU (AS203273). Los otros 5 ya no resuelven. El
+  pivote durable es el proveedor, no un ASN ni un dominio.
+
+  Rotacion: el 24-09 el cargador vigente paso a hollow-badger-moasfraum[.]life
+  (193[.]233[.]246[.]170, AS216246) y conviven otros dos nuevos,
+  vale-quaiyn-jtbn8[.]life y ashen-kindle-ridge-pruior[.]life.
+
+  Regla del nombre: en las 13 compilaciones, los 12 hex del nombre son el inicio del
+  SHA-256 del archivo. Se uso como control de integridad al bajar cada cuerpo.
+
+  Chile: 13 sitios .cl aparecen con los indicadores de la campana. 11 cargaron
+  Macfinger en algun momento y 2 solo el inyector de beroniw[.]com. Revisados el 24-09:
+  6 seguian sirviendo el cargador Macfinger y 1 el inyector de beroniw. Identidades
+  NO publicadas.
+
+  Pivotes utiles en urlscan.io:
+    filename:"t.4b1009ff6c3f.js"                  toda la campana desde el 25-08
+    filename:"t.4b1009ff6c3f.js" AND page.domain:*.cl    solo sitios chilenos
+    hash:<sha256 de una compilacion>              una compilacion exacta
+
 ================================================================================
