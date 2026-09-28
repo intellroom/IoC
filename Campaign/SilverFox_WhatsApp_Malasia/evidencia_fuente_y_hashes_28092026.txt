@@ -1,0 +1,29 @@
+================================================================================
+  Evidencia: fuente primaria y verificacion de los hashes publicados
+================================================================================
+1. Cadena de custodia de la fuente
+  [2026-09-28 17:01:54 UTC] hxxps://research[.]pelagos-intel[.]com/silverfox-in-the-desktop
+  Pelagos Intel, "SilverFox in the Desktop", fechado 2026-09-27.
+  SHA-256 del HTML descargado: 4260bf66ee45e7e766b94ce66e60f93dcbd7590f5c9a298b24793c228dd45f75 (41751 bytes)
+  El texto no se reproduce aqui (derechos del autor); la captura esta en
+  04_evidencia_articulo_pelagos.png.
+  Difundido en X por @siberchengho el 2026-09-28 08:12 UTC (03_evidencia_x_post_siberchengho.png).
+
+2. Donde aparece cada indicador en el articulo
+  ZIP  9F2CAEDA...3809672   tabla IOCs (ZIP SHA256)
+  IMG  E2BF8B7C...7D66BAA   tabla IOCs (IMG SHA256)
+  EXE  F712C2A8...E4830D    seccion 1 y tabla IOCs
+  DLL  C1E18461...871084F   seccion 1 y tabla IOCs
+  134.122.155.135:443       resumen, seccion 12 y tabla IOCs
+  Run MicrosoftUpdate       seccion 11
+  PDB buildbot              seccion 7
+
+3. Busqueda de los hashes en MalwareBazaar (abuse.ch)
+  [2026-09-28 17:01:55 UTC] ZIP 9f2caeda208c9d729b44f31c32b5e1eeef18d84d6e36b04afe15d894d3809672 -> hash_not_found
+  [2026-09-28 17:01:55 UTC] IMG e2bf8b7cd396ee950a5b6911ea098c2e49d4ed002a6c04d5d660ccd4f7d66baa -> hash_not_found
+  [2026-09-28 17:01:56 UTC] EXE f712c2a8b4abf2e299a2b480020333deb0f43364e9686cda78b1243c62e4830d -> hash_not_found
+  [2026-09-28 17:01:57 UTC] DLL c1e184615241fe69db3bf4093a22c7c0bf5d6072d2f51e558142b844e871084f -> hash_not_found
+
+  Ninguno esta en MalwareBazaar: las muestras no son publicas ahi. VirusTotal no se
+  consulto (sin clave configurada). Los hashes quedan como reportados por Pelagos,
+  sin verificacion independiente.

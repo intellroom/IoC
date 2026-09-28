@@ -1,0 +1,33 @@
+================================================================================
+  Evidencia: C2 de ValleyRAT en el mismo /24 (ThreatFox y MalwareBazaar)
+================================================================================
+Consulta a la API de ThreatFox (abuse.ch) por la IP exacta y por el prefijo 134.122.155.
+Los datos son de abuse.ch y sus reportantes; Intellroom no los verifico por separado.
+
+[2026-09-28 17:01:48 UTC] ThreatFox search_ioc 134.122.155.135 (exacta)
+  query_status=no_result
+
+[2026-09-28 17:01:49 UTC] ThreatFox search_ioc 134.122.155. (prefijo)  query_status=ok
+  id       ioc                      familia    tipo       conf  primera vez              reportante  tags
+  1911879  134[.]122[.]155[.]220:80 ValleyRAT  botnet_cc  75    2026-09-11 05:50:38 UTC  abuse_ch    ['valleyrat_s2']
+           referencia: hxxps://bazaar.abuse.ch/sample/aff88ff4d9ea55fdab0b75966cdf8eea13c3d511e0d00df29f9f57768db193e3/
+  1911877  134[.]122[.]155[.]220:443 ValleyRAT  botnet_cc  100   2026-09-11 05:45:13 UTC  abuse_ch    ['RAT', 'ValleyRAT']
+  1905525  134[.]122[.]155[.]243:8085 VShell     botnet_cc  100   2026-09-08 16:05:07 UTC  anonymous   ['vshell']
+  1838763  134[.]122[.]155[.]142:6276 ValleyRAT  botnet_cc  75    2026-06-28 11:20:40 UTC  abuse_ch    ['valleyrat_s2']
+           referencia: hxxps://bazaar.abuse.ch/sample/670482ef4243ca62c495b94b86af529e5b44fa449e524613cee373dd0aa549af/
+  1833469  134[.]122[.]155[.]147:23610 ValleyRAT  botnet_cc  75    2026-06-17 14:21:22 UTC  abuse_ch    ['valleyrat_s2']
+           referencia: hxxps://bazaar.abuse.ch/sample/7e27deea413f5c390fd790423de9dc552a1e393187607485394044c4ddc85fdf/
+
+Muestras de MalwareBazaar citadas por ThreatFox:
+[2026-09-28 17:01:50 UTC] aff88ff4d9ea55fdab0b75966cdf8eea13c3d511e0d00df29f9f57768db193e3
+  archivo=F89A414276E136A36BDA7952CA8F6BE2.exe tamano=708983 primera vez=2026-09-11 05:45:16 firma=ValleyRAT entrega=None tags=['exe', 'RAT', 'ValleyRAT']
+[2026-09-28 17:01:51 UTC] 670482ef4243ca62c495b94b86af529e5b44fa449e524613cee373dd0aa549af
+  archivo=ToDesk_Setup_x64.exe tamano=2357232 primera vez=2026-06-28 11:14:03 firma=ValleyRAT entrega=web_download tags=['exe', 'SilverFox', 'Trojan/SilverFox.sa', 'ValleyRAT']
+[2026-09-28 17:01:53 UTC] 7e27deea413f5c390fd790423de9dc552a1e393187607485394044c4ddc85fdf
+  archivo=bandizip_v12.8.1_0616.exe tamano=99512940 primera vez=2026-06-17 14:14:19 firma=ValleyRAT entrega=web_download tags=['exe', 'SilverFox', 'Trojan/SilverFox.sa', 'ValleyRAT']
+
+Lectura: el /24 del C2 aloja otros cuatro C2: tres de ValleyRAT, la herramienta que se
+asocia a Silver Fox (dos de sus muestras estan etiquetadas SilverFox), y uno de VShell,
+que usan varios actores. El 134.122.155.220 se reporto el 2026-09-11, la misma fecha que lleva el nombre
+del ZIP senuelo (PDF_C2841_20260911100446.zip). Las muestras vecinas llegan por otra via
+(instaladores falsos de ToDesk y Bandizip): mismo ecosistema, no la misma campana.

@@ -1,0 +1,222 @@
+================================================================================
+  Silver Fox: ZIP por WhatsApp, IMG y carga lateral de DLL contra Malasia
+  Campana SF-2026-0928  ·  TLP:CLEAR  ·  Intellroom Threat Intelligence
+  Fecha de analisis: 2026-09-28
+================================================================================
+
+0. FUENTE PRIMARIA Y QUE AGREGA ESTA FICHA
+--------------------------------------------------------------------------------
+La cadena fue analizada y publicada por Pelagos Intel el 2026-09-27 en
+"SilverFox in the Desktop" y difundida en X por @siberchengho el 2026-09-28:
+    hxxps://research[.]pelagos-intel[.]com/silverfox-in-the-desktop
+
+Todo lo que describe el comportamiento del malware (cadena, hashes, rutas,
+clave de registro, descifrado) es de Pelagos. Intellroom NO tuvo las muestras
+y no las ejecuto: se cita, no se verifica aqui. La atribucion a Silver Fox
+tambien es de Pelagos, por similitud de tradecraft.
+
+Lo que esta ficha agrega, todo medido el 2026-09-28 con fuentes pasivas y sin
+contactar al C2:
+
+  (a) La INFRAESTRUCTURA del C2: 134[.]122[.]155[.]135 esta en AS152194, CTG
+      Server Limited (Hong Kong), y expone los puertos 443, 445 (SMB) y 5985
+      (WinRM) segun InternetDB: perfil de servidor Windows.
+  (b) Un PIVOTE que corrobora la atribucion: el mismo /24 aloja otros cuatro C2
+      reportados en ThreatFox. Tres son de ValleyRAT, la herramienta que se
+      asocia a Silver Fox, y uno de VShell.
+  (c) Una COINCIDENCIA DE FECHA: el C2 vecino 134[.]122[.]155[.]220 se reporto
+      como ValleyRAT el 2026-09-11, la misma fecha que lleva el nombre del ZIP
+      senuelo (PDF_C2841_20260911100446.zip, o sea 2026-09-11 10:04:46).
+  (d) El vecino 134[.]122[.]155[.]147, C2 de ValleyRAT en junio, tiene el mismo
+      perfil de puertos que el C2 de esta campana (445 y 5985).
+  (e) Los cuatro hashes publicados NO estan en MalwareBazaar y la IP del C2 NO
+      esta en ThreatFox: los indicadores dependen de una sola fuente.
+  (f) Una INCONSISTENCIA en la fuente (seccion 8): el ZIP entregado por
+      WhatsApp es el C2841, pero el ejecutable analizado se llama C2089.
+  (g) Una correccion de ATT&CK: la entrega por WhatsApp corresponde a T1566.003
+      (via servicio), no a T1566.001 (adjunto de correo) como indica Pelagos.
+
+1. RESUMEN
+--------------------------------------------------------------------------------
+Una persona en Malasia recibe por WhatsApp un mensaje con tema financiero que le
+pide reenviar un informe para verificacion y abrir el adjunto en un computador.
+El adjunto es un ZIP que contiene una imagen de disco IMG. Dentro del IMG viene
+un par de archivos: un ejecutable con firma digital valida de Guangzhou Kugou
+Technology Co., Ltd. (el reproductor KuGou) y una DLL sin firma que se hace
+pasar por un componente de Windows (Desktop Window Manager).
+
+El ejecutable firmado solo llama a dos funciones exportadas por la DLL. La DLL
+resuelve sus APIs por hash, descifra una configuracion de 11.200 bytes en
+memoria, se copia a %APPDATA%\Microsoft\Update\, se registra en la clave Run
+bajo el nombre "MicrosoftUpdate" y se conecta cada tres segundos a una IP fija
+por el puerto 443.
+
+Es la tecnica de carga lateral de DLL: un programa legitimo y firmado carga una
+DLL maliciosa que viaja a su lado. La firma valida del ejecutable no dice nada
+sobre la DLL.
+
+2. LINEA DE TIEMPO (UTC)
+--------------------------------------------------------------------------------
+2026-06-17 14:21     ThreatFox: 134[.]122[.]155[.]147 como C2 de ValleyRAT
+                     (muestra etiquetada SilverFox, instalador falso de Bandizip).
+2026-06-28 11:20     ThreatFox: 134[.]122[.]155[.]142 como C2 de ValleyRAT
+                     (muestra etiquetada SilverFox, instalador falso de ToDesk).
+2026-09-08 16:05     ThreatFox: 134[.]122[.]155[.]243 como C2 de VShell.
+2026-09-11 05:45     ThreatFox: 134[.]122[.]155[.]220 como C2 de ValleyRAT.
+2026-09-11 10:04:46  Marca de tiempo en el nombre del ZIP y del ejecutable
+                     (formato AAAAMMDDhhmmss; zona horaria desconocida).
+2026-09-27           Pelagos Intel publica "SilverFox in the Desktop".
+2026-09-28 08:12     @siberchengho lo difunde en X.
+2026-09-28 17:01     Verificacion de Intellroom (RDAP, InternetDB, ThreatFox,
+                     MalwareBazaar, urlscan).
+
+3. INDICADORES
+--------------------------------------------------------------------------------
+3.1 Reportados por Pelagos (fuente unica, no verificados aqui)
+
+  134[.]122[.]155[.]135:443   C2, conexion directa por IP, reintento cada ~3 s
+  9f2caeda208c9d729b44f31c32b5e1eeef18d84d6e36b04afe15d894d3809672   ZIP
+  e2bf8b7cd396ee950a5b6911ea098c2e49d4ed002a6c04d5d660ccd4f7d66baa   IMG
+  c1e184615241fe69db3bf4093a22c7c0bf5d6072d2f51e558142b844e871084f   DLL maliciosa
+                              active_desktop_render_x64.dll, 5.242.880 bytes
+  f712c2a8b4abf2e299a2b480020333deb0f43364e9686cda78b1243c62e4830d   EXE firmado
+                              PDF_C2089_20260911100446.exe, 102.536 bytes.
+                              Binario legitimo de KuGou usado como cargador:
+                              detectar, ver seccion 4.
+
+  Persistencia: HKCU\Software\Microsoft\Windows\CurrentVersion\Run
+                valor "MicrosoftUpdate" apuntando a %APPDATA%\Microsoft\Update\
+  PDB:          D:\buildbot\build1\desktop_screen\build\bin\active_desktop_launcher_x64.pdb
+  Cadenas:      @@RAPID_CFG_START@@, SetDesktopMonitorHook, ClearDesktopMonitorHook,
+                ReleaseFromExplorer, _ipcfr_wqkqzk
+
+3.2 Mismo /24, reportados en ThreatFox (otras campanas del ecosistema)
+
+  134[.]122[.]155[.]220:443 y :80   ValleyRAT, 2026-09-11, confianza 100 y 75
+  134[.]122[.]155[.]243:8085        VShell, 2026-09-08, confianza 100
+                                    InternetDB lo asocia a iosxq[.]top
+  134[.]122[.]155[.]142:6276        ValleyRAT, 2026-06-28, confianza 75
+  134[.]122[.]155[.]147:23610       ValleyRAT, 2026-06-17, confianza 75
+
+4. LO QUE NO ES UN IOC
+--------------------------------------------------------------------------------
+  Guangzhou Kugou Technology Co., Ltd. y el certificado con huella
+  757BDD02CBA91CA59C46E2098A5479C1ABC1FDBE
+      Empresa legitima. No hay evidencia de que el certificado este robado:
+      lo mas probable es que el ejecutable sea un componente real de KuGou.
+      Bloquear el certificado bloquearia todo el software de KuGou.
+
+  El hash del EXE (f712c2a8...)
+      Por lo mismo, bloquearlo solo tiene sentido donde no se use KuGou. Lo
+      que delata el ataque es DONDE esta y QUE carga: un ejecutable de KuGou
+      en %APPDATA%\Microsoft\Update\ junto a active_desktop_render_x64.dll.
+
+  dwmapi.dll, Desktop Window Manager Helper, Windows Desktop Extension
+      Nombres legitimos de Windows que la DLL copia en sus metadatos.
+
+  WhatsApp
+      Es el canal de entrega, no infraestructura del atacante.
+
+  El /24 134.122.155.0 y el AS152194 completos
+      Se bloquean las IP nombradas, no el rango: CTG Server aloja a otros
+      clientes.
+
+5. MITRE ATT&CK
+--------------------------------------------------------------------------------
+  T1566.003  Phishing: Spearphishing via Service          WhatsApp (Pelagos
+                                                          indica T1566.001)
+  T1204.002  User Execution: Malicious File               segun Pelagos
+  T1574.001  Hijack Execution Flow: DLL                   evaluacion Intellroom:
+             (T1574.002 DLL Side-Loading antes de v17)    EXE firmado que carga
+                                                          la DLL maliciosa
+  T1553.005  Subvert Trust Controls: Mark-of-the-Web      probable: IMG dentro
+             Bypass                                       de ZIP; no observado
+  T1036.005  Masquerading: Match Legitimate Name or       carpeta Update, valor
+             Location                                     MicrosoftUpdate,
+                                                          metadatos de DWM
+  T1027.007  Obfuscated Files or Information: Dynamic     APIs por hash, segun
+             API Resolution                               Pelagos
+  T1140      Deobfuscate/Decode Files or Information      XOR y BCryptDecrypt,
+                                                          segun Pelagos
+  T1547.001  Boot or Logon Autostart Execution: Registry  segun Pelagos
+             Run Keys / Startup Folder
+  Las ubicaciones de T1574 y T1566.003 se deben confirmar contra la matriz
+  vigente antes de usarlas en reglas.
+
+6. RELEVANCIA PARA CHILE
+--------------------------------------------------------------------------------
+No hay evidencia de que esta campana apunte a Chile. Lo que si se traslada es
+la tecnica: un mensaje de WhatsApp con tema de pago o factura que pide abrir el
+adjunto en el computador, un ZIP con una imagen de disco adentro, y un programa
+firmado que carga una DLL. En Chile WhatsApp es el canal de trabajo de muchas
+pymes, y WhatsApp Desktop o Web deja el adjunto en el mismo equipo donde estan
+las credenciales.
+
+7. EVALUACION DE LA FUENTE
+--------------------------------------------------------------------------------
+  Pelagos Intel: sin historial publico verificable para Intellroom (Admiralty F).
+  El articulo promueve su propio sandbox (Pelagosx). Las afirmaciones tecnicas
+  vienen con capturas y hashes, pero las muestras no estan en repositorios
+  publicos: credibilidad 3 (posiblemente cierto) para lo tecnico.
+  La atribucion a Silver Fox sube a "probable" (confianza moderada) por el
+  pivote de infraestructura de la seccion 3.2, que viene de otra fuente
+  (abuse.ch). Pelagos mismo aclara que no es coincidencia exacta de campana.
+
+8. QUE NO SE PUDO VERIFICAR Y NO SE AFIRMA
+--------------------------------------------------------------------------------
+  - Los hashes y el comportamiento: dependen de Pelagos. Ninguno de los cuatro
+    hashes esta en MalwareBazaar; VirusTotal no se consulto.
+  - Que el ZIP analizado y el EXE sean de la misma entrega. El ZIP que llego
+    por WhatsApp es el C2841 y el ejecutable analizado es el C2089. Puede ser
+    un mismo lote con numeracion distinta o dos muestras juntadas en un mismo
+    informe. Pelagos no lo explica.
+  - Que el C2 siga activo. No se contacto la IP; InternetDB muestra puertos
+    abiertos en su ultima observacion, sin fecha.
+  - Que el certificado de KuGou este robado o abusado de otra forma: no hay
+    datos.
+  - Que la coincidencia de fecha del 2026-09-11 implique el mismo operador. Es
+    consistente, no es prueba.
+  - Victimas: se menciona una publicacion en Threads de una persona en Malasia
+    que recibio un archivo similar. Es una persona particular y su identidad
+    no se publica.
+
+9. ACCIONES RECOMENDADAS
+--------------------------------------------------------------------------------
+  1. Bloquear 134[.]122[.]155[.]135 y los cuatro vecinos de ThreatFox (IP
+     puntuales, no el rango).
+  2. Bloquear por hash el ZIP, el IMG y la DLL. El EXE, solo donde no se use
+     KuGou.
+  3. Detectar: escritura en HKCU\...\Run con destino bajo
+     %APPDATA%\Microsoft\Update\; un binario firmado por Kugou fuera de
+     Program Files; montaje de un .img o .iso descargado; conexiones a una IP
+     fija cada ~3 s por 443 desde un proceso de usuario.
+  4. En equipos de trabajo: bloquear el montaje de IMG e ISO para usuarios
+     comunes y revisar que los adjuntos de WhatsApp Desktop pasen por el
+     antivirus.
+  Las ideas de deteccion son hipotesis a validar antes de desplegar
+  (redactado con apoyo de IA).
+
+10. FUENTES Y METODO
+--------------------------------------------------------------------------------
+  - Pelagos Intel, "SilverFox in the Desktop", 2026-09-27:
+    hxxps://research[.]pelagos-intel[.]com/silverfox-in-the-desktop
+  - @siberchengho en X, 2026-09-28 (difusion).
+  - Pelagos cita a CloudSEK, "Silver Fox Targeting India Using Tax Themed
+    Phishing Lures", 2025-12-24 (no leido por Intellroom).
+  - Metodo propio: RDAP de ARIN y APNIC, Team Cymru por DNS, InternetDB de
+    Shodan, busqueda en urlscan.io, API de ThreatFox y de MalwareBazaar
+    (abuse.ch). Ninguna conexion al C2.
+
+11. EVIDENCIA
+--------------------------------------------------------------------------------
+  01_flujo_ataque.png                          cadena del ataque
+  02_modelo_diamante.png                       modelo del diamante con IOCs
+  03_evidencia_x_post_siberchengho.png         post en X (embed oficial)
+  04_evidencia_articulo_pelagos.png            articulo de Pelagos, encabezado
+  evidencia_fuente_y_hashes_28092026.txt       custodia de la fuente, donde sale
+                                               cada IOC, hashes en MalwareBazaar
+  evidencia_infraestructura_c2_28092026.txt    RDAP, ASN, InternetDB y urlscan
+                                               del C2 y de sus vecinos
+  evidencia_threatfox_vecinos_28092026.txt     respuesta de ThreatFox para el /24
+                                               y muestras de MalwareBazaar
+  evidencia.sha256                             sumas de verificacion

@@ -1,0 +1,39 @@
+================================================================================
+  IOCs / ACCIONES -- Silver Fox: ZIP por WhatsApp y carga lateral de DLL
+================================================================================
+Defanged: las IP van con [.].
+
+INDICADORES PARA BLOQUEO RAPIDO
+
+[BLOQUEAR -- segun Pelagos, sin segunda confirmacion]
+134[.]122[.]155[.]135                              # C2, puerto 443, AS152194 CTG Server
+9f2caeda208c9d729b44f31c32b5e1eeef18d84d6e36b04afe15d894d3809672   # ZIP PDF_C2841_20260911100446.zip
+e2bf8b7cd396ee950a5b6911ea098c2e49d4ed002a6c04d5d660ccd4f7d66baa   # IMG PDF_C2841_20260911100446.img
+c1e184615241fe69db3bf4093a22c7c0bf5d6072d2f51e558142b844e871084f   # DLL active_desktop_render_x64.dll
+
+[BLOQUEAR -- mismo /24, reportados en ThreatFox (otras campanas)]
+134[.]122[.]155[.]220                              # ValleyRAT, 11-sep, puertos 443 y 80
+134[.]122[.]155[.]243                              # VShell, 8-sep, puerto 8085
+134[.]122[.]155[.]142                              # ValleyRAT, 28-jun, puerto 6276
+134[.]122[.]155[.]147                              # ValleyRAT, 17-jun, puerto 23610
+
+[VIGILAR -- NO bloquear ciegamente]
+f712c2a8b4abf2e299a2b480020333deb0f43364e9686cda78b1243c62e4830d   # EXE firmado por KuGou (legitimo, usado de cargador)
+iosxq[.]top                                        # hostname de 134.122.155.243 segun InternetDB
+
+[DETECTAR -- comportamiento, no valor de red]
+HKCU\Software\Microsoft\Windows\CurrentVersion\Run = MicrosoftUpdate   # persistencia
+%APPDATA%\Microsoft\Update\active_desktop_render_x64.dll               # DLL copiada
+binario firmado por Guangzhou Kugou fuera de Program Files             # carga lateral
+.img o .iso montado desde un adjunto (ZIP de WhatsApp)                 # entrega
+conexion a IP fija por 443 cada ~3 s desde proceso de usuario          # C2
+@@RAPID_CFG_START@@  /  SetDesktopMonitorHook  /  active_desktop_launcher_x64.pdb
+
+[NO ES UN IOC -- NO bloquear]
+Guangzhou Kugou Technology Co., Ltd.               # firmante legitimo (huella 757BDD02...C1ABC1FDBE)
+dwmapi.dll / Desktop Window Manager Helper         # nombres de Windows copiados en metadatos
+134.122.155.0/24 y AS152194 completos              # hosting con otros clientes: solo IP puntuales
+WhatsApp                                           # canal de entrega
+
+Detalle en SilverFox_WhatsApp_Malasia_28092026.txt. Fuente: Pelagos Intel, 27-09-2026.
+Deteccion: hipotesis a validar antes de desplegar (redactado con apoyo de IA).

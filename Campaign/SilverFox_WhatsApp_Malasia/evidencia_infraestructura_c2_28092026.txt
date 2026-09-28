@@ -1,0 +1,46 @@
+================================================================================
+  Evidencia: infraestructura del C2 134[.]122[.]155[.]135
+================================================================================
+Solo fuentes pasivas: RDAP, DNS, Team Cymru, InternetDB de Shodan y urlscan.io.
+NO se envio ninguna conexion al C2. Respuestas copiadas tal cual.
+
+[2026-09-28 17:01:42 UTC] RDAP ARIN  https://rdap.arin.net/registry/ip/134.122.155.135
+  handle=134.122.155.0 - 134.122.159.255 name=CTG122-155-JP rango=134.122.155.0 - 134.122.159.255  (ARIN deriva a APNIC)
+
+[2026-09-28 17:01:43 UTC] RDAP APNIC  https://rdap.apnic.net/ip/134.122.155.135
+  handle=134.122.155.0 - 134.122.159.255 name=CTG122-155-JP pais=JP rango=134.122.155.0 - 134.122.159.255
+  observaciones: [['CTG Server Ltd.']]
+  entidad: roles=['technical', 'administrative'] handle=BCPL4-AP
+  entidad: roles=['abuse'] handle=IRT-CTG-HK
+
+[2026-09-28 17:01:43 UTC] Team Cymru (DNS)  135.155.122.134.origin.asn.cymru.com
+  "152194 | 134.122.155.0/24 | SG | apnic | 1989-05-23"
+"152194 | 134.122.128.0/17 | SG | apnic | 1989-05-23"
+"152194 | 134.122.144.0/20 | SG | apnic | 1989-05-23"
+[2026-09-28 17:01:43 UTC] Team Cymru (DNS)  AS152194.asn.cymru.com
+  "152194 | HK | apnic | 2023-12-22 | CTGSERVERLIMITED-AS-AP - CTG Server Limited, HK"
+[2026-09-28 17:01:44 UTC] PTR  134.122.155.135
+  (vacio)
+
+[2026-09-28 17:01:44 UTC] InternetDB (datos pasivos de Shodan)  https://internetdb.shodan.io/134.122.155.135
+  {"cpes":[],"hostnames":[],"ip":"134.122.155.135","ports":[443,445,5985],"tags":[],"vulns":[]}
+
+[2026-09-28 17:01:47 UTC] urlscan.io busqueda ip:"134.122.155.135"
+  total=0 (ningun sitio escaneado cargo recursos desde esta IP)
+
+Lectura:
+  - AS152194, CTG Server Limited (Hong Kong). APNIC ubica el bloque 134.122.155.0 a
+    134.122.159.255 en JP y Team Cymru lo geolocaliza en SG: el pais varia segun la fuente.
+  - Puertos 443, 445 (SMB) y 5985 (WinRM) segun InternetDB: perfil de servidor Windows.
+    El vecino 134.122.155.147, C2 de ValleyRAT en junio (ver evidencia_threatfox), tiene
+    exactamente el mismo perfil (445 y 5985).
+
+InternetDB de los vecinos reportados en ThreatFox (ver evidencia_threatfox_vecinos):
+[2026-09-28 17:02:10 UTC] 134.122.155.220
+  {"detail":"No information available"}
+[2026-09-28 17:02:10 UTC] 134.122.155.243
+  {"cpes":["cpe:/o:canonical:ubuntu_linux","cpe:/a:f5:nginx:1.18.0","cpe:/o:linux:linux_kernel","cpe:/a:openbsd:openssh:8.9p1"],"hostnames":["iosxq.top","www.iosxq.top"],"ip":"134.122.155.243","ports":[22,80,443],"tags":["eol-product"],"vulns":["CVE-2025-23419","CVE-2021-3618","CVE-2023-44487","CVE-2021-23017"]}
+[2026-09-28 17:02:10 UTC] 134.122.155.142
+  {"cpes":["cpe:/a:oracle:mysql:8.0.44"],"hostnames":[],"ip":"134.122.155.142","ports":[3306],"tags":["database","eol-product"],"vulns":["CVE-2026-21964","CVE-2026-34317","CVE-2026-34319","CVE-2026-34318"]}
+[2026-09-28 17:02:10 UTC] 134.122.155.147
+  {"cpes":[],"hostnames":[],"ip":"134.122.155.147","ports":[445,5985],"tags":[],"vulns":[]}

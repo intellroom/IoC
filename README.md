@@ -18,6 +18,12 @@ https://github.com/intellroom/IoC#macfinger_clickfix_macos
 
 Ordenadas de la más reciente a la más antigua.
 
+### SilverFox_WhatsApp_Malasia
+
+**2026-09-28** · Silver Fox: ZIP por WhatsApp y carga lateral de DLL contra Malasia
+
+[Carpeta](Campaign/SilverFox_WhatsApp_Malasia) · [iocs.txt](Campaign/SilverFox_WhatsApp_Malasia/iocs.txt)
+
 ### Phexia_macOS_Polygon_C2
 
 **2026-09-28** · Phexia: stealer de macOS que lee su C2 desde un contrato en Polygon
