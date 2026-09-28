@@ -1,0 +1,240 @@
+================================================================================
+  Phexia (infostealer para macOS): el C2 se lee desde un contrato en Polygon
+  Campana PHX-2026-0928  ·  TLP:CLEAR  ·  Intellroom Threat Intelligence
+  Fecha de analisis: 2026-09-28
+================================================================================
+
+0. FUENTE PRIMARIA Y QUE AGREGA ESTA FICHA
+--------------------------------------------------------------------------------
+El 2026-09-27 el investigador fab0 (@FABO97662188, en X) publico siete lineas,
+cinco dominios distintos, como los C2 mas recientes del infostealer Phexia para
+macOS, junto con una captura del codigo AppleScript que consulta un contrato en
+la blockchain de Polygon para saber a que dominio conectarse.
+
+La atribucion a Phexia es de fab0. Intellroom NO tuvo una muestra del malware y
+no la verifica aqui: la cita.
+
+Intellroom leyo ese contrato directamente en la blockchain. Todo lo que sigue se
+midio el 2026-09-28, sin enviar una sola peticion HTTP a los dominios C2 (solo
+DNS y RDAP):
+
+  (a) El C2 VIGENTE: bagueie[.]xyz, escrito en el contrato el 2026-09-28 a las
+      06:15 UTC, DESPUES del post de fab0. No esta en su lista.
+  (b) El HISTORIAL COMPLETO: el contrato se desplego el 2026-05-01 y desde
+      entonces se escribio 31 veces. Son 22 dominios distintos con forma de C2,
+      mas 4 valores de prueba que son sitios legitimos.
+  (c) La lista de fab0 coincide 1 a 1 con la blockchain, en el mismo orden y con
+      sus repetidos: el operador alterno entre electronic72[.]pro y
+      namanami[.]top tres veces en 34 minutos el 2026-09-22.
+  (d) La WALLET que firma cada cambio: es el pivote que no rota.
+  (e) El estado de cada dominio al 2026-09-28: 3 de los 5 de la lista de fab0 ya
+      estan suspendidos por su registro (serverHold).
+  (f) Como leer el C2 vigente sin ejecutar el malware (seccion 5).
+
+1. RESUMEN
+--------------------------------------------------------------------------------
+Phexia es un infostealer para macOS escrito en AppleScript. Segun fuentes
+publicas (seccion 10) se distribuye de forma privada desde abril de 2024,
+comparte cerca del 85% de su codigo con el stealer Mac.c y llega a la victima
+con la tecnica ClickFix: se la convence de pegar un comando en la Terminal.
+
+El dominio de su servidor de control no viene escrito en el malware. El script
+le pregunta a un contrato inteligente en Polygon, a traves de cuatro nodos RPC
+publicos, cual es el dominio del momento. Para mover el C2, el operador escribe
+un valor nuevo en el contrato con una sola transaccion. Tumbar un dominio no
+basta: el operador escribe otro y el malware lo lee en su proxima consulta.
+
+Lo que le da resiliencia al operador tambien lo expone: la blockchain no olvida.
+Cada cambio queda publico, firmado y con fecha, y eso es lo que permitio
+reconstruir la historia completa del contrato.
+
+2. LINEA DE TIEMPO (UTC)
+--------------------------------------------------------------------------------
+2024-04 (aprox.)     Phexia en distribucion privada (segun cystack).
+2026-05-01 17:17     La wallet del operador recibe 30 POL desde
+                     0xC2F79738196B670D99064ECa35C3eAFA72e17c59.
+2026-05-01 17:22     Despliegue del contrato 0xA3a603F8...7C15C2A0.
+2026-05-01 a 05-25   Valores de prueba: rutube.ru, facebook.com,
+                     https://vk.com/ y example.com.
+2026-05-18 03:00     Primer valor con forma de C2: xuiaxwx[.]com.
+2026-05-27 a 08-12   15 valores mas: 14 dominios con forma de C2 y uno
+                     a vigilar (seccion 3 y evidencia_historial_contrato).
+2026-08-31 17:11     machine628[.]baby (el primero de la lista de fab0).
+2026-09-07 09:50     d9mjs[.]sbs
+2026-09-18 03:15     namanami[.]top
+2026-09-22 20:13     electronic72[.]pro, 20:47 namanami[.]top, 20:47
+                     electronic72[.]pro otra vez.
+2026-09-25 16:11     xynero[.]xyz
+2026-09-27           fab0 publica la lista en X.
+2026-09-27           Se registra bagueie[.]xyz (NameSilo).
+2026-09-28 06:15     bagueie[.]xyz se escribe en el contrato. Es el vigente.
+2026-09-28           Verificacion de Intellroom.
+
+3. INDICADORES
+--------------------------------------------------------------------------------
+3.1 Dominios C2 escritos en el contrato (defanged). Estado DNS al 2026-09-28.
+
+  bagueie[.]xyz          vigente desde 2026-09-28; alta 2026-09-27, NameSilo;
+                         resuelve, detras de Cloudflare
+  xynero[.]xyz           2026-09-25 a 09-28; alta 09-22, Eranet; resuelve
+  electronic72[.]pro     2026-09-22 a 09-25; alta 09-22, Eranet; resuelve
+  namanami[.]top         2026-09-18 a 09-22; alta 09-09; serverHold
+  d9mjs[.]sbs            2026-09-07 a 09-18; alta 09-07; serverHold
+  machine628[.]baby      2026-08-31 a 09-07; alta 08-31; serverHold
+  vg5sgxv[.]lol          2026-08-12 a 08-31; no resuelve
+  stv4ec5[.]shop         2026-07-31 a 08-12; sin registro A
+  67sixcebeh[.]surf      2026-07-21 a 07-31; sin registro A
+  fbuytf67[.]click       2026-07-20 a 07-21; sin registro A
+  8jdjpwka[.]baby        2026-07-19 a 07-20; no resuelve
+  okekjaiw[.]click       2026-07-18 a 07-19; sin registro A
+  j9af4sr[.]guru         2026-07-09 a 07-18; sin registro A
+  apdhlhs3[.]xyz         2026-06-29 a 07-09; no resuelve
+  bduwih8[.]pro          2026-06-28 a 06-29; RESUELVE aun (Cloudflare)
+  sj98xe4[.]xyz          2026-06-02 a 06-05 y 06-22 a 06-28; no resuelve
+  hf98x4d[.]site         2026-06-06 a 06-22; no resuelve
+  citcix6[.]xyz          2026-06-05 a 06-06; no resuelve
+  smdh7[.]surf           2026-06-05; RESUELVE aun (Cloudflare)
+  gesck4m[.]pro          2026-05-27 a 06-02; no resuelve
+  xuiaxwx[.]com          2026-05-18 a 05-25; no resuelve
+
+  johncon[.]my           escrito dos veces el 2026-06-29, entre dos escrituras
+                         de apdhlhs3[.]xyz. VIGILAR, no bloquear a ciegas: puede
+                         ser el sitio de un tercero.
+
+  Las fechas son el periodo en que el dominio fue el valor del contrato, no
+  necesariamente el periodo en que el servidor respondio.
+
+3.2 En la blockchain (no se bloquean: se vigilan o se detectan)
+
+  0xA3a603F8a454a9c905b4c579Bb72628F7C15C2A0   contrato resolvedor, Polygon PoS
+  0x363AeAF1F67f1FB7ABdDC3f9806a301f1C64AbE3   wallet del operador: desplego el
+                                               contrato, es su duena y firma
+                                               las 31 escrituras
+  0xC2F79738196B670D99064ECa35C3eAFA72e17c59   wallet que le envio los 30 POL
+                                               iniciales; relacion no probada
+                                               mas alla de esa transferencia
+
+  Selectores del contrato (sacados del bytecode):
+    0x2686ecea   devuelve el dominio vigente (texto ABI). Es el que consulta
+                 el malware.
+    0xd75d1ba6   escribe el dominio. Solo la duena; exige entre 1 y 511 bytes.
+    0x893d20e8   devuelve la duena (getOwner).
+    0xf2fde38b   transfiere la propiedad (transferOwnership).
+
+4. LO QUE NO ES UN IOC
+--------------------------------------------------------------------------------
+  polygon.drpc.org, polygon.publicnode.com, polygon-mainnet.gateway.tatum.io y
+  tenderly.rpc.polygon.community
+      Nodos RPC publicos y legitimos de Polygon. El malware los usa, pero
+      bloquearlos rompe cualquier uso normal de Polygon (billeteras, dApps).
+      Lo util es detectar QUIEN los consulta (seccion 9).
+
+  rutube.ru, facebook.com, https://vk.com/, example.com
+      Valores de prueba que el operador escribio en el contrato en mayo. Son
+      sitios legitimos.
+
+  104.21.x.x y 172.67.x.x
+      Las IP de los dominios que resuelven son de Cloudflare, compartidas con
+      miles de sitios. Se bloquea el dominio, nunca la IP ni el rango.
+
+  0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3
+      Contrato publico y verificado llamado DelegationManager, que la wallet
+      del operador llamo dos veces (2026-09-05 y 09-10). Lo usan muchas otras
+      wallets: es infraestructura compartida.
+
+  Tokens con enlaces de Telegram en el nombre que recibio la wallet de los
+  30 POL: spam de airdrop que llega a cualquier wallet, sin relacion.
+
+5. COMO FUNCIONA EL RESOLVEDOR
+--------------------------------------------------------------------------------
+Visible en la captura publicada por fab0 (funcion __P9Dhuj3s):
+
+  1. El AppleScript tiene una lista con los cuatro nodos RPC de la seccion 4.
+  2. Recorre la lista y, con do shell script, lanza un curl POST con un
+     eth_call de JSON-RPC hacia el contrato 0xA3a603F8...7C15C2A0.
+  3. Extrae el campo "result" con sed y decodifica el texto ABI con xxd.
+  4. Si obtuvo un valor, arma https://<valor>/ y le envia
+     /usr/bin/curl -d "check".
+  5. Si la respuesta es "success", adopta ese dominio. Si no, prueba el
+     siguiente nodo.
+
+El contrato y el eth_call van dentro de la linea de comandos de curl. Eso es lo
+que un EDR de macOS puede ver aunque el trafico viaje cifrado.
+
+Para leer el valor vigente sin tocar el malware ni al atacante (solo consulta un
+nodo publico de Polygon):
+
+  curl -s -X POST -H 'Content-Type: application/json' \
+    -d '{"jsonrpc":"2.0","method":"eth_call","params":[{"to":"0xA3a603F8a454a9c905b4c579Bb72628F7C15C2A0","data":"0x2686ecea"},"latest"],"id":1}' \
+    https://polygon-bor-rpc.publicnode.com
+
+  La respuesta es texto ABI: los caracteres 129 en adelante del hex son el
+  dominio (el largo va en los 64 anteriores).
+
+6. PATRON DE ROTACION
+--------------------------------------------------------------------------------
+  - En septiembre el valor cambio cada 3 a 11 dias.
+  - De los seis dominios mas recientes, cuatro se escribieron en el contrato
+    el mismo dia de su registro o al dia siguiente (RDAP); xynero[.]xyz
+    espero 3 dias y namanami[.]top 9. El vigente se registro la vispera.
+  - Registradores de esos seis: NameSilo (3), Eranet (2) y Global Domain
+    Group (1). Todos los que resuelven estan detras de Cloudflare.
+  - Terminaciones usadas: .xyz, .pro, .top, .sbs, .baby, .lol, .shop, .surf,
+    .click, .guru, .site, .com (y .my si johncon lo fuera).
+
+7. MITRE ATT&CK
+--------------------------------------------------------------------------------
+  T1102.001  Web Service: Dead Drop Resolver           observado (contrato)
+  T1059.002  Command and Scripting Interpreter:
+             AppleScript                               observado (captura)
+  T1071.001  Application Layer Protocol: Web Protocols observado (HTTPS a RPC
+                                                       y a C2)
+  T1583.001  Acquire Infrastructure: Domains           observado (RDAP)
+  T1204.004  User Execution: Malicious Copy and Paste  segun fuentes publicas,
+             (ClickFix)                                no observado aqui
+
+8. QUE NO SE PUDO VERIFICAR Y NO SE AFIRMA
+--------------------------------------------------------------------------------
+  - Que el contrato sea de Phexia. Lo afirma fab0; encaja con lo publicado sobre
+    la familia (resolucion del C2 via contratos en blockchain). Probable, con
+    confianza moderada. Intellroom no tuvo una muestra.
+  - La ruta y los parametros del C2 despues de "check": la captura los corta.
+    Cookie Engineer documento /api.php?check en una variante anterior que
+    resolvia el C2 via Telegram; es consistente, no esta verificado para este
+    contrato.
+  - Que cada dominio historico haya funcionado como C2. Se afirma que fue el
+    valor del contrato, no que el servidor respondiera.
+  - Que la campana apunte a Chile o a un sector: no hay datos.
+  - Que el operador hable ruso. Los primeros valores de prueba fueron rutube.ru
+    y vk.com: senal debil, no se usa para atribuir.
+  - No se envio ninguna peticion HTTP a los dominios C2.
+
+9. ACCIONES RECOMENDADAS
+--------------------------------------------------------------------------------
+  1. Bloquear en DNS y proxy los 21 dominios de 3.1 (johncon[.]my solo vigilar).
+     Los que ya no resuelven sirven para buscar en logs historicos desde el
+     2026-05-18.
+  2. Cazar en macOS: osascript que lanza curl con "eth_call" o con la direccion
+     del contrato en la linea de comandos; y POST a los cuatro nodos RPC desde
+     equipos sin uso de cripto.
+  3. No confiar en listas publicadas, esta incluida: el C2 cambia cada pocos
+     dias. Leer el contrato (seccion 5). Intellroom lo lee a diario.
+  4. Vigilar la wallet 0x363AeAF1...C64AbE3: un contrato nuevo desplegado por
+     ella seria el proximo resolvedor.
+  Las ideas de deteccion son hipotesis a validar antes de desplegar
+  (redactado con apoyo de IA).
+
+10. FUENTES Y METODO
+--------------------------------------------------------------------------------
+  - fab0 (@FABO97662188) en X, 2026-09-27: lista de dominios y captura del
+    codigo. Fuente primaria de la atribucion.
+  - cystack, stealer-fingerprints, familia phexia:
+    hxxps://github[.]com/cystack/stealer-fingerprints/blob/main/families/phexia/README.md
+    (distribucion privada desde abril de 2024 y codigo compartido con Mac.c).
+  - Cookie Engineer, "Malware Insights: MacOS Phexia Campaign":
+    hxxps://cookie[.]engineer/weblog/articles/malware-insights-macos-phexia-campaign.html
+    (ClickFix, /api.php?check y resolucion via Telegram en una variante previa).
+  - Metodo propio: eth_getCode y eth_call en polygon-bor-rpc.publicnode.com y
+    polygon.drpc.org; historial de transacciones del contrato y de la wallet
+    en la API v2 de polygon.blockscout.com (32 y 35 transacciones, sin paginas
+    pendientes); RDAP por el directorio de IANA; DNS contra 1.1.1.1.

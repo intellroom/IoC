@@ -1,0 +1,53 @@
+================================================================================
+  IOCs / ACCIONES -- Phexia (infostealer macOS): C2 leido desde Polygon
+================================================================================
+Defanged: los dominios van con [.].
+
+INDICADORES PARA BLOQUEO RAPIDO
+
+[BLOQUEAR]
+bagueie[.]xyz                                      # C2 vigente desde 28-sep 06:15 UTC, resuelve
+xynero[.]xyz                                       # C2, 25-sep a 28-sep, resuelve
+electronic72[.]pro                                 # C2, 22-sep a 25-sep, resuelve
+namanami[.]top                                     # C2, 18-sep a 22-sep, serverHold
+d9mjs[.]sbs                                        # C2, 7-sep a 18-sep, serverHold
+machine628[.]baby                                  # C2, 31-ago a 7-sep, serverHold
+vg5sgxv[.]lol                                      # C2, 12-ago a 31-ago
+stv4ec5[.]shop                                     # C2, 31-jul a 12-ago
+67sixcebeh[.]surf                                  # C2, 21-jul a 31-jul
+fbuytf67[.]click                                   # C2, 20-jul
+8jdjpwka[.]baby                                    # C2, 19-jul
+okekjaiw[.]click                                   # C2, 18-jul
+j9af4sr[.]guru                                     # C2, 9-jul a 18-jul
+apdhlhs3[.]xyz                                     # C2, 29-jun a 9-jul
+bduwih8[.]pro                                      # C2, 28-jun, aun resuelve
+sj98xe4[.]xyz                                      # C2, 2-jun y 22-jun
+hf98x4d[.]site                                     # C2, 6-jun a 22-jun
+citcix6[.]xyz                                      # C2, 5-jun
+smdh7[.]surf                                       # C2, 5-jun, aun resuelve
+gesck4m[.]pro                                      # C2, 27-may a 2-jun
+xuiaxwx[.]com                                      # C2, 18-may a 25-may
+
+[VIGILAR -- NO bloquear ciegamente]
+johncon[.]my                                       # escrito 2 veces el 29-jun; puede ser de un tercero
+
+[DETECTAR -- comportamiento, no valor de red]
+0xA3a603F8a454a9c905b4c579Bb72628F7C15C2A0         # contrato resolvedor (Polygon)
+0x2686ecea                                         # selector que devuelve el C2 (eth_call)
+0x363AeAF1F67f1FB7ABdDC3f9806a301f1C64AbE3         # wallet del operador, firma cada cambio
+osascript que lanza curl con "eth_call"            # consulta al contrato desde un Mac
+curl -d "check" hacia el dominio devuelto          # prueba de disponibilidad del C2
+POST a nodos RPC de Polygon desde un Mac           # equipos sin uso de cripto
+
+[NO ES UN IOC -- NO bloquear]
+polygon.drpc.org                                   # nodo RPC publico legitimo
+polygon.publicnode.com                             # nodo RPC publico legitimo
+polygon-mainnet.gateway.tatum.io                   # nodo RPC publico legitimo
+tenderly.rpc.polygon.community                     # nodo RPC publico legitimo
+rutube.ru / facebook.com / vk.com / example.com    # valores de prueba del operador (mayo)
+104.21.x.x / 172.67.x.x                            # Cloudflare delante de los C2
+0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3         # DelegationManager, contrato publico compartido
+
+El C2 cambia cada pocos dias: para el vigente, leer el contrato (seccion 5 de la ficha).
+Detalle en Phexia_macOS_Polygon_C2_28092026.txt. Fuente: fab0 (@FABO97662188) en X, 27-09-2026.
+Deteccion: hipotesis a validar antes de desplegar (redactado con apoyo de IA).

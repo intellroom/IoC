@@ -18,6 +18,12 @@ https://github.com/intellroom/IoC#macfinger_clickfix_macos
 
 Ordenadas de la más reciente a la más antigua.
 
+### Phexia_macOS_Polygon_C2
+
+**2026-09-28** · Phexia: stealer de macOS que lee su C2 desde un contrato en Polygon
+
+[Carpeta](Campaign/Phexia_macOS_Polygon_C2) · [iocs.txt](Campaign/Phexia_macOS_Polygon_C2/iocs.txt)
+
 ### Macfinger_ClickFix_macOS
 
 **2026-09-23** · Macfinger: ClickFix con reCAPTCHA falso contra macOS
