@@ -1,0 +1,112 @@
+================================================================================
+  Evidencia: estado DNS y RDAP de los dominios escritos en el contrato
+================================================================================
+Solo consultas DNS (resolvedor 1.1.1.1) y RDAP (directorio de IANA).
+NO se envio ninguna peticion HTTP ni HTTPS a estos dominios.
+Defanged en los titulos. Los valores se muestran tal como los devuelve el DNS.
+
+1. DNS (A y NS)
+--------------------------------------------------------------------------------
+[2026-09-28 16:54:44 UTC] bagueie[.]xyz
+    A : 104.21.11.145 172.67.149.121
+    NS: braden.ns.cloudflare.com. sydney.ns.cloudflare.com.
+[2026-09-28 16:54:44 UTC] xynero[.]xyz
+    A : 172.67.139.66 104.21.62.209
+    NS: lola.ns.cloudflare.com. nick.ns.cloudflare.com.
+[2026-09-28 16:54:45 UTC] electronic72[.]pro
+    A : 104.21.57.88 172.67.162.74
+    NS: raphaela.ns.cloudflare.com. rohin.ns.cloudflare.com.
+[2026-09-28 16:54:45 UTC] namanami[.]top
+    A : (vacio)
+    NS: (vacio)
+[2026-09-28 16:54:45 UTC] d9mjs[.]sbs
+    A : (vacio)
+    NS: (vacio)
+[2026-09-28 16:54:45 UTC] machine628[.]baby
+    A : (vacio)
+    NS: (vacio)
+[2026-09-28 16:54:46 UTC] vg5sgxv[.]lol
+    A : (vacio)
+    NS: (vacio)
+[2026-09-28 16:54:46 UTC] stv4ec5[.]shop
+    A : (vacio)
+    NS: cris.ns.cloudflare.com. ines.ns.cloudflare.com.
+[2026-09-28 16:54:46 UTC] 67sixcebeh[.]surf
+    A : (vacio)
+    NS: davina.ns.cloudflare.com. ryan.ns.cloudflare.com.
+[2026-09-28 16:54:46 UTC] fbuytf67[.]click
+    A : (vacio)
+    NS: sonia.ns.cloudflare.com. valentin.ns.cloudflare.com.
+[2026-09-28 16:54:46 UTC] 8jdjpwka[.]baby
+    A : (vacio)
+    NS: (vacio)
+[2026-09-28 16:54:46 UTC] okekjaiw[.]click
+    A : (vacio)
+    NS: emily.ns.cloudflare.com. rex.ns.cloudflare.com.
+[2026-09-28 16:54:47 UTC] j9af4sr[.]guru
+    A : (vacio)
+    NS: grannbo.ns.cloudflare.com. kanye.ns.cloudflare.com.
+[2026-09-28 16:54:47 UTC] apdhlhs3[.]xyz
+    A : (vacio)
+    NS: (vacio)
+[2026-09-28 16:54:47 UTC] johncon[.]my
+    A : (vacio)
+    NS: clark.ns.cloudflare.com. sreeni.ns.cloudflare.com.
+[2026-09-28 16:54:47 UTC] bduwih8[.]pro
+    A : 172.67.204.80 104.21.61.3
+    NS: eve.ns.cloudflare.com. plato.ns.cloudflare.com.
+[2026-09-28 16:54:47 UTC] sj98xe4[.]xyz
+    A : (vacio)
+    NS: (vacio)
+[2026-09-28 16:54:49 UTC] hf98x4d[.]site
+    A : (vacio)
+    NS: (vacio)
+[2026-09-28 16:54:49 UTC] citcix6[.]xyz
+    A : (vacio)
+    NS: (vacio)
+[2026-09-28 16:54:49 UTC] smdh7[.]surf
+    A : 172.67.150.233 104.21.0.113
+    NS: jillian.ns.cloudflare.com. matteo.ns.cloudflare.com.
+[2026-09-28 16:54:49 UTC] gesck4m[.]pro
+    A : (vacio)
+    NS: (vacio)
+[2026-09-28 16:54:51 UTC] xuiaxwx[.]com
+    A : (vacio)
+    NS: (vacio)
+
+2. RDAP de los seis dominios mas recientes
+--------------------------------------------------------------------------------
+[2026-09-28 16:54:54 UTC] bagueie[.]xyz   (servidor RDAP: https://rdap.centralnic.com/xyz/)
+    registro   : 2026-09-27T21:03:00.0Z
+    vencimiento: 2027-09-27T23:59:59.0Z
+    registrador: NameSilo, LLC
+    estado     : server transfer prohibited, client transfer prohibited, add period
+    NS         : braden.ns.cloudflare.com, sydney.ns.cloudflare.com
+[2026-09-28 16:54:55 UTC] xynero[.]xyz   (servidor RDAP: https://rdap.centralnic.com/xyz/)
+    registro   : 2026-09-22T19:43:37.0Z
+    vencimiento: 2027-09-22T23:59:59.0Z
+    registrador: Eranet International Limited
+    estado     : server transfer prohibited, client transfer prohibited
+    NS         : lola.ns.cloudflare.com, nick.ns.cloudflare.com
+[2026-09-28 16:54:55 UTC] electronic72[.]pro   RDAP sin respuesta: HTTP Error 403: Forbidden
+[2026-09-28 16:54:56 UTC] namanami[.]top   (servidor RDAP: https://rdap.zdnsgtld.com/top/)
+    registro   : 2026-09-09T19:56:06.0Z
+    vencimiento: 2027-09-09T19:56:06.0Z
+    registrador: NameSilo,LLC
+    estado     : client transfer prohibited, server hold
+    NS         : michelle.ns.cloudflare.com., viddy.ns.cloudflare.com.
+[2026-09-28 16:54:57 UTC] d9mjs[.]sbs   (servidor RDAP: https://rdap.centralnic.com/sbs/)
+    registro   : 2026-09-07T07:38:44.0Z
+    vencimiento: 2027-09-07T23:59:59.0Z
+    registrador: NameSilo, LLC
+    estado     : server hold, server transfer prohibited, client hold, client transfer prohibited
+    NS         : harlee.ns.cloudflare.com, hugh.ns.cloudflare.com
+[2026-09-28 16:54:58 UTC] machine628[.]baby   (servidor RDAP: https://rdap.centralnic.com/baby/)
+    registro   : 2026-08-31T15:41:10.0Z
+    vencimiento: 2027-08-31T23:59:59.0Z
+    registrador: Global Domain Group LLC
+    estado     : server hold, server transfer prohibited, client transfer prohibited
+    NS         : marge.ns.cloudflare.com, woz.ns.cloudflare.com
+
+Lectura: 'server hold' = el registro suspendio el dominio (deja de resolver).
+Las IP 104.21.x.x y 172.67.x.x son de Cloudflare (proxy compartido): no bloquear.

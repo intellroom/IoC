@@ -1,0 +1,43 @@
+================================================================================
+  Evidencia: transacciones de la wallet del operador
+================================================================================
+Wallet: 0x363AeAF1F67f1FB7ABdDC3f9806a301f1C64AbE3 (Polygon PoS)
+Fuente: API v2 de polygon.blockscout.com, leida el 2026-09-28. 35 transacciones, sin paginas pendientes.
+Valores de setServerURL defanged; las pruebas del operador (sitios legitimos) van sin defang.
+
+fecha_utc            | accion                                                   | detalle / tx
+2026-05-01 17:17:14  | transferencia recibida                                   | 30 POL desde 0xC2F79738196B670D99064ECa35C3eAFA72e17c59  0x69907201e9967757601e2dc2e4c886aec87615d906a5e92edabb6694e51f3998
+2026-05-01 17:22:42  | despliegue del contrato                                  | 0x199fc38fbbec9fabbddb6f42effe668407a93fa58af617340aea3ed3ef884a2d
+2026-05-01 18:07:46  | setServerURL (cambio de C2)                              | rutube.ru  0xbe6ce52a15844cf4f342c5f5487cec9f9d2bb6df128ceb2e4532182995249651
+2026-05-01 18:09:32  | setServerURL (cambio de C2)                              | facebook.com  0xce345d4a206921d1dd9db7dbe1c646c591be431f38df45bf4f765a3923d31734
+2026-05-18 02:46:03  | setServerURL (cambio de C2)                              | https://vk.com/  0x290acb5fcab51b838486e20ab57a9a9bf7f9a7786f2bdcb9b8a67c7cebedeeff
+2026-05-18 03:00:39  | setServerURL (cambio de C2)                              | xuiaxwx[.]com  0x730bd145d9434881f8f397865e5bc24b1c4d7a460effca04801534f72c757d4e
+2026-05-25 13:59:07  | setServerURL (cambio de C2)                              | example.com  0xe156cc110f287bee9f065d940b329044e259c86bd7e50699030a337167db4ae3
+2026-05-27 09:47:07  | setServerURL (cambio de C2)                              | gesck4m[.]pro  0x733508d294ed5372aaf0e72c65c8ee7554367ad3f07207adac77c0508d6d2c3c
+2026-06-02 23:02:54  | setServerURL (cambio de C2)                              | sj98xe4[.]xyz  0x0a5105519bc31ea342c7275f2fbadadfbe4aa8e8a33a9a6f0156b028e70b8b70
+2026-06-05 01:29:03  | setServerURL (cambio de C2)                              | smdh7[.]surf  0x6419d13fdcc4a1c77aefd81115bb027ce0d32d18798ed5e97f8e35f1896ba1eb
+2026-06-05 10:04:25  | setServerURL (cambio de C2)                              | citcix6[.]xyz  0x5986d6dd12b4b0e98c7b1a6e473f120ec1c3019d1d83203f8a31d8141bcb23b1
+2026-06-06 20:02:43  | setServerURL (cambio de C2)                              | hf98x4d[.]site  0x8af61052474203f0fab1304a459ab3091002a807f8a43af009d3e4fc443ad20a
+2026-06-22 18:35:38  | setServerURL (cambio de C2)                              | sj98xe4[.]xyz  0xe539e2813d71cfaa566f9996602c97a71a57a380f38902c15a91af91c69d355a
+2026-06-28 10:41:01  | setServerURL (cambio de C2)                              | bduwih8[.]pro  0x392a8af6e37d00071e07d0b809d7b873ded6fbbf25b5e00fa8db6f4b5f896e3e
+2026-06-29 20:10:53  | setServerURL (cambio de C2)                              | apdhlhs3[.]xyz  0xd3e03fc35b97d95e5eb02aaddde55c4418a2cbdc470845335f51c91e7504543d
+2026-06-29 20:14:13  | setServerURL (cambio de C2)                              | johncon[.]my  0xd8b60a8bcd254dd92293bfb415c52aaccae7872116ba0bb2d772f3e912bd2536
+2026-06-29 20:14:38  | setServerURL (cambio de C2)                              | johncon[.]my  0xc862d1a83933c701c31a7fc417d80a067de8beeb04f061de7ccb39c4dd3d8d74
+2026-06-30 18:23:44  | setServerURL (cambio de C2)                              | apdhlhs3[.]xyz  0x59cb424dfb6f1086a55ba3a7ff8bfa0aaa3474901ab954c032011ae8955fc7d6
+2026-07-09 17:03:35  | setServerURL (cambio de C2)                              | j9af4sr[.]guru  0x8f1cf910656f5eb4f7d3f5bfbcef53449a78c098fb2870cf5f6da3f9dd5f5b92
+2026-07-18 04:29:34  | setServerURL (cambio de C2)                              | okekjaiw[.]click  0xedbd6146579d378a14d75435ef9d7e880a8161649c684787e153365d59c2cf8e
+2026-07-19 13:50:13  | setServerURL (cambio de C2)                              | 8jdjpwka[.]baby  0xad5c0f332da5aa6d37dcfabd9a7bac4e8cf4f4ff8f27135adb82bb1bc4662ef1
+2026-07-20 13:06:10  | setServerURL (cambio de C2)                              | fbuytf67[.]click  0xc10bf95093d0901cdc90a7bc58529b5991249e4d9e85fb2ed0e70febc91dc3c6
+2026-07-21 06:22:06  | setServerURL (cambio de C2)                              | 67sixcebeh[.]surf  0xc7da6917549eb765c9d9fbd773d6aefbae757b0fca2f74739fc9219328a71112
+2026-07-31 16:28:45  | setServerURL (cambio de C2)                              | stv4ec5[.]shop  0xdb7f9f9a8befced3bb207dfadf2ebffb0aecc3d314ddeab7f2046856f9bf66d0
+2026-08-12 11:42:16  | setServerURL (cambio de C2)                              | vg5sgxv[.]lol  0x8d3906c8e6f2c217bc8335704299130a4aa335d6f65fb1db6ae09f7b23c3ef47
+2026-08-31 17:11:34  | setServerURL (cambio de C2)                              | machine628[.]baby  0xfa17ba4b0f744b6724729dae156fb6f5b9e4d03e645be06f1768c3614be30fea
+2026-09-05 23:06:12  | redeemDelegations (DelegationManager, contrato publico)  | 0x67ab184078f9dabfd6781aee77fb46d02c7a1ceecc10221d5e84fc32f167610a
+2026-09-07 09:50:46  | setServerURL (cambio de C2)                              | d9mjs[.]sbs  0xc538f82cf92e703ae50bc15dd74971ab99d3c15c1c13d66a9219bd7edbd4445c
+2026-09-10 19:16:34  | redeemDelegations (DelegationManager, contrato publico)  | 0xcee1d9c9aa824fd184631944c1ddb86cfcc8b3a0c554de429912b0d1b3c22f7e
+2026-09-18 03:15:19  | setServerURL (cambio de C2)                              | namanami[.]top  0xddc33dab310517b9f9d16529438b948bdcbf8cd0c2b39cec691fc490c8051b03
+2026-09-22 20:13:13  | setServerURL (cambio de C2)                              | electronic72[.]pro  0x79b04002d081bacb35229ed56a7bdc042f05f53302284ac876c704fde2b48279
+2026-09-22 20:47:12  | setServerURL (cambio de C2)                              | namanami[.]top  0xe5e0652a24d124c98dc576deceab3361b6f8df47591e319e477f569814c77e5d
+2026-09-22 20:47:41  | setServerURL (cambio de C2)                              | electronic72[.]pro  0x5fde0dcda3d0f0324722a02d54a6e90564135dbe5909b68ac0cf99ac918dee92
+2026-09-25 16:11:42  | setServerURL (cambio de C2)                              | xynero[.]xyz  0x973cd746d26c12f861b15116ccb5fa3be2aeef939db3ccd669a6d5bc934a7827
+2026-09-28 06:15:39  | setServerURL (cambio de C2)                              | bagueie[.]xyz  0x7d481a0459322565e22353c5c3cb9c1a62da2d47f959f0168bfc62b898d949b9

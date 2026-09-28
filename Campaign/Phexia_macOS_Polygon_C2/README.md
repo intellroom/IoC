@@ -15,6 +15,7 @@ fab0 publicó la lista de dominios recientes y una captura del código. Intellro
 - **La wallet del operador**, `0x363AeAF1F67f1FB7ABdDC3f9806a301f1C64AbE3`, desplegó el contrato y firma cada cambio. Los dominios rotan; la wallet no.
 - **Solo 5 de los 22 dominios resuelven hoy.** Tres de los cinco de la lista de fab0 ya están suspendidos por su registro.
 - **Cómo leer el C2 vigente sin ejecutar el malware:** una consulta a un nodo público de Polygon (sección 5 de la ficha).
+- **El código fuente del contrato está verificado:** se llama `extractor`, guarda el C2 en `serverURL` y su primera línea es un **comentario en ruso** («el mismo contrato que arriba»). El valor inicial del despliegue fue `vk.com`. Es una señal, no una atribución.
 
 ## Indicadores (resumen)
 
@@ -27,11 +28,25 @@ fab0 publicó la lista de dominios recientes y una captura del código. Intellro
 | Nodos RPC públicos de Polygon | `polygon.drpc.org` y otros tres | **No bloquear:** son legítimos. Detectar quién los consulta |
 | IPs de los C2 | Cloudflare | **No bloquear** la IP ni el rango, solo el dominio |
 
+## Evidencia
+
+| | |
+|---|---|
+| ![Cadena del ataque](01_flujo_ataque.png) | ![Modelo del Diamante](02_modelo_diamante.png) |
+| ![Post de fab0 en X](03_evidencia_x_post_fab0.png) | ![Código publicado por fab0](04_evidencia_x_codigo_fab0.png) |
+
+*Capturas 03 y 04: post original de fab0 ([@FABO97662188](https://x.com/FABO97662188)) en X, 27-09-2026, reproducido como fuente con su crédito.*
+
 ## Documentos
 
 - **[`Phexia_macOS_Polygon_C2_28092026.txt`](Phexia_macOS_Polygon_C2_28092026.txt)**: ficha completa. Qué agrega a lo publicado, línea de tiempo, indicadores con estado DNS, qué **no** es un IOC, cómo funciona el resolvedor, patrón de rotación, MITRE ATT&CK y todo lo que no se pudo verificar.
 - **[`iocs.txt`](iocs.txt)**: solo indicadores, con acción por línea, defanged.
+- **[`evidencia_consulta_contrato_28092026.txt`](evidencia_consulta_contrato_28092026.txt)**: la petición y la respuesta crudas del `eth_call` en dos nodos independientes, con hora. Es la misma consulta que hace el malware.
+- **[`evidencia_contrato_codigo_28092026.txt`](evidencia_contrato_codigo_28092026.txt)**: el código fuente verificado, los selectores comprobados con Keccak-256 y el bytecode desplegado con su SHA-256.
 - **[`evidencia_historial_contrato_28092026.txt`](evidencia_historial_contrato_28092026.txt)**: las 31 escrituras del contrato con fecha, valor y hash de transacción.
+- **[`evidencia_wallet_operador_28092026.txt`](evidencia_wallet_operador_28092026.txt)**: las 35 transacciones de la wallet del operador.
+- **[`evidencia_dns_rdap_28092026.txt`](evidencia_dns_rdap_28092026.txt)**: DNS de los 22 dominios y RDAP de los seis más recientes, con hora.
+- Sumas de verificación en **[`evidencia.sha256`](evidencia.sha256)**.
 
 ## Lo que no se pudo verificar ni se publica
 
@@ -41,4 +56,4 @@ fab0 publicó la lista de dominios recientes y una captura del código. Intellro
 - **No hay datos de que la campaña apunte a Chile** ni a un sector en particular.
 
 ---
-*Intellroom Threat Intelligence: fab0 como fuente primaria; bytecode y estado del contrato leídos con `eth_getCode` y `eth_call` en nodos públicos de Polygon; historial de transacciones en la API de Blockscout; RDAP y DNS de cada dominio; cystack y Cookie Engineer para el contexto de la familia.*
+*Intellroom Threat Intelligence: fab0 como fuente primaria; estado del contrato leído con `eth_getCode` y `eth_call` en nodos públicos de Polygon; código fuente verificado e historial de transacciones en la API de Blockscout; RDAP y DNS de cada dominio; cystack y Cookie Engineer para el contexto de la familia.*

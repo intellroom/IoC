@@ -30,6 +30,9 @@ DNS y RDAP):
   (e) El estado de cada dominio al 2026-09-28: 3 de los 5 de la lista de fab0 ya
       estan suspendidos por su registro (serverHold).
   (f) Como leer el C2 vigente sin ejecutar el malware (seccion 5).
+  (g) El CODIGO FUENTE del contrato, verificado en Blockscout: se llama
+      "extractor", guarda el C2 en una variable serverURL y su primera linea
+      es un comentario en ruso. El valor inicial del despliegue fue vk.com.
 
 1. RESUMEN
 --------------------------------------------------------------------------------
@@ -53,7 +56,9 @@ reconstruir la historia completa del contrato.
 2024-04 (aprox.)     Phexia en distribucion privada (segun cystack).
 2026-05-01 17:17     La wallet del operador recibe 30 POL desde
                      0xC2F79738196B670D99064ECa35C3eAFA72e17c59.
-2026-05-01 17:22     Despliegue del contrato 0xA3a603F8...7C15C2A0.
+2026-05-01 17:22     Despliegue del contrato "extractor" 0xA3a603F8...7C15C2A0,
+                     con vk.com como valor inicial. Verificado en Blockscout
+                     8 segundos despues.
 2026-05-01 a 05-25   Valores de prueba: rutube.ru, facebook.com,
                      https://vk.com/ y example.com.
 2026-05-18 03:00     Primer valor con forma de C2: xuiaxwx[.]com.
@@ -66,7 +71,7 @@ reconstruir la historia completa del contrato.
                      electronic72[.]pro otra vez.
 2026-09-25 16:11     xynero[.]xyz
 2026-09-27           fab0 publica la lista en X.
-2026-09-27           Se registra bagueie[.]xyz (NameSilo).
+2026-09-27 21:03     Se registra bagueie[.]xyz (NameSilo).
 2026-09-28 06:15     bagueie[.]xyz se escribe en el contrato. Es el vigente.
 2026-09-28           Verificacion de Intellroom.
 
@@ -114,12 +119,14 @@ reconstruir la historia completa del contrato.
                                                iniciales; relacion no probada
                                                mas alla de esa transferencia
 
-  Selectores del contrato (sacados del bytecode):
-    0x2686ecea   devuelve el dominio vigente (texto ABI). Es el que consulta
-                 el malware.
-    0xd75d1ba6   escribe el dominio. Solo la duena; exige entre 1 y 511 bytes.
-    0x893d20e8   devuelve la duena (getOwner).
-    0xf2fde38b   transfiere la propiedad (transferOwnership).
+  Funciones del contrato (codigo fuente verificado; cada selector se
+  comprobo calculando el Keccak-256 de su firma):
+    0x2686ecea   getServerURL()              devuelve el dominio vigente. Es la
+                                             que consulta el malware.
+    0xd75d1ba6   setServerURL(string)        escribe el dominio. Solo la
+                                             duena; exige entre 1 y 511 bytes.
+    0x893d20e8   getOwner()                  devuelve la duena.
+    0xf2fde38b   transferOwnership(address)  cambia la duena.
 
 4. LO QUE NO ES UN IOC
 --------------------------------------------------------------------------------
@@ -205,8 +212,12 @@ nodo publico de Polygon):
   - Que cada dominio historico haya funcionado como C2. Se afirma que fue el
     valor del contrato, no que el servidor respondiera.
   - Que la campana apunte a Chile o a un sector: no hay datos.
-  - Que el operador hable ruso. Los primeros valores de prueba fueron rutube.ru
-    y vk.com: senal debil, no se usa para atribuir.
+  - Que el operador hable ruso. Hay tres senales: la primera linea del codigo
+    fuente es un comentario en ruso ("el mismo contrato que arriba"), el valor
+    inicial fue vk.com y una de las primeras pruebas fue rutube.ru. El
+    comentario tiene forma de texto pegado desde una conversacion o de otro
+    archivo, asi que puede venir de una herramienta o de un tercero. No se usa
+    para atribuir.
   - No se envio ninguna peticion HTTP a los dominios C2.
 
 9. ACCIONES RECOMENDADAS
@@ -235,6 +246,25 @@ nodo publico de Polygon):
     hxxps://cookie[.]engineer/weblog/articles/malware-insights-macos-phexia-campaign.html
     (ClickFix, /api.php?check y resolucion via Telegram en una variante previa).
   - Metodo propio: eth_getCode y eth_call en polygon-bor-rpc.publicnode.com y
-    polygon.drpc.org; historial de transacciones del contrato y de la wallet
-    en la API v2 de polygon.blockscout.com (32 y 35 transacciones, sin paginas
-    pendientes); RDAP por el directorio de IANA; DNS contra 1.1.1.1.
+    polygon.drpc.org; codigo fuente verificado e historial de transacciones del
+    contrato y de la wallet en la API v2 de polygon.blockscout.com (32 y 35
+    transacciones, sin paginas pendientes); selectores comprobados con
+    Keccak-256; RDAP por el directorio de IANA; DNS contra 1.1.1.1.
+
+11. EVIDENCIA
+--------------------------------------------------------------------------------
+  01_flujo_ataque.png                       cadena del ataque
+  02_modelo_diamante.png                    modelo del diamante con IOCs
+  03_evidencia_x_post_fab0.png              post original de fab0 en X (27-09)
+  04_evidencia_x_codigo_fab0.png            captura del AppleScript publicada
+                                            por fab0
+  evidencia_consulta_contrato_28092026.txt  peticion y respuesta crudas del
+                                            eth_call en dos nodos, con hora
+  evidencia_contrato_codigo_28092026.txt    codigo fuente verificado, selectores
+                                            y bytecode desplegado con su SHA-256
+  evidencia_historial_contrato_28092026.txt las 31 escrituras con su hash de
+                                            transaccion
+  evidencia_wallet_operador_28092026.txt    las 35 transacciones de la wallet
+  evidencia_dns_rdap_28092026.txt           DNS de los 22 dominios y RDAP de
+                                            los seis mas recientes
+  evidencia.sha256                          sumas de verificacion

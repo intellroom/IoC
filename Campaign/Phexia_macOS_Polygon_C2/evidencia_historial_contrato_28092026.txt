@@ -14,7 +14,7 @@ Polygon. Dominios defanged con [.]. "PRUEBA" = sitio legitimo, NO es IOC.
 
 fecha_utc            | valor                      | tx
 ---------------------+----------------------------+-------------------------------------------------------------------
-2026-05-01 17:22:42  | (despliegue del contrato)  | 0x199fc38fbbec9fabbddb6f42effe668407a93fa58af617340aea3ed3ef884a2d
+2026-05-01 17:22:42  | (despliegue; inicial vk.com)| 0x199fc38fbbec9fabbddb6f42effe668407a93fa58af617340aea3ed3ef884a2d
 2026-05-01 18:07:46  | rutube.ru PRUEBA           | 0xbe6ce52a15844cf4f342c5f5487cec9f9d2bb6df128ceb2e4532182995249651
 2026-05-01 18:09:32  | facebook.com PRUEBA        | 0xce345d4a206921d1dd9db7dbe1c646c591be431f38df45bf4f765a3923d31734
 2026-05-18 02:46:03  | https://vk.com/ PRUEBA     | 0x290acb5fcab51b838486e20ab57a9a9bf7f9a7786f2bdcb9b8a67c7cebedeeff

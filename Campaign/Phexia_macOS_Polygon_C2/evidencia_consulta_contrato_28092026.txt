@@ -1,0 +1,46 @@
+================================================================================
+  Evidencia: consulta en vivo al contrato resolvedor (lo mismo que hace el malware)
+================================================================================
+Contrato: 0xA3a603F8a454a9c905b4c579Bb72628F7C15C2A0 (Polygon PoS)
+Metodo: JSON-RPC eth_call contra dos nodos publicos independientes. Es la misma
+consulta que arma el AppleScript de Phexia (funcion __P9Dhuj3s en la captura de
+fab0). Solo se consulta la blockchain: NO se contacto ningun dominio C2.
+Cualquiera puede repetirla con el comando de la seccion 5 de la ficha.
+
+--------------------------------------------------------------------------------
+NODO: https://polygon-bor-rpc.publicnode.com
+--------------------------------------------------------------------------------
+[2026-09-28 16:52:52 UTC] eth_blockNumber -> bloque 94606155
+
+[2026-09-28 16:52:53 UTC] lectura del dominio C2
+  PETICION:  {"jsonrpc": "2.0", "method": "eth_call", "params": [{"to": "0xA3a603F8a454a9c905b4c579Bb72628F7C15C2A0", "data": "0x2686ecea"}, "latest"], "id": 1}
+  RESPUESTA: {"jsonrpc":"2.0","result":"0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000b626167756569652e78797a000000000000000000000000000000000000000000","id":1}
+
+  DECODIFICADO: offset=0x20, largo=11 bytes, texto='bagueie.xyz'  ->  bagueie[.]xyz
+
+[2026-09-28 16:52:53 UTC] lectura de la duena (getOwner)
+  PETICION:  {"jsonrpc": "2.0", "method": "eth_call", "params": [{"to": "0xA3a603F8a454a9c905b4c579Bb72628F7C15C2A0", "data": "0x893d20e8"}, "latest"], "id": 1}
+  RESPUESTA: {"jsonrpc":"2.0","id":1,"result":"0x000000000000000000000000363aeaf1f67f1fb7abddc3f9806a301f1c64abe3"}
+
+  DECODIFICADO: duena = 0x363aeaf1f67f1fb7abddc3f9806a301f1c64abe3
+
+[2026-09-28 16:52:54 UTC] eth_getTransactionCount de la wallet 0x363AeAF1F67f1FB7ABdDC3f9806a301f1C64AbE3 -> 35
+
+--------------------------------------------------------------------------------
+NODO: https://polygon.drpc.org
+--------------------------------------------------------------------------------
+[2026-09-28 16:52:54 UTC] eth_blockNumber -> bloque 94606156
+
+[2026-09-28 16:52:54 UTC] lectura del dominio C2
+  PETICION:  {"jsonrpc": "2.0", "method": "eth_call", "params": [{"to": "0xA3a603F8a454a9c905b4c579Bb72628F7C15C2A0", "data": "0x2686ecea"}, "latest"], "id": 1}
+  RESPUESTA: {"id":1,"jsonrpc":"2.0","result":"0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000b626167756569652e78797a000000000000000000000000000000000000000000"}
+  DECODIFICADO: offset=0x20, largo=11 bytes, texto='bagueie.xyz'  ->  bagueie[.]xyz
+
+[2026-09-28 16:52:54 UTC] lectura de la duena (getOwner)
+  PETICION:  {"jsonrpc": "2.0", "method": "eth_call", "params": [{"to": "0xA3a603F8a454a9c905b4c579Bb72628F7C15C2A0", "data": "0x893d20e8"}, "latest"], "id": 1}
+  RESPUESTA: {"id":1,"jsonrpc":"2.0","result":"0x000000000000000000000000363aeaf1f67f1fb7abddc3f9806a301f1c64abe3"}
+  DECODIFICADO: duena = 0x363aeaf1f67f1fb7abddc3f9806a301f1c64abe3
+
+[2026-09-28 16:52:55 UTC] eth_getTransactionCount de la wallet 0x363AeAF1F67f1FB7ABdDC3f9806a301f1C64AbE3 -> 35
+
+Resultado: los dos nodos devuelven el mismo dominio y la misma duena.
