@@ -1,0 +1,40 @@
+================================================================================
+  IOCs / ACCIONES -- Directorio abierto con kit de intrusion a Active Directory
+================================================================================
+Defanged: 131[.]123[.]43[.]239 = 131.123.43.239 ; hxxp = http
+
+INDICADORES PARA BLOQUEO RAPIDO
+
+[BLOQUEAR -- REVISAR el 2026-10-29]  confianza ALTA (aloja el material); C2 NO confirmado
+131[.]123[.]43[.]239          # servidor de staging: directorio abierto en :8123
+                              # (python -m http.server) con 115 archivos de un kit
+                              # de intrusion AD. VPS de AlexHost SRL (offshore),
+                              # bloque AlexHost-BG-NET. Direccion de nube: PUEDE
+                              # REASIGNARSE, por eso el bloqueo lleva fecha de
+                              # revision (2026-10-29). NO es hosting compartido.
+
+[DETECTAR -- en red]
+hxxp://131[.]123[.]43[.]239:8123/   # directorio abierto; cualquier descarga saliente hacia esta IP
+Sesion TLS a 131[.]123[.]43[.]239 por 4430 o 4433   # puertos altos no estandar; posible panel (no verificado)
+
+[DETECTAR -- en endpoints Active Directory]
+Enumeracion LDAP masiva de cuentas/equipos/grupos            # T1087 / T1018 / T1069
+Password spraying contra el DC (muchos usuarios, pocas claves)   # T1110.003
+Actividad Kerberos anomala (AS-REP/TGS masivo, kerberoasting)    # T1558
+Scripts que desactivan o alteran el EDR                      # T1562.001
+Tarea cron nueva en Linux o webshell .jsp en Tomcat          # T1053.003 / T1505.003
+
+[VIGILAR -- NO bloquear ciegamente]
+AS AlexHost / AlexHost-BG-NET   # no bloquear el ASN ni el bloque entero: cae hosting de terceros
+Puertos 22 / 25 / 80            # de uso corriente; no son firma por si solos
+
+[NO ES UN IOC -- no crear reglas sobre esto]
+"SimpleHTTP/0.6 Python/3.12.3"   # banner de un servidor de archivos de Python, legitimo y comun
+Nombres genericos de script      # fetch.py, gh.sh, diag.sh, ex.py, etc.: sirven de pista de caza
+                                 # JUNTO a la descarga desde esta IP, nunca como firma aislada
+CVE listados por Shodan InternetDB   # inferidos de banners por Shodan, NO verificados por Intellroom
+Nombre de familia / actor        # no hay atribucion; no se inventa una
+
+Las ideas de deteccion son hipotesis: validar antes de desplegar. Toda la lectura
+del kit es por el NOMBRE del archivo: NO se descargo ni ejecuto ningun archivo del
+servidor. Redactado con apoyo de IA.

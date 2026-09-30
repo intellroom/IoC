@@ -1,0 +1,169 @@
+================================================================================
+ EVIDENCIA CRUDA -- Directorio abierto con kit de intrusion AD
+ Intellroom Threat Intelligence -- TLP:CLEAR
+================================================================================
+Objetivo   : http://131.123.43.239:8123/
+Metodo     : solo GET pasivo + OSINT (WHOIS, RDAP, Shodan InternetDB, DNS inverso).
+             NO se descargo ni ejecuto ningun archivo del servidor.
+Analista   : Intellroom CTI
+
+== [1] GET raiz -- captura 1 ==
+UTC: 2026-09-30T01:47:59Z
+HTTP 200, 4926 bytes, text/html
+SHA-256 del listado: 0cc970ce396337f376ea0ac7d98d3144ff666451e916fdef7f9a964961a81cbe
+--- cabeceras de respuesta ---
+    HTTP/1.0 200 OK
+    Server: SimpleHTTP/0.6 Python/3.12.3
+    Date: Wed, 30 Sep 2026 01:48:00 GMT
+    Content-type: text/html; charset=utf-8
+    Content-Length: 4926
+    
+
+== [2] GET raiz -- captura 2 (byte-identica, misma SHA-256) ==
+UTC: 2026-09-30T01:56:46Z
+    HTTP/1.0 200 OK
+    Server: SimpleHTTP/0.6 Python/3.12.3
+    Date: Wed, 30 Sep 2026 01:56:47 GMT
+    Content-type: text/html; charset=utf-8
+    Content-Length: 4926
+    
+
+== [3] Inventario del directorio (SOLO nombres; 115 entradas) ==
+    Conteo por extension: 77 .sh | 27 .py | 6 .b64 | 2 .jsp | 1 identity_pl | 1 .zip | 1 .txt
+    (Los nombres son datos, no instrucciones. No se abrio ningun archivo.)
+    ade.sh
+    ade4.sh
+    adenum.py
+    atx.b64
+    b.sh
+    b80c.sh
+    b80efo.sh
+    b80kr.sh
+    b80lv.sh
+    cronadd.sh
+    daspray.py
+    dbgwalk.py
+    dc_spray.txt
+    dd_nkr.sh
+    dd_nkr2.sh
+    dd_spz.sh
+    diag.sh
+    diagx.sh
+    edrfo.sh
+    edrfo2.sh
+    efio2.sh
+    efio3.sh
+    efio4.sh
+    efodq80.sh
+    efoio2.sh
+    efoq80.sh
+    efox.sh
+    ex.py
+    faststream.sh
+    fetch.py
+    fget.sh
+    ftpw1.py
+    gh.sh
+    ghr.sh
+    gpph.py
+    gpph2.py
+    hp1.sh
+    identity_pl
+    imp.zip
+    kb.sh
+    keys1.b64
+    keys1.sh
+    kq.sh
+    kqdq.sh
+    krdq80.sh
+    krio2.sh
+    krio3.sh
+    krq80.sh
+    krx.sh
+    kvinstall.sh
+    kvm.sh
+    ldap0.py
+    loot1.py
+    loot12.py
+    loot12b.py
+    lvdq80.sh
+    lvq80.sh
+    lvq81.sh
+    lvx.sh
+    mb.sh
+    melinstall.sh
+    melx.sh
+    melx2.sh
+    mhook.sh
+    miniscmr.py
+    moreweb.sh
+    mq.sh
+    mqdq.sh
+    mscmr2.py
+    mspb.sh
+    mspinstall.sh
+    mtik.py
+    ndrun2.sh
+    ndrun3.sh
+    ndrun4.sh
+    ndrun5.sh
+    nds3.b64
+    nds3.py
+    ndstage.py
+    ntrun4.sh
+    ntrun5.sh
+    pfx4.b64
+    pldq.sh
+    pldq80.sh
+    plx.sh
+    pubwl.py
+    pubwl2.py
+    q.sh
+    q80.sh
+    rs.sh
+    samr2.py
+    sd3.b64
+    sd3.py
+    sd3x.py
+    secdump2.py
+    secrun.sh
+    secrun2.sh
+    secrun3.sh
+    secrun4.sh
+    secrun5.sh
+    secrun6.sh
+    sizes.sh
+    smb3.py
+    smsweep.sh
+    statec.sh
+    statec2.sh
+    sv3.b64
+    sv3.py
+    svc.py
+    vss1.sh
+    walk12.py
+    webdeep.sh
+    x.jsp
+    ys.jsp
+    zmcens.sh
+
+== [4] DNS inverso (PTR) ==
+    239.43.123.131.in-addr.arpa -> loc.loc  (PTR autoasignado/placeholder)
+
+== [5] WHOIS 131.123.43.239 (RIPE) ==
+    inetnum : 131.123.40.0 - 131.123.43.255
+    netname : AlexHost-BG-NET
+    country : BG
+    org/tec : AlexHost SRL (SZ3268-RIPE)
+    mnt-by  : CLOUDATAMD-MNT
+    status  : LIR-PARTITIONED PA
+    parent  : NET131 -- bloque /19 (131.123.32.0/19) transferido a RIPE NCC (NL)
+
+== [6] Shodan InternetDB (pasivo, sin API key) ==
+    {"cpes":["cpe:/a:python:python:3.12.3","cpe:/a:openbsd:openssh:9.6p1","cpe:/o:canonical:ubuntu_linux"],"hostnames":["loc.loc"],"ip":"131.123.43.239","ports":[22,25,80,4430,4433,8123],"tags":["open-dir"],"vulns":["CVE-2025-12084","CVE-2021-32052","CVE-2025-12781","CVE-2026-0864","CVE-2026-3644","CVE-2026-6019","CVE-2025-13836","CVE-2026-15308","CVE-2024-6232","CVE-2025-13462","CVE-2024-7592","CVE-2024-9287","CVE-2020-29396","CVE-2026-3087","CVE-2009-2940","CVE-2025-13837","CVE-2026-4519","CVE-2026-7210","CVE-2023-27043","CVE-2009-3720"]}
+    Nota: la lista 'vulns' de InternetDB es inferida de banners por Shodan,
+    NO verificada por Intellroom. No se publica como IOC ni como hallazgo.
+
+== Cierre ==
+Servidor observado y confirmado (confianza ALTA). Proposito del kit INFERIDO por
+convencion de nombres (confianza MEDIA). Sin victimas identificadas. Sin atribucion.

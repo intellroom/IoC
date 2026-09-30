@@ -1,0 +1,231 @@
+================================================================================
+  DIRECTORIO ABIERTO CON KIT DE INTRUSION A ACTIVE DIRECTORY
+  131.123.43.239:8123  (AlexHost SRL, VPS offshore)
+================================================================================
+Fecha del hallazgo : 2026-09-29 (Chile) / captura 2026-09-30 01:48 UTC
+Origen             : hallazgo directo de Intellroom (recon), no un post de terceros
+Contrastado por    : Intellroom, 2026-09-29, SOLO fuentes pasivas
+TLP:CLEAR
+Confianza          : servidor observado = ALTA · proposito del kit = INFERIDO (MEDIA)
+
+
+--------------------------------------------------------------------------------
+RESUMEN
+--------------------------------------------------------------------------------
+Un servidor expuesto en 131.123.43.239, puerto 8123, publica sin autenticacion un
+directorio abierto servido por `python -m http.server` (banner "SimpleHTTP/0.6
+Python/3.12.3"). El listado tiene 115 archivos: 77 scripts de shell (.sh), 27 de
+Python (.py), 6 blobs Base64 (.b64), 2 webshells JSP (.jsp), un `identity_pl`
+(Perl), un `imp.zip` y un `dc_spray.txt`. Por la convencion de nombres, es el
+arsenal de post-explotacion de un operador para atacar entornos Windows /
+Active Directory: enumeracion de LDAP y del dominio, password/DC spraying,
+ataques Kerberos, evasion de EDR, persistencia por cron y webshells, y scripts de
+recoleccion ("loot").
+
+NO es el equipo de una victima: es la caja de herramientas del atacante, expuesta.
+No hay victimas identificadas en el servidor y el proposito ultimo (crimen,
+ejercicio ofensivo autorizado, laboratorio) no se puede determinar desde afuera.
+No se atribuye a ningun actor ni campana conocida.
+
+Intellroom NO descargo ni ejecuto ninguno de los 115 archivos. Toda la lectura del
+kit es por el NOMBRE del archivo (el listado publico), nunca por su contenido. El
+servidor solo se consulto con GET pasivos a la raiz y con OSINT (WHOIS, RDAP,
+Shodan InternetDB, DNS inverso).
+
+
+--------------------------------------------------------------------------------
+POR QUE ESTO IMPORTA (y por que la accion NO es "bloquear y listo")
+--------------------------------------------------------------------------------
+Un directorio abierto con tooling de intrusion AD es una foto de la fase PREVIA a
+un ataque o durante el: es la infraestructura de staging desde donde un host ya
+comprometido descarga las herramientas (T1105). El valor defensivo no esta solo en
+bloquear la IP (que es de nube y se reasigna), sino en:
+
+  1. Cazar en la red la descarga de estas herramientas desde 131.123.43.239.
+  2. Cazar en los endpoints AD la SECUENCIA que el kit habilita (enum LDAP masivo,
+     spraying contra el DC, uso de Kerberos, apagado de EDR).
+
+La IP es un VPS de AlexHost SRL (proveedor offshore, bloque AlexHost-BG-NET
+transferido a RIPE). Ese tipo de direccion se reasigna: TODO bloqueo de la IP
+lleva fecha de revision (2026-10-29).
+
+
+--------------------------------------------------------------------------------
+LINEA DE TIEMPO
+--------------------------------------------------------------------------------
+2026-09-29  Intellroom detecta 131.123.43.239:8123 con directorio abierto.
+2026-09-30  01:48 UTC  Captura GET pasiva del listado (115 archivos, SHA-256
+            0cc970ce...). Segunda captura byte-identica a las 01:56 UTC.
+            OSINT: WHOIS/RDAP -> AlexHost SRL; DNS inverso -> loc.loc;
+            Shodan InternetDB -> tag "open-dir", puertos 22/25/80/4430/4433/8123.
+
+Nota: no se dispone de historial de exposicion (no se consulto la API de pago de
+Shodan). No se puede afirmar desde cuando esta arriba.
+
+
+--------------------------------------------------------------------------------
+QUE SE OBSERVO (pasivo)
+--------------------------------------------------------------------------------
+- Servidor de archivos Python en el puerto 8123, "Directory listing for /",
+  115 entradas, sin subcarpetas visibles en la raiz.
+- Banner: SimpleHTTP/0.6 Python/3.12.3 (HTTP/1.0). CPE (Shodan): Python 3.12.3,
+  OpenSSH 9.6p1, Ubuntu.
+- Puertos abiertos segun Shodan InternetDB: 22 (SSH), 25 (SMTP), 80, 4430, 4433,
+  8123. Los 4430/4433 son puertos TLS altos no estandar (posible panel o segundo
+  servicio; NO verificado).
+- DNS inverso: loc.loc (PTR placeholder/autoasignado, tipico de VPS self-managed).
+- Hosting: AlexHost SRL, netname AlexHost-BG-NET, mnt CLOUDATAMD-MNT.
+
+
+--------------------------------------------------------------------------------
+EL KIT, POR CATEGORIA (lectura por NOMBRE de archivo, no por contenido)
+--------------------------------------------------------------------------------
+Agrupacion inferida de los 115 nombres. Es orientativa: sin abrir los archivos no
+se puede confirmar que cada uno haga lo que su nombre sugiere.
+
+- Descarga / transferencia de herramientas (T1105):
+    fetch.py, fget.sh, gh.sh, ghr.sh, faststream.sh, moreweb.sh
+- Enumeracion de AD / LDAP / dominio (T1087, T1018, T1069):
+    adenum.py, ade.sh, ade4.sh, ldap0.py, dbgwalk.py, diag.sh, diagx.sh
+- Acceso a credenciales por spraying (T1110.003):
+    daspray.py, dc_spray.txt (lista de objetivos), dd_spz.sh, dd_nkr*.sh
+- Kerberos (T1558):
+    familia kr*/kq*/krx (kb.sh, kq.sh, kqdq.sh, krdq80.sh, krio2/3.sh, krq80.sh,
+    krx.sh) -- nombres consistentes con abuso de tickets Kerberos
+- Evasion de defensas / EDR (T1562.001):
+    edrfo.sh, edrfo2.sh, edrx.sh, efio*/efox/efoq* (familia "efo")
+- Persistencia (T1053.003 cron / T1505.003 webshell):
+    cronadd.sh, mhook.sh; x.jsp, ys.jsp (webshells Java/Tomcat)
+- Recoleccion / exfiltracion (T1005, T1048):
+    loot1.py, loot12.py, loot12b.py; imp.zip (empaquetado)
+- Material / claves y utilidades:
+    keys1.sh, keys1.b64, atx.b64 (blobs), identity_pl, ftpw1.py (FTP),
+    kvinstall.sh, kvm.sh, melinstall.sh, melx.sh, melx2.sh, miniscmr.py,
+    mscmr2.py, ex.py, gpph.py, gpph2.py, hp1.sh, mb.sh, mq*/mqdq
+- Variantes numeradas de un mismo script (b80*.sh, lv*, efio2/3/4): desarrollo /
+  iteracion activa del kit.
+
+(Los mnemonicos exactos de algunas familias no se pueden asegurar sin abrir los
+archivos, cosa que NO se hizo.)
+
+
+--------------------------------------------------------------------------------
+INDICADORES
+--------------------------------------------------------------------------------
+[BLOQUEAR + REVISAR el 2026-10-29]
+  131.123.43.239        Servidor de staging. VPS AlexHost SRL (offshore),
+                        reasignable. Confianza ALTA en que aloja el material;
+                        C2 NO confirmado.
+
+[DETECTAR -- en red]
+  Descarga saliente desde 131.123.43.239 (cualquier puerto, en especial :8123)
+  Trafico a los puertos altos TLS 4430 / 4433 de esa IP
+
+[DETECTAR -- en endpoints AD]
+  Enumeracion LDAP masiva de cuentas/equipos/grupos (T1087/T1018/T1069)
+  Password spraying contra el DC (T1110.003): muchos usuarios, pocas claves
+  Actividad Kerberos anomala: AS-REP/TGS masivo, kerberoasting (T1558)
+  Ejecucion de scripts que desactivan/manipulan el EDR (T1562.001)
+  Tareas cron nuevas en Linux o webshell .jsp en un servidor Tomcat (persistencia)
+
+[VIGILAR -- NO bloquear ciegamente]
+  AS de AlexHost / bloque AlexHost-BG-NET: no bloquear el ASN entero
+  Puertos 22/25/80: de uso corriente, no son firma por si solos
+
+Formato defanged en iocs.txt (131[.]123[.]43[.]239, hxxp).
+
+
+--------------------------------------------------------------------------------
+LO QUE NO ES UN IOC (no crear reglas sobre esto)
+--------------------------------------------------------------------------------
+- "SimpleHTTP/0.6 Python/3.12.3": banner de un servidor de archivos de Python,
+  legitimo y comunisimo. No es firma de malware.
+- Nombres genericos de script (fetch.py, gh.sh, diag.sh, ex.py): demasiado comunes
+  para bloquear o alertar por si solos. Sirven como pista de caza si aparecen
+  JUNTO a la descarga desde esta IP, no aislados.
+- Puertos 22, 25, 80: estandar.
+- La lista "vulns" de Shodan InternetDB (CVE de sendmail/exim/etc.): inferida por
+  Shodan de los banners, NO verificada por Intellroom. No es un hallazgo.
+- El nombre del kit: no hay nombre de familia ni de actor. No inventar uno.
+
+
+--------------------------------------------------------------------------------
+EVALUACION DE LA FUENTE (Admiralty)
+--------------------------------------------------------------------------------
+- Existencia del servidor y del listado: A1 (observacion directa de Intellroom,
+  reproducible, con SHA-256 del listado y captura).
+- Funcion del kit: C3 (inferida de la convencion de nombres; plausible y
+  consistente, pero no confirmada por contenido).
+
+
+--------------------------------------------------------------------------------
+MITRE ATT&CK (nivel categoria, IDs verificados contra la matriz vigente)
+--------------------------------------------------------------------------------
+Recurso (staging)   T1608.001  Stage Capabilities: Upload Malware/Tools
+Ingreso de tools    T1105      Ingress Tool Transfer
+Descubrimiento      T1087      Account Discovery
+                    T1018      Remote System Discovery
+                    T1069      Permission Groups Discovery
+Acceso credenciales T1110.003  Brute Force: Password Spraying
+                    T1558      Steal or Forge Kerberos Tickets
+Evasion             T1562.001  Impair Defenses: Disable or Modify Tools
+Persistencia        T1053.003  Scheduled Task/Job: Cron
+                    T1505.003  Server Software Component: Web Shell
+Recoleccion         T1005      Data from Local System
+Exfiltracion        T1048      Exfiltration Over Alternative Protocol
+(Todas inferidas de nombres. Validar con telemetria antes de convertir en regla.)
+
+
+--------------------------------------------------------------------------------
+ACCIONES RECOMENDADAS
+--------------------------------------------------------------------------------
+1. Bloquear la salida hacia 131.123.43.239 y REVISAR el bloqueo el 2026-10-29
+   (IP de nube reasignable: un bloqueo eterno castiga a un tercero futuro).
+2. Cazar hacia atras en proxy/firewall cualquier conexion previa a esa IP.
+3. En AD: revisar picos de fallos de logon (spraying) y actividad Kerberos anomala
+   en las ultimas semanas; revisar tareas cron nuevas y webshells .jsp en Tomcat.
+4. Tratar los nombres del kit como hipotesis de caza, no como firmas de bloqueo.
+
+
+--------------------------------------------------------------------------------
+LO QUE NO SE PUDO VERIFICAR NI SE PUBLICA
+--------------------------------------------------------------------------------
+- El CONTENIDO de los 115 archivos: no se descargo ni se abrio nada. La funcion de
+  cada script es inferencia por nombre.
+- Reputacion / hashes de los archivos: no se calcularon (habria requerido bajarlos).
+- Historial de exposicion del servidor: no se consulto la API de pago de Shodan.
+- Que hay detras de los puertos 4430/4433: no se sondearon (fuera del alcance
+  pasivo; un sondeo activo requiere autorizacion escrita).
+- Atribucion: ninguna. Sin actor, sin campana, sin idioma.
+
+
+--------------------------------------------------------------------------------
+CORRELACION
+--------------------------------------------------------------------------------
+Misma FAMILIA de casos que Intellroom ya publico: infraestructura de atacante
+expuesta como directorio abierto sobre `python -m http.server`:
+  - Campaign/Erebus_C2_OpenDir          (presunto C2, AWS Sao Paulo)
+  - Campaign/OpenDir_Operador_SurAsia
+  - Campaign/Pfcloud_OpenDir_Staging
+Diferencia clave: aquellos alojaban C2/payloads (Windows/macOS); ESTE aloja un kit
+de intrusion INTERNA a Active Directory (LOLbins de dominio + webshells), o sea un
+eslabon anterior de la cadena. No hay evidencia que lo vincule al mismo operador de
+esos casos: es una correspondencia de modo de operacion, no de identidad.
+
+
+--------------------------------------------------------------------------------
+EVIDENCIA
+--------------------------------------------------------------------------------
+- 01_flujo_ataque.png / 02_modelo_diamante.png: diagramas branded.
+- 03_fuente_directorio_29092026.png: captura del directorio abierto con banner de
+  procedencia (URL, hora UTC, SHA-256).
+- evidencia_recon_29092026.txt: peticiones y respuestas crudas (cabeceras, WHOIS,
+  RDAP, Shodan InternetDB, DNS inverso, inventario de nombres) con hora UTC.
+- rdap_ripe.json / shodan_internetdb.json: salidas OSINT crudas.
+- evidencia.sha256: sumas de verificacion.
+
+--------------------------------------------------------------------------------
+Intellroom Threat Intelligence. Analisis 100% pasivo (GET a la raiz, WHOIS, RDAP,
+Shodan InternetDB, DNS inverso, matriz MITRE ATT&CK). Sin descargar ni ejecutar
+ningun archivo del servidor. Ideas de deteccion son hipotesis: validar antes de
+desplegar. Redactado con apoyo de IA.

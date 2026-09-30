@@ -18,6 +18,12 @@ https://github.com/intellroom/IoC#macfinger_clickfix_macos
 
 Ordenadas de la más reciente a la más antigua.
 
+### OpenDir_AD_Toolkit
+
+**2026-09-29** · Directorio abierto (`131[.]123[.]43[.]239:8123`, VPS AlexHost) con un kit de intrusión a Active Directory: 115 archivos de enum LDAP, spraying, Kerberos, evasión de EDR, persistencia y loot
+
+[Carpeta](Campaign/OpenDir_AD_Toolkit) · [iocs.txt](Campaign/OpenDir_AD_Toolkit/iocs.txt)
+
 ### SilverFox_WhatsApp_Malasia
 
 **2026-09-28** · Silver Fox: ZIP por WhatsApp y carga lateral de DLL contra Malasia
