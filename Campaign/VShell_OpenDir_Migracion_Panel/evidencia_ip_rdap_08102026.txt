@@ -1,0 +1,532 @@
+================================================================================
+  Evidencia: titularidad, ruteo y servicios de las dos IP (solo fuentes pasivas)
+================================================================================
+Ninguna de las dos IP fue contactada por Intellroom. Todo sale de registros
+publicos (RDAP/ARIN, RIPEstat), DNS sobre HTTPS de Cloudflare (PTR) y el indice
+pasivo de Shodan (InternetDB, sin clave). Respuestas tal cual, sin editar,
+salvo el nombre, correo y telefono de UNA persona (contacto tecnico de NTT en
+ARIN), marcados [REDACTADO]: regla de datos personales de Intellroom.
+
+RESUMEN (leido de las respuestas de abajo):
+  154.36.183.100   registro ARIN: COGENT (NET-154-36-128-0-2, registrante PSINet)
+                   anuncio BGP hoy: 154.36.183.0/24 por AS979 NETLAB-SDN NetLab Global
+                   OTX lo asocia a AS139646 Megalayer (Hong Kong): dato de un tercero
+                   PTR: NXDOMAIN
+                   InternetDB: puertos 22, 80, 15082; Ubuntu, OpenSSH 8.2p1
+                   NOTA: InternetDB NO lista 8899 ni 18089 (los puertos del post)
+  128.241.231.135  registro ARIN: NTT America (NTTA-128-241), contacto tecnico VIPAR
+                   anuncio BGP hoy: 128.241.231.0/24 por AS213802 TF Tianfeng (Hong Kong)
+                   PTR: NXDOMAIN
+                   InternetDB: puertos 21, 22, 80, 111, 3306, 18888; Pure-FTPd,
+                   OpenSSH 7.4, nginx, MySQL. La lista "vulns" la infiere Shodan de los
+                   banners: NO verificada.
+
+--------------------------------------------------------------------------------
+[rdap_154.36.183.100]  2026-10-08 12:10:26 UTC
+GET https://rdap.org/ip/154.36.183.100
+HTTP 200
+
+{
+  "arin_originas0_originautnums" : [ ],
+  "cidr0_cidrs" : [ {
+    "v4prefix" : "154.36.128.0",
+    "length" : 18
+  } ],
+  "endAddress" : "154.36.191.255",
+  "entities" : [ {
+    "entities" : [ {
+      "entities" : [ {
+        "events" : [ {
+          "eventAction" : "last changed",
+          "eventDate" : "2026-09-18T07:01:53-04:00"
+        }, {
+          "eventAction" : "registration",
+          "eventDate" : "2022-07-30T13:04:55-04:00"
+        } ],
+        "handle" : "LIUFR3-ARIN",
+        "links" : [ {
+          "href" : "https://rdap.arin.net/registry/entity/LIUFR3-ARIN",
+          "rel" : "self",
+          "type" : "application/rdap+json",
+          "value" : "https://rdap.arin.net/registry/ip/154.36.183.100"
+        }, {
+          "href" : "https://whois.arin.net/rest/poc/LIUFR3-ARIN",
+          "rel" : "alternate",
+          "type" : "application/xml",
+          "value" : "https://rdap.arin.net/registry/ip/154.36.183.100"
+        } ],
+        "objectClassName" : "entity",
+        "port43" : "whois.arin.net",
+        "roles" : [ "abuse" ],
+        "status" : [ "validated" ],
+        "vcardArray" : [ "vcard", [ [ "version", { }, "text", "4.0" ], [ "adr", {
+          "label" : "624 S Grand Ave\nLos Angeles\nCA\n90017\nUnited States"
+        }, "text", [ "", "", "", "", "", "", "" ] ], [ "fn", { }, "text", "Frid Liu" ], [ "n", { }, "text", [ "Liu", "Frid", "", "", "" ] ], [ "kind", { }, "text", "individual" ], [ "email", { }, "text", "legal@as979.net" ], [ "tel", {
+          "type" : [ "work", "voice" ]
+        }, "text", "+1-213-674-6718" ] ] ]
+      }, {
+        "events" : [ {
+          "eventAction" : "last changed",
+          "eventDate" : "2026-09-18T07:02:19-04:00"
+        }, {
+          "eventAction" : "registration",
+          "eventDate" : "2025-07-30T02:34:42-04:00"
+        } ],
+        "handle" : "LEERI36-ARIN",
+        "links" : [ {
+          "href" : "https://rdap.arin.net/registry/entity/LEERI36-ARIN",
+          "rel" : "self",
+          "type" : "application/rdap+json",
+          "value" : "https://rdap.arin.net/registry/ip/154.36.183.100"
+        }, {
+          "href" : "https://whois.arin.net/rest/poc/LEERI36-ARIN",
+          "rel" : "alternate",
+          "type" : "application/xml",
+          "value" : "https://rdap.arin.net/registry/ip/154.36.183.100"
+        } ],
+        "objectClassName" : "entity",
+        "port43" : "whois.arin.net",
+        "roles" : [ "technical", "administrative" ],
+        "status" : [ "validated" ],
+        "vcardArray" : [ "vcard", [ [ "version", { }, "text", "4.0" ], [ "adr", {
+          "label" : "624 S Grand Ave\nLos Angeles\nCA\n90017\nUnited States"
+        }, "text", [ "", "", "", "", "", "", "" ] ], [ "fn", { }, "text", "Richard Lee" ], [ "n", { }, "text", [ "Lee", "Richard", "", "", "" ] ], [ "kind", { }, "text", "individual" ], [ "email", { }, "text", "noc@as979.net" ], [ "tel", {
+          "type" : [ "work", "voice" ]
+        }, "text", "+1-213-674-6718" ] ] ]
+      } ],
+      "events" : [ {
+        "eventAction" : "last changed",
+        "eventDate" : "2025-07-30T02:35:58-04:00"
+      }, {
+        "eventAction" : "registration",
+        "eventDate" : "2022-02-26T09:54:42-05:00"
+      } ],
+      "handle" : "HOSTH-5",
+      "links" : [ {
+        "href" : "https://rdap.arin.net/registry/entity/HOSTH-5",
+        "rel" : "self",
+        "type" : "application/rdap+json",
+        "value" : "https://rdap.arin.net/registry/ip/154.36.183.100"
+      }, {
+        "href" : "https://whois.arin.net/rest/org/HOSTH-5",
+        "rel" : "alternate",
+        "type" : "application/xml",
+        "value" : "https://rdap.arin.net/registry/ip/154.36.183.100"
+      } ],
+      "objectClassName" : "entity",
+      "port43" : "whois.arin.net",
+      "remarks" : [ {
+        "description" : [ "Geofeed https://ip-allocation.as979.net/geofeed.csv" ],
+        "title" : "Registration Comments"
+      } ],
+      "roles" : [ "registrant" ],
+      "vcardArray" : [ "vcard", [ [ "version", { }, "text", "4.0" ], [ "fn", { }, "text", "NetLab Global" ], [ "adr", {
+        "label" : "110 W 40TH ST STE200\nNEW YORK\nNY\n10018\nUnited States"
+      }, "text", [ "", "", "", "", "", "", "" ] ], [ "kind", { }, "text", "org" ] ] ]
+    } ],
+    "events" : [ {
+      "eventAction" : "last changed",
+      "eventDate" : "2025-07-01T16:28:58-04:00"
+    }, {
+      "eventAction" : "registration",
+      "eventDate" : "2025-07-01T16:25:55-04:00"
+    } ],
+    "handle" : "C11258790",
+    "links" : [ {
+      "href" : "https://rdap.arin.net/registry/entity/C11258790",
+      "rel" : "self",
+      "type" : "application/rdap+json",
+      "value" : "https://rdap.arin.net/registry/ip/154.36.183.100"
+    }, {
+      "href" : "https://whois.arin.net/rest/customer/C11258790",
+      "rel" : "alternate",
+      "type" : "application/xml",
+      "value" : "https://rdap.arin.net/registry/ip/154.36.183.100"
+    } ],
+    "objectClassName" : "entity",
+    "port43" : "whois.arin.net",
+    "roles" : [ "registrant" ],
+    "vcardArray" : [ "vcard", [ [ "version", { }, "text", "4.0" ], [ "fn", { }, "text", "PSINet, Inc." ], [ "adr", {
+      "label" : "900 N Alameda ST\nLos Angeles\nCA\n90014\nUnited States"
+    }, "text", [ "", "", "", "", "", "", "" ] ], [ "kind", { }, "text", "org" ] ] ]
+  } ],
+  "events" : [ {
+    "eventAction" : "last changed",
+    "eventDate" : "2025-08-06T09:29:00-04:00"
+  }, {
+    "eventAction" : "registration",
+    "eventDate" : "2025-07-01T16:25:55-04:00"
+  } ],
+  "handle" : "NET-154-36-128-0-2",
+  "ipVersion" : "v4",
+  "links" : [ {
+    "href" : "https://rdap.arin.net/registry/ip/154.36.128.0",
+    "rel" : "self",
+    "type" : "application/rdap+json",
+    "value" : "https://rdap.arin.net/registry/ip/154.36.183.100"
+  }, {
+    "href" : "https://whois.arin.net/rest/net/NET-154-36-128-0-2",
+    "rel" : "alternate",
+    "type" : "application/xml",
+    "value" : "https://rdap.arin.net/registry/ip/154.36.183.100"
+  }, {
+    "href" : "https://rdap.arin.net/registry/ip/154.36.0.0/16",
+    "rel" : "up",
+    "type" : "application/rdap+json",
+    "value" : "https://rdap.arin.net/registry/ip/154.36.183.100"
+  } ],
+  "name" : "COGENT",
+  "notices" : [ {
+    "description" : [ "By using the ARIN RDAP/Whois service, you are agreeing to the RDAP/Whois Terms of Use" ],
+    "links" : [ {
+      "href" : "https://www.arin.net/resources/registry/whois/tou/",
+      "rel" : "terms-of-service",
+      "type" : "text/html",
+      "value" : "https://rdap.arin.net/registry/ip/154.36.183.100"
+    } ],
+    "title" : "Terms of Service"
+  }, {
+    "description" : [ "If you see inaccuracies in the results, please visit: " ],
+    "links" : [ {
+      "href" : "https://www.arin.net/resources/registry/whois/inaccuracy_reporting/",
+      "rel" : "inaccuracy-report",
+      "type" : "text/html",
+      "value" : "https://rdap.arin.net/registry/ip/154.36.183.100"
+    } ],
+    "title" : "Whois Inaccuracy Reporting"
+  }, {
+    "description" : [ "Copyright 1997-2026, American Registry for Internet Numbers, Ltd." ],
+    "title" : "Copyright Notice"
+  } ],
+  "objectClassName" : "ip network",
+  "parentHandle" : "NET-154-36-128-0-1",
+  "port43" : "whois.arin.net",
+  "rdapConformance" : [ "nro_rdap_profile_0", "rdap_level_0", "cidr0", "arin_originas0" ],
+  "startAddress" : "154.36.128.0",
+  "status" : [ "active" ],
+  "type" : "ASSIGNMENT"
+}
+
+--------------------------------------------------------------------------------
+[ripestat_prefix_154.36.183.100]  2026-10-08 12:23:06 UTC
+GET https://stat.ripe.net/data/prefix-overview/data.json?resource=154.36.183.100
+HTTP 200
+
+{"messages":[["warning","Given resource is not announced but result has been aligned to first-level less-specific (154.36.183.0/24)."]],"see_also":[{"relation":"less-specific","resource":"154.36.0.0/14"},{"relation":"less-specific","resource":"154.36.176.0/21"}],"version":"1.3","data_call_name":"prefix-overview","data_call_status":"supported","cached":false,"query_id":"20261008122307-ff56ac25-cca5-4ef0-92f7-b3017e0bdb00","process_time":150,"server_id":"app184","build_version":"v0.11.21-2026.09.30","pipeline":"1443526","status":"ok","status_code":200,"time":"2026-10-08T12:23:07.587716","data":{"is_less_specific":true,"announced":true,"asns":[{"asn":979,"holder":"NETLAB-SDN - NetLab Global"}],"related_prefixes":["154.36.0.0/14","154.36.176.0/21"],"resource":"154.36.183.0/24","type":"prefix","block":{"resource":"154.0.0.0/8","desc":"Administered by AFRINIC","name":"IANA IPv4 Address Space Registry"},"actual_num_related":2,"query_time":"2026-10-08T08:00:00","num_filtered_out":0}}
+
+--------------------------------------------------------------------------------
+[ripestat_whois_154.36.183.100]  2026-10-08 12:23:07 UTC
+GET https://stat.ripe.net/data/whois/data.json?resource=154.36.183.100
+HTTP 200
+
+{"messages":[["info","IP address has been converted to a prefix"]],"see_also":[],"version":"4.1","data_call_name":"whois","data_call_status":"supported","cached":false,"query_id":"20261008122308-ea9f706a-38fc-4428-af67-a57331ae8a55","process_time":763,"server_id":"app184","build_version":"v0.11.21-2026.09.30","pipeline":"1443526","status":"ok","status_code":200,"time":"2026-10-08T12:23:09.276292","data":{"records":[[{"key":"NetRange","value":"154.36.0.0 - 154.36.255.255","comment":null,"details_link":null},{"key":"CIDR","value":"154.36.0.0/16","comment":null,"details_link":null},{"key":"NetName","value":"COGENT-154-36-16","comment":null,"details_link":null},{"key":"NetHandle","value":"NET-154-36-0-0-1","comment":null,"details_link":null},{"key":"Parent","value":"NET154 (NET-154-0-0-0-0)","comment":null,"details_link":null},{"key":"NetType","value":"Direct Allocation","comment":null,"details_link":null},{"key":"OriginAS","value":"","comment":null,"details_link":null},{"key":"Organization","value":"Cogent Communications, LLC (COGC)","comment":null,"details_link":null},{"key":"RegDate","value":"1992-02-05","comment":null,"details_link":null},{"key":"Ref","value":"https://rdap.arin.net/registry/ip/154.36.0.0","comment":null,"details_link":"https://rdap.arin.net/registry/ip/154.36.0.0"},{"key":"source","value":"ARIN","comment":null,"details_link":null}],[{"key":"OrgAbuseHandle","value":"COGEN-ARIN","comment":null,"details_link":null},{"key":"OrgAbuseName","value":"Cogent Abuse","comment":null,"details_link":null},{"key":"OrgAbusePhone","value":"+1-877-875-4311","comment":null,"details_link":null},{"key":"OrgAbuseEmail","value":"abuse@cogentco.com","comment":null,"details_link":"mailto:abuse@cogentco.com"},{"key":"OrgAbuseRef","value":"https://rdap.arin.net/registry/entity/COGEN-ARIN","comment":null,"details_link":"https://rdap.arin.net/registry/entity/COGEN-ARIN"},{"key":"source","value":"ARIN","comment":null,"details_link":null}],[{"key":"OrgNOCHandle","value":"ZC108-ARIN","comment":null,"details_link":null},{"key":"OrgNOCName","value":"Cogent Communications","comment":null,"details_link":null},{"key":"OrgNOCPhone","value":"+1-877-875-4311","comment":null,"details_link":null},{"key":"OrgNOCEmail","value":"noc@cogentco.com","comment":null,"details_link":"mailto:noc@cogentco.com"},{"key":"OrgNOCRef","value":"https://rdap.arin.net/registry/entity/ZC108-ARIN","comment":null,"details_link":"https://rdap.arin.net/registry/entity/ZC108-ARIN"},{"key":"source","value":"ARIN","comment":null,"details_link":null}],[{"key":"OrgName","value":"Cogent Communications, LLC","comment":null,"details_link":null},{"key":"OrgId","value":"COGC","comment":null,"details_link":null},{"key":"Address","value":"2450 N Street NW","comment":null,"details_link":null},{"key":"City","value":"Washington","comment":null,"details_link":null},{"key":"StateProv","value":"DC","comment":null,"details_link":null},{"key":"PostalCode","value":"20037","comment":null,"details_link":null},{"key":"Country","value":"US","comment":null,"details_link":null},{"key":"RegDate","value":"2000-05-30","comment":null,"details_link":null},{"key":"Comment","value":"Geofeed https://geofeed.cogentco.com/geofeed.csv","comment":null,"details_link":null},{"key":"Ref","value":"https://rdap.arin.net/registry/entity/COGC","comment":null,"details_link":"https://rdap.arin.net/registry/entity/COGC"},{"key":"source","value":"ARIN","comment":null,"details_link":null}],[{"key":"OrgTechHandle","value":"IPALL-ARIN","comment":null,"details_link":null},{"key":"OrgTechName","value":"IP Allocation","comment":null,"details_link":null},{"key":"OrgTechPhone","value":"+1-877-875-4311","comment":null,"details_link":null},{"key":"OrgTechEmail","value":"ipalloc@cogentco.com","comment":null,"details_link":"mailto:ipalloc@cogentco.com"},{"key":"OrgTechRef","value":"https://rdap.arin.net/registry/entity/IPALL-ARIN","comment":null,"details_link":"https://rdap.arin.net/registry/entity/IPALL-ARIN"},{"key":"source","value":"ARIN","comment":null,"details_link":null}],[{"key":"ReferralServer","value":"rwhois://rwhois.cogentco.com:4321","comment":null,"details_link":null},{"key":"source","value":"ARIN","comment":null,"details_link":null}]],"irr_records":[[{"key":"route","value":"154.36.0.0/14","comment":null,"details_link":"https://stat.ripe.net/154.36.0.0/14"},{"key":"descr","value":"COGENT","comment":null,"details_link":null},{"key":"origin","value":"174","comment":null,"details_link":"https://stat.ripe.net/AS174"},{"key":"mnt-by","value":"COGENT-ROUTE-MNT","comment":null,"details_link":"https://rest.db.ripe.net/ripe/mntner/COGENT-ROUTE-MNT"},{"key":"created","value":"2018-08-20T13:30:30Z","comment":null,"details_link":null},{"key":"last-modified","value":"2018-09-04T19:38:42Z","comment":null,"details_link":null},{"key":"source","value":"RIPE-NONAUTH","comment":null,"details_link":null}],[{"key":"route","value":"154.36.0.0/14","comment":null,"details_link":"https://stat.ripe.net/154.36.0.0/14"},{"key":"descr","value":"COGENT","comment":null,"details_link":null},{"key":"origin","value":"174","comment":null,"details_link":"https://stat.ripe.net/AS174"},{"key":"mnt-by","value":"COGENT-ROUTE-MNT","comment":null,"details_link":null},{"key":"created","value":"2018-08-20T13:30:30Z","comment":null,"details_link":null},{"key":"last-modified","value":"2018-09-04T19:38:42Z","comment":null,"details_link":null},{"key":"source","value":"RIPE-NONAUTH","comment":null,"details_link":null},{"key":"remarks","value":"****************************","comment":null,"details_link":null},{"key":"remarks","value":"* THIS OBJECT IS MODIFIED","comment":null,"details_link":null},{"key":"remarks","value":"* Please note that all data that is generally regarded as personal","comment":null,"details_link":null},{"key":"remarks","value":"* data has been removed from this object.","comment":null,"details_link":null},{"key":"remarks","value":"* To view the original object, please query the RIPE Database at:","comment":null,"details_link":null},{"key":"remarks","value":"* http://www.ripe.net/whois","comment":null,"details_link":null},{"key":"remarks","value":"****************************","comment":null,"details_link":null}],[{"key":"route","value":"154.36.128.0/18","comment":null,"details_link":"https://stat.ripe.net/154.36.128.0/18"},{"key":"origin","value":"979","comment":null,"details_link":"https://stat.ripe.net/AS979"},{"key":"mnt-by","value":"MAINT-PREMIUM","comment":null,"details_link":null},{"key":"source","value":"RADB","comment":null,"details_link":null},{"key":"last-modified","value":"2026-06-17T04:10:44Z","comment":null,"details_link":null}],[{"key":"route","value":"154.36.160.0/19","comment":null,"details_link":"https://stat.ripe.net/154.36.160.0/19"},{"key":"origin","value":"979","comment":null,"details_link":"https://stat.ripe.net/AS979"},{"key":"mnt-by","value":"MAINT-PREMIUM","comment":null,"details_link":null},{"key":"source","value":"RADB","comment":null,"details_link":null},{"key":"last-modified","value":"2025-07-02T04:02:39Z","comment":null,"details_link":null}],[{"key":"route","value":"154.36.176.0/21","comment":null,"details_link":"https://stat.ripe.net/154.36.176.0/21"},{"key":"origin","value":"979","comment":null,"details_link":"https://stat.ripe.net/AS979"},{"key":"geoidx","value":"JP","comment":null,"details_link":null},{"key":"mnt-by","value":"MAINT-PREMIUM","comment":null,"details_link":null},{"key":"source","value":"RADB","comment":null,"details_link":null},{"key":"last-modified","value":"2025-07-27T16:56:50Z","comment":null,"details_link":null}],[{"key":"route","value":"154.36.183.0/24","comment":null,"details_link":"https://stat.ripe.net/154.36.183.0/24"},{"key":"origin","value":"979","comment":null,"details_link":"https://stat.ripe.net/AS979"},{"key":"geoidx","value":"JP","comment":null,"details_link":null},{"key":"mnt-by","value":"MAINT-PREMIUM","comment":null,"details_link":null},{"key":"source","value":"RADB","comment":null,"details_link":null},{"key":"last-modified","value":"2025-07-27T16:54:28Z","comment":null,"details_link":null}]],"authorities":["arin"],"resource":"154.36.183.100","query_time":"2026-10-08T12:23:00"}}
+
+--------------------------------------------------------------------------------
+[doh_ptr_154.36.183.100]  2026-10-08 12:23:09 UTC
+GET https://cloudflare-dns.com/dns-query?name=100.183.36.154.in-addr.arpa&type=PTR
+HTTP 200
+
+{"Status":3,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"100.183.36.154.in-addr.arpa","type":12}],"Authority":[{"name":"36.154.in-addr.arpa","type":6,"TTL":43200,"data":"auth1.dns.cogentco.com. dns.cogentco.com. 2025071600 10800 3600 604800 43200"}]}
+
+--------------------------------------------------------------------------------
+[internetdb_154.36.183.100]  2026-10-08 12:10:31 UTC
+GET https://internetdb.shodan.io/154.36.183.100
+HTTP 200
+
+{"cpes":["cpe:/o:canonical:ubuntu_linux","cpe:/a:openbsd:openssh:8.2p1"],"hostnames":[],"ip":"154.36.183.100","ports":[22,80,15082],"tags":[],"vulns":[]}
+
+--------------------------------------------------------------------------------
+[rdap_128.241.231.135]  2026-10-08 12:10:34 UTC
+GET https://rdap.org/ip/128.241.231.135
+HTTP 200
+
+{
+  "arin_originas0_originautnums" : [ ],
+  "cidr0_cidrs" : [ {
+    "v4prefix" : "128.241.0.0",
+    "length" : 16
+  } ],
+  "endAddress" : "128.241.255.255",
+  "entities" : [ {
+    "entities" : [ {
+      "events" : [ {
+        "eventAction" : "last changed",
+        "eventDate" : "2026-02-03T12:35:26-05:00"
+      }, {
+        "eventAction" : "registration",
+        "eventDate" : "2005-12-02T11:16:33-05:00"
+      } ],
+      "handle" : "NAAC-ARIN",
+      "links" : [ {
+        "href" : "https://rdap.arin.net/registry/entity/NAAC-ARIN",
+        "rel" : "self",
+        "type" : "application/rdap+json",
+        "value" : "https://rdap.arin.net/registry/ip/128.241.231.135"
+      }, {
+        "href" : "https://whois.arin.net/rest/poc/NAAC-ARIN",
+        "rel" : "alternate",
+        "type" : "application/xml",
+        "value" : "https://rdap.arin.net/registry/ip/128.241.231.135"
+      } ],
+      "objectClassName" : "entity",
+      "port43" : "whois.arin.net",
+      "roles" : [ "abuse" ],
+      "status" : [ "validated" ],
+      "vcardArray" : [ "vcard", [ [ "version", { }, "text", "4.0" ], [ "adr", {
+        "label" : "8300 E Maplewood Ave.\nSuite 400\nGreenwood Village\nCO\n80111\nUnited States"
+      }, "text", [ "", "", "", "", "", "", "" ] ], [ "fn", { }, "text", "NTT America Abuse Contact" ], [ "org", { }, "text", "NTT DATA" ], [ "kind", { }, "text", "group" ], [ "email", { }, "text", "abuse@ntt.net" ], [ "tel", {
+        "type" : [ "work", "voice" ]
+      }, "text", "+1-877-688-6625" ] ] ]
+    }, {
+      "events" : [ {
+        "eventAction" : "last changed",
+        "eventDate" : "2026-05-13T13:49:02-04:00"
+      }, {
+        "eventAction" : "registration",
+        "eventDate" : "2005-12-02T11:16:39-05:00"
+      } ],
+      "handle" : "NASC-ARIN",
+      "links" : [ {
+        "href" : "https://rdap.arin.net/registry/entity/NASC-ARIN",
+        "rel" : "self",
+        "type" : "application/rdap+json",
+        "value" : "https://rdap.arin.net/registry/ip/128.241.231.135"
+      }, {
+        "href" : "https://whois.arin.net/rest/poc/NASC-ARIN",
+        "rel" : "alternate",
+        "type" : "application/xml",
+        "value" : "https://rdap.arin.net/registry/ip/128.241.231.135"
+      } ],
+      "objectClassName" : "entity",
+      "port43" : "whois.arin.net",
+      "roles" : [ "noc" ],
+      "status" : [ "validated" ],
+      "vcardArray" : [ "vcard", [ [ "version", { }, "text", "4.0" ], [ "adr", {
+        "label" : "8300 E Maplewood Ave.\nSuite 400\nGreenwood Village\nCO\n80111\nUnited States"
+      }, "text", [ "", "", "", "", "", "", "" ] ], [ "fn", { }, "text", "NTT America Support Contact" ], [ "org", { }, "text", "NTT DATA" ], [ "kind", { }, "text", "group" ], [ "email", { }, "text", "ce-support@gin.ntt.net" ], [ "tel", {
+        "type" : [ "work", "voice" ]
+      }, "text", "+1-877-688-6625" ] ] ]
+    }, {
+      "events" : [ {
+        "eventAction" : "last changed",
+        "eventDate" : "2026-01-30T10:20:56-05:00"
+      }, {
+        "eventAction" : "registration",
+        "eventDate" : "2005-12-02T11:16:27-05:00"
+      } ],
+      "handle" : "VIPAR-ARIN",
+      "links" : [ {
+        "href" : "https://rdap.arin.net/registry/entity/VIPAR-ARIN",
+        "rel" : "self",
+        "type" : "application/rdap+json",
+        "value" : "https://rdap.arin.net/registry/ip/128.241.231.135"
+      }, {
+        "href" : "https://whois.arin.net/rest/poc/VIPAR-ARIN",
+        "rel" : "alternate",
+        "type" : "application/xml",
+        "value" : "https://rdap.arin.net/registry/ip/128.241.231.135"
+      } ],
+      "objectClassName" : "entity",
+      "port43" : "whois.arin.net",
+      "roles" : [ "technical", "administrative" ],
+      "status" : [ "validated" ],
+      "vcardArray" : [ "vcard", [ [ "version", { }, "text", "4.0" ], [ "adr", {
+        "label" : "8300 E Maplewood Ave.\nSuite 400\nGreenwood Village\nCO\n80111\nUnited States"
+      }, "text", [ "", "", "", "", "", "", "" ] ], [ "fn", { }, "text", "VIPAR" ], [ "org", { }, "text", "NTT DATA" ], [ "kind", { }, "text", "group" ], [ "email", { }, "text", "ipr@gin.ntt.net" ], [ "tel", {
+        "type" : [ "work", "voice" ]
+      }, "text", "+1-877-688-6625" ] ] ]
+    }, {
+      "events" : [ {
+        "eventAction" : "last changed",
+        "eventDate" : "2026-07-08T09:53:45-04:00"
+      }, {
+        "eventAction" : "registration",
+        "eventDate" : "2006-09-05T19:36:06-04:00"
+      } ],
+      "handle" : "PEERI-ARIN",
+      "links" : [ {
+        "href" : "https://rdap.arin.net/registry/entity/PEERI-ARIN",
+        "rel" : "self",
+        "type" : "application/rdap+json",
+        "value" : "https://rdap.arin.net/registry/ip/128.241.231.135"
+      }, {
+        "href" : "https://whois.arin.net/rest/poc/PEERI-ARIN",
+        "rel" : "alternate",
+        "type" : "application/xml",
+        "value" : "https://rdap.arin.net/registry/ip/128.241.231.135"
+      } ],
+      "objectClassName" : "entity",
+      "port43" : "whois.arin.net",
+      "roles" : [ "routing" ],
+      "status" : [ "validated" ],
+      "vcardArray" : [ "vcard", [ [ "version", { }, "text", "4.0" ], [ "adr", {
+        "label" : "8300 E Maplewood Ave.\nSuite 400\nGreenwood Village\nCO\n80111\nUnited States"
+      }, "text", [ "", "", "", "", "", "", "" ] ], [ "fn", { }, "text", "Peering" ], [ "org", { }, "text", "NTT Ltd." ], [ "kind", { }, "text", "group" ], [ "email", { }, "text", "peering@ntt.net" ], [ "tel", {
+        "type" : [ "work", "voice" ]
+      }, "text", "+1-877-688-6625" ] ] ]
+    }, {
+      "events" : [ {
+        "eventAction" : "last changed",
+        "eventDate" : "2026-02-05T08:01:48-05:00"
+      }, {
+        "eventAction" : "registration",
+        "eventDate" : "2023-02-06T12:21:20-05:00"
+      } ],
+      "handle" : "CANDE70-ARIN",
+      "links" : [ {
+        "href" : "https://rdap.arin.net/registry/entity/CANDE70-ARIN",
+        "rel" : "self",
+        "type" : "application/rdap+json",
+        "value" : "https://rdap.arin.net/registry/ip/128.241.231.135"
+      }, {
+        "href" : "https://whois.arin.net/rest/poc/CANDE70-ARIN",
+        "rel" : "alternate",
+        "type" : "application/xml",
+        "value" : "https://rdap.arin.net/registry/ip/128.241.231.135"
+      } ],
+      "objectClassName" : "entity",
+      "port43" : "whois.arin.net",
+      "roles" : [ "technical" ],
+      "status" : [ "validated" ],
+      "vcardArray" : [ "vcard", [ [ "version", { }, "text", "4.0" ], [ "adr", {
+        "label" : "101 Park Ave.\n41st. floor\nNew York\nNY\n10178\nUnited States"
+      }, "text", [ "", "", "", "", "", "", "" ] ], [ "fn", { }, "text", "[REDACTADO: persona]" ], [ "n", { }, "text", [ "Candela", "[REDACTADO: persona]", "", "", "" ] ], [ "kind", { }, "text", "individual" ], [ "email", { }, "text", "[REDACTADO: correo personal]" ], [ "tel", {
+        "type" : [ "work", "voice" ]
+      }, "text", "[REDACTADO: telefono]" ] ] ]
+    } ],
+    "events" : [ {
+      "eventAction" : "last changed",
+      "eventDate" : "2024-03-04T14:28:21-05:00"
+    }, {
+      "eventAction" : "registration",
+      "eventDate" : "2005-12-08T12:04:23-05:00"
+    } ],
+    "handle" : "NTTAM-1",
+    "links" : [ {
+      "href" : "https://rdap.arin.net/registry/entity/NTTAM-1",
+      "rel" : "self",
+      "type" : "application/rdap+json",
+      "value" : "https://rdap.arin.net/registry/ip/128.241.231.135"
+    }, {
+      "href" : "https://whois.arin.net/rest/org/NTTAM-1",
+      "rel" : "alternate",
+      "type" : "application/xml",
+      "value" : "https://rdap.arin.net/registry/ip/128.241.231.135"
+    } ],
+    "objectClassName" : "entity",
+    "port43" : "whois.arin.net",
+    "roles" : [ "registrant" ],
+    "vcardArray" : [ "vcard", [ [ "version", { }, "text", "4.0" ], [ "fn", { }, "text", "NTT America, Inc." ], [ "adr", {
+      "label" : "15809 Bear Creek Pkwy\nSuite 320\nRedmond\nWA\n98052\nUnited States"
+    }, "text", [ "", "", "", "", "", "", "" ] ], [ "kind", { }, "text", "org" ] ] ]
+  }, {
+    "events" : [ {
+      "eventAction" : "last changed",
+      "eventDate" : "2026-01-30T10:20:29-05:00"
+    } ],
+    "handle" : "VIA4-ORG-ARIN",
+    "links" : [ {
+      "href" : "https://rdap.arin.net/registry/entity/VIA4-ORG-ARIN",
+      "rel" : "self",
+      "type" : "application/rdap+json",
+      "value" : "https://rdap.arin.net/registry/ip/128.241.231.135"
+    }, {
+      "href" : "https://whois.arin.net/rest/poc/VIA4-ORG-ARIN",
+      "rel" : "alternate",
+      "type" : "application/xml",
+      "value" : "https://rdap.arin.net/registry/ip/128.241.231.135"
+    } ],
+    "objectClassName" : "entity",
+    "port43" : "whois.arin.net",
+    "roles" : [ "technical" ],
+    "status" : [ "validated" ],
+    "vcardArray" : [ "vcard", [ [ "version", { }, "text", "4.0" ], [ "adr", {
+      "label" : "8300 E Maplewood Ave.\nSuite 400\nGreenwood Village\nCO\n80111\nUnited States"
+    }, "text", [ "", "", "", "", "", "", "" ] ], [ "fn", { }, "text", "VIPAR" ], [ "org", { }, "text", "NTT DATA" ], [ "kind", { }, "text", "group" ], [ "email", { }, "text", "ipr@gin.ntt.net" ], [ "tel", {
+      "type" : [ "work", "voice" ]
+    }, "text", "+1-877-688-6625" ] ] ]
+  } ],
+  "events" : [ {
+    "eventAction" : "last changed",
+    "eventDate" : "2026-04-27T05:27:55-04:00"
+  }, {
+    "eventAction" : "registration",
+    "eventDate" : "2000-07-26T00:00:00-04:00"
+  } ],
+  "handle" : "NET-128-241-0-0-1",
+  "ipVersion" : "v4",
+  "links" : [ {
+    "href" : "https://rdap.arin.net/registry/ip/128.241.0.0",
+    "rel" : "self",
+    "type" : "application/rdap+json",
+    "value" : "https://rdap.arin.net/registry/ip/128.241.231.135"
+  }, {
+    "href" : "https://whois.arin.net/rest/net/NET-128-241-0-0-1",
+    "rel" : "alternate",
+    "type" : "application/xml",
+    "value" : "https://rdap.arin.net/registry/ip/128.241.231.135"
+  } ],
+  "name" : "NTTA-128-241",
+  "notices" : [ {
+    "description" : [ "By using the ARIN RDAP/Whois service, you are agreeing to the RDAP/Whois Terms of Use" ],
+    "links" : [ {
+      "href" : "https://www.arin.net/resources/registry/whois/tou/",
+      "rel" : "terms-of-service",
+      "type" : "text/html",
+      "value" : "https://rdap.arin.net/registry/ip/128.241.231.135"
+    } ],
+    "title" : "Terms of Service"
+  }, {
+    "description" : [ "If you see inaccuracies in the results, please visit: " ],
+    "links" : [ {
+      "href" : "https://www.arin.net/resources/registry/whois/inaccuracy_reporting/",
+      "rel" : "inaccuracy-report",
+      "type" : "text/html",
+      "value" : "https://rdap.arin.net/registry/ip/128.241.231.135"
+    } ],
+    "title" : "Whois Inaccuracy Reporting"
+  }, {
+    "description" : [ "Copyright 1997-2026, American Registry for Internet Numbers, Ltd." ],
+    "title" : "Copyright Notice"
+  } ],
+  "objectClassName" : "ip network",
+  "parentHandle" : "NET-128-0-0-0-0",
+  "port43" : "whois.arin.net",
+  "rdapConformance" : [ "nro_rdap_profile_0", "rdap_level_0", "cidr0", "arin_originas0" ],
+  "remarks" : [ {
+    "description" : [ "Geofeed https://geo.ip.gin.ntt.net/geofeeds/geofeeds.csv", "", "Reassignment information for this block is", "available at rwhois.gin.ntt.net port 4321" ],
+    "title" : "Registration Comments"
+  } ],
+  "startAddress" : "128.241.0.0",
+  "status" : [ "active" ],
+  "type" : "DIRECT ALLOCATION"
+}
+
+--------------------------------------------------------------------------------
+[ripestat_prefix_128.241.231.135]  2026-10-08 12:23:09 UTC
+GET https://stat.ripe.net/data/prefix-overview/data.json?resource=128.241.231.135
+HTTP 200
+
+{"messages":[["warning","Given resource is not announced but result has been aligned to first-level less-specific (128.241.231.0/24)."]],"see_also":[{"relation":"less-specific","resource":"128.241.0.0/16"}],"version":"1.3","data_call_name":"prefix-overview","data_call_status":"supported","cached":false,"query_id":"20261008122310-1356f552-0e27-4f62-9325-75e1aa53d732","process_time":116,"server_id":"app169","build_version":"v0.11.21-2026.09.30","pipeline":"1443526","status":"ok","status_code":200,"time":"2026-10-08T12:23:10.858708","data":{"is_less_specific":true,"announced":true,"asns":[{"asn":213802,"holder":"TF Tianfeng (Hong Kong) Communications Limited"}],"related_prefixes":["128.241.0.0/16"],"resource":"128.241.231.0/24","type":"prefix","block":{"resource":"128.0.0.0/8","desc":"Administered by ARIN","name":"IANA IPv4 Address Space Registry"},"actual_num_related":1,"query_time":"2026-10-08T08:00:00","num_filtered_out":0}}
+
+--------------------------------------------------------------------------------
+[ripestat_whois_128.241.231.135]  2026-10-08 12:23:10 UTC
+GET https://stat.ripe.net/data/whois/data.json?resource=128.241.231.135
+HTTP 200
+
+{"messages":[["info","IP address has been converted to a prefix"]],"see_also":[],"version":"4.1","data_call_name":"whois","data_call_status":"supported","cached":false,"query_id":"20261008122311-cda77cf7-7c4c-49b0-8f00-09ec855c95b8","process_time":816,"server_id":"app196","build_version":"v0.11.21-2026.09.30","pipeline":"1443526","status":"ok","status_code":200,"time":"2026-10-08T12:23:12.476824","data":{"records":[[{"key":"NetRange","value":"128.241.0.0 - 128.241.255.255","comment":null,"details_link":null},{"key":"CIDR","value":"128.241.0.0/16","comment":null,"details_link":null},{"key":"NetName","value":"NTTA-128-241","comment":null,"details_link":null},{"key":"NetHandle","value":"NET-128-241-0-0-1","comment":null,"details_link":null},{"key":"Parent","value":"NET128 (NET-128-0-0-0-0)","comment":null,"details_link":null},{"key":"NetType","value":"Direct Allocation","comment":null,"details_link":null},{"key":"OriginAS","value":"","comment":null,"details_link":null},{"key":"Organization","value":"NTT America, Inc. (NTTAM-1)","comment":null,"details_link":null},{"key":"RegDate","value":"2000-07-26","comment":null,"details_link":null},{"key":"Comment","value":"Geofeed https://geo.ip.gin.ntt.net/geofeeds/geofeeds.csv","comment":null,"details_link":null},{"key":"Comment","value":"","comment":null,"details_link":null},{"key":"Comment","value":"Reassignment information for this block is","comment":null,"details_link":null},{"key":"Comment","value":"available at rwhois.gin.ntt.net port 4321","comment":null,"details_link":null},{"key":"Ref","value":"https://rdap.arin.net/registry/ip/128.241.0.0","comment":null,"details_link":"https://rdap.arin.net/registry/ip/128.241.0.0"},{"key":"source","value":"ARIN","comment":null,"details_link":null}],[{"key":"OrgAbuseHandle","value":"NAAC-ARIN","comment":null,"details_link":null},{"key":"OrgAbuseName","value":"NTT America Abuse Contact","comment":null,"details_link":null},{"key":"OrgAbusePhone","value":"+1-877-688-6625","comment":null,"details_link":null},{"key":"OrgAbuseEmail","value":"abuse@ntt.net","comment":null,"details_link":"mailto:abuse@ntt.net"},{"key":"OrgAbuseRef","value":"https://rdap.arin.net/registry/entity/NAAC-ARIN","comment":null,"details_link":"https://rdap.arin.net/registry/entity/NAAC-ARIN"},{"key":"source","value":"ARIN","comment":null,"details_link":null}],[{"key":"OrgNOCHandle","value":"NASC-ARIN","comment":null,"details_link":null},{"key":"OrgNOCName","value":"NTT America Support Contact","comment":null,"details_link":null},{"key":"OrgNOCPhone","value":"+1-877-688-6625","comment":null,"details_link":null},{"key":"OrgNOCEmail","value":"ce-support@gin.ntt.net","comment":null,"details_link":"mailto:ce-support@gin.ntt.net"},{"key":"OrgNOCRef","value":"https://rdap.arin.net/registry/entity/NASC-ARIN","comment":null,"details_link":"https://rdap.arin.net/registry/entity/NASC-ARIN"},{"key":"source","value":"ARIN","comment":null,"details_link":null}],[{"key":"OrgName","value":"NTT America, Inc.","comment":null,"details_link":null},{"key":"OrgId","value":"NTTAM-1","comment":null,"details_link":null},{"key":"Address","value":"15809 Bear Creek Pkwy","comment":null,"details_link":null},{"key":"Address","value":"Suite 320","comment":null,"details_link":null},{"key":"City","value":"Redmond","comment":null,"details_link":null},{"key":"StateProv","value":"WA","comment":null,"details_link":null},{"key":"PostalCode","value":"98052","comment":null,"details_link":null},{"key":"Country","value":"US","comment":null,"details_link":null},{"key":"RegDate","value":"2005-12-08","comment":null,"details_link":null},{"key":"Ref","value":"https://rdap.arin.net/registry/entity/NTTAM-1","comment":null,"details_link":"https://rdap.arin.net/registry/entity/NTTAM-1"},{"key":"source","value":"ARIN","comment":null,"details_link":null}],[{"key":"OrgRoutingHandle","value":"PEERI-ARIN","comment":null,"details_link":null},{"key":"OrgRoutingName","value":"Peering","comment":null,"details_link":null},{"key":"OrgRoutingPhone","value":"+1-877-688-6625","comment":null,"details_link":null},{"key":"OrgRoutingEmail","value":"peering@ntt.net","comment":null,"details_link":null},{"key":"OrgRoutingRef","value":"https://rdap.arin.net/registry/entity/PEERI-ARIN","comment":null,"details_link":null},{"key":"source","value":"ARIN","comment":null,"details_link":null}],[{"key":"OrgTechHandle","value":"CANDE70-ARIN","comment":null,"details_link":null},{"key":"OrgTechName","value":"[REDACTADO: persona]","comment":null,"details_link":null},{"key":"OrgTechPhone","value":"[REDACTADO: telefono]","comment":null,"details_link":null},{"key":"OrgTechEmail","value":"[REDACTADO: correo personal]","comment":null,"details_link":"mailto:[REDACTADO: correo personal]"},{"key":"OrgTechRef","value":"https://rdap.arin.net/registry/entity/CANDE70-ARIN","comment":null,"details_link":"https://rdap.arin.net/registry/entity/CANDE70-ARIN"},{"key":"source","value":"ARIN","comment":null,"details_link":null}],[{"key":"OrgTechHandle","value":"VIPAR-ARIN","comment":null,"details_link":null},{"key":"OrgTechName","value":"VIPAR","comment":null,"details_link":null},{"key":"OrgTechPhone","value":"+1-877-688-6625","comment":null,"details_link":null},{"key":"OrgTechEmail","value":"ipr@gin.ntt.net","comment":null,"details_link":"mailto:ipr@gin.ntt.net"},{"key":"OrgTechRef","value":"https://rdap.arin.net/registry/entity/VIPAR-ARIN","comment":null,"details_link":"https://rdap.arin.net/registry/entity/VIPAR-ARIN"},{"key":"source","value":"ARIN","comment":null,"details_link":null}],[{"key":"RTechHandle","value":"VIA4-ORG-ARIN","comment":null,"details_link":null},{"key":"RTechName","value":"VIPAR","comment":null,"details_link":null},{"key":"RTechPhone","value":"+1-877-688-6625","comment":null,"details_link":null},{"key":"RTechEmail","value":"ipr@gin.ntt.net","comment":null,"details_link":null},{"key":"RTechRef","value":"https://rdap.arin.net/registry/entity/VIA4-ORG-ARIN","comment":null,"details_link":null},{"key":"source","value":"ARIN","comment":null,"details_link":null}],[{"key":"ReferralServer","value":"rwhois://rwhois.gin.ntt.net:4321","comment":null,"details_link":null},{"key":"source","value":"ARIN","comment":null,"details_link":null}]],"irr_records":[[{"key":"route","value":"128.241.0.0/16","comment":null,"details_link":"https://stat.ripe.net/128.241.0.0/16"},{"key":"descr","value":"NTT-128-241","comment":null,"details_link":null},{"key":"origin","value":"2914","comment":null,"details_link":"https://stat.ripe.net/AS2914"},{"key":"remarks","value":"Geofeed https://geo.ip.gin.ntt.net/geofeeds/geofeeds.csv","comment":null,"details_link":null},{"key":"remarks","value":"this is non-portable space, no exceptions","comment":null,"details_link":null},{"key":"remarks","value":"contacts per RFC2142:","comment":null,"details_link":null},{"key":"remarks","value":"Abuse / UCE reports abuse@ntt.net","comment":null,"details_link":null},{"key":"remarks","value":"Security issues security@ntt.net","comment":null,"details_link":null},{"key":"mnt-by","value":"MAINT-NTTCOM-BB","comment":null,"details_link":null},{"key":"source","value":"NTTCOM","comment":null,"details_link":null},{"key":"last-modified","value":"2025-05-09T17:04:24Z","comment":null,"details_link":null}],[{"key":"route","value":"128.241.224.0/19","comment":null,"details_link":"https://stat.ripe.net/128.241.224.0/19"},{"key":"origin","value":"213802","comment":null,"details_link":"https://stat.ripe.net/AS213802"},{"key":"descr","value":"TianFeng","comment":null,"details_link":null},{"key":"mnt-by","value":"MAINT-NTTCOM-RA","comment":null,"details_link":null},{"key":"source","value":"NTTCOM","comment":null,"details_link":null},{"key":"last-modified","value":"2025-05-02T14:06:42Z","comment":null,"details_link":null}]],"authorities":["arin"],"resource":"128.241.231.135","query_time":"2026-10-08T12:23:00"}}
+
+--------------------------------------------------------------------------------
+[doh_ptr_128.241.231.135]  2026-10-08 12:23:12 UTC
+GET https://cloudflare-dns.com/dns-query?name=135.231.241.128.in-addr.arpa&type=PTR
+HTTP 200
+
+{"Status":3,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"135.231.241.128.in-addr.arpa","type":12}],"Authority":[{"name":"231.241.128.in-addr.arpa","type":6,"TTL":3600,"data":"auth1.ns.gin.ntt.net. dns-tech.gin.ntt.net. 2010102209 86400 3600 2592000 3600"}]}
+
+--------------------------------------------------------------------------------
+[internetdb_128.241.231.135]  2026-10-08 12:10:35 UTC
+GET https://internetdb.shodan.io/128.241.231.135
+HTTP 200
+
+{"cpes":["cpe:/a:pureftpd:pure-ftpd","cpe:/a:openbsd:openssh:7.4","cpe:/a:f5:nginx","cpe:/a:oracle:mysql"],"hostnames":[],"ip":"128.241.231.135","ports":[21,22,80,111,3306,18888],"tags":["starttls","self-signed","database"],"vulns":["CVE-2026-59996","CVE-2026-35388","CVE-2017-15906","CVE-2026-60001","CVE-2020-15778","CVE-2023-38408","CVE-2008-3844","CVE-2026-59995","CVE-2026-59999","CVE-2026-60002","CVE-2018-15919","CVE-2019-6111","CVE-2018-20685","CVE-2019-6109","CVE-2026-73282","CVE-2020-14145","CVE-2026-59998","CVE-2026-59997","CVE-2025-26465","CVE-2018-15473","CVE-2023-51767","CVE-2023-51385","CVE-2007-2768","CVE-2026-60000","CVE-2025-32728","CVE-2026-35385","CVE-2026-35414","CVE-2026-73281","CVE-2021-36368","CVE-2026-73283","CVE-2019-6110","CVE-2026-35387","CVE-2023-48795","CVE-2016-20012","CVE-2021-41617"]}
+

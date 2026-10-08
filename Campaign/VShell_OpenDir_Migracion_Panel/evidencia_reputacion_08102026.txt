@@ -1,0 +1,144 @@
+================================================================================
+  Evidencia: reputacion de las IP y del hash en fuentes abiertas
+================================================================================
+Consultas a ThreatFox, URLhaus y MalwareBazaar (abuse.ch, con la cabecera
+Auth-Key de Intellroom, omitida aqui), AlienVault OTX y urlscan.io (sin clave).
+Resultado: CERO coincidencias en todas. Ninguna fuente abierta tenia estos
+indicadores al 2026-10-08. Eso NO los descarta: significa que el post es la
+primera publicacion conocida y que el agente no esta en los repositorios
+publicos de muestras. VirusTotal y Hunt.io no se consultaron (sin clave).
+Nota: la busqueda por prefijo /24 en ThreatFox es por texto; un "no_result" no
+garantiza que no haya vecinos reportados con otro formato.
+
+--------------------------------------------------------------------------------
+[threatfox_154.36.183.100]  2026-10-08 12:10:31 UTC
+POST https://threatfox-api.abuse.ch/api/v1/
+(cabecera Auth-Key enviada, valor omitido)
+HTTP 200
+
+{
+    "query_status": "no_result",
+    "data": "Your search did not yield any results"
+}
+
+--------------------------------------------------------------------------------
+[urlhaus_154.36.183.100]  2026-10-08 12:10:31 UTC
+POST https://urlhaus-api.abuse.ch/v1/host/
+(cabecera Auth-Key enviada, valor omitido)
+HTTP 200
+
+{
+    "query_status": "no_results"
+}
+
+--------------------------------------------------------------------------------
+[urlscan_154.36.183.100]  2026-10-08 12:10:32 UTC
+GET https://urlscan.io/api/v1/search/?q=ip:%22154.36.183.100%22&size=100
+HTTP 200
+
+{
+  "results": [],
+  "total": 0,
+  "took": 15,
+  "has_more": false,
+  "search_date_limit_days": 30
+}
+
+--------------------------------------------------------------------------------
+[otx_154.36.183.100]  2026-10-08 12:10:33 UTC
+GET https://otx.alienvault.com/api/v1/indicators/IPv4/154.36.183.100/general
+HTTP 200
+
+{"whois": "http://whois.domaintools.com/154.36.183.100", "reputation": 0, "indicator": "154.36.183.100", "type": "IPv4", "type_title": "IPv4", "base_indicator": {"id": 4510442318, "indicator": "154.36.183.100", "type": "IPv4", "title": "", "description": "", "content": "", "access_type": "public", "access_reason": ""}, "pulse_info": {"count": 0, "pulses": [], "references": [], "related": {"alienvault": {"adversary": [], "malware_families": [], "industries": []}, "other": {"adversary": [], "malware_families": [], "industries": []}}}, "false_positive": [], "validation": [], "asn": "AS139646 hong kong megalayer technology co. limited", "city_data": true, "city": null, "region": null, "continent_code": "NA", "country_code3": "USA", "country_code2": "US", "subdivision": null, "latitude": 37.751, "postal_code": null, "longitude": -97.822, "accuracy_radius": 1000, "country_code": "US", "country_name": "United States of America", "dma_code": 0, "charset": 0, "area_code": 0, "flag_url": "/assets/images/flags/us.png", "flag_title": "United States of America", "sections": ["general", "geo", "reputation", "url_list", "passive_dns", "malware", "nids_list", "http_scans"]}
+
+--------------------------------------------------------------------------------
+[threatfox_128.241.231.135]  2026-10-08 12:10:35 UTC
+POST https://threatfox-api.abuse.ch/api/v1/
+(cabecera Auth-Key enviada, valor omitido)
+HTTP 200
+
+{
+    "query_status": "no_result",
+    "data": "Your search did not yield any results"
+}
+
+--------------------------------------------------------------------------------
+[urlhaus_128.241.231.135]  2026-10-08 12:10:36 UTC
+POST https://urlhaus-api.abuse.ch/v1/host/
+(cabecera Auth-Key enviada, valor omitido)
+HTTP 200
+
+{
+    "query_status": "no_results"
+}
+
+--------------------------------------------------------------------------------
+[urlscan_128.241.231.135]  2026-10-08 12:10:37 UTC
+GET https://urlscan.io/api/v1/search/?q=ip:%22128.241.231.135%22&size=100
+HTTP 200
+
+{
+  "results": [],
+  "total": 0,
+  "took": 261,
+  "has_more": false,
+  "search_date_limit_days": 30
+}
+
+--------------------------------------------------------------------------------
+[otx_128.241.231.135]  2026-10-08 12:10:38 UTC
+GET https://otx.alienvault.com/api/v1/indicators/IPv4/128.241.231.135/general
+HTTP 200
+
+{"whois": "http://whois.domaintools.com/128.241.231.135", "reputation": 0, "indicator": "128.241.231.135", "type": "IPv4", "type_title": "IPv4", "base_indicator": {"id": 4445055765, "indicator": "128.241.231.135", "type": "IPv4", "title": "", "description": "", "content": "", "access_type": "public", "access_reason": ""}, "pulse_info": {"count": 0, "pulses": [], "references": [], "related": {"alienvault": {"adversary": [], "malware_families": [], "industries": []}, "other": {"adversary": [], "malware_families": [], "industries": []}}}, "false_positive": [], "validation": [], "asn": "AS2914 ntt america  inc.", "city_data": true, "city": null, "region": null, "continent_code": "NA", "country_code3": "USA", "country_code2": "US", "subdivision": null, "latitude": 37.751, "postal_code": null, "longitude": -97.822, "accuracy_radius": 1000, "country_code": "US", "country_name": "United States of America", "dma_code": 0, "charset": 0, "area_code": 0, "flag_url": "/assets/images/flags/us.png", "flag_title": "United States of America", "sections": ["general", "geo", "reputation", "url_list", "passive_dns", "malware", "nids_list", "http_scans"]}
+
+--------------------------------------------------------------------------------
+[mb_hash]  2026-10-08 12:10:38 UTC
+POST https://mb-api.abuse.ch/api/v1/
+(cabecera Auth-Key enviada, valor omitido)
+HTTP 200
+
+{
+    "query_status": "hash_not_found"
+}
+
+--------------------------------------------------------------------------------
+[threatfox_hash]  2026-10-08 12:10:39 UTC
+POST https://threatfox-api.abuse.ch/api/v1/
+(cabecera Auth-Key enviada, valor omitido)
+HTTP 200
+
+{
+    "query_status": "no_result",
+    "data": "Your search did not yield any results"
+}
+
+--------------------------------------------------------------------------------
+[otx_hash]  2026-10-08 12:10:40 UTC
+GET https://otx.alienvault.com/api/v1/indicators/file/17485b175a4ca46adbce11efa571f875fb530922b9cc7d5ad60078846ce0f603/general
+HTTP 200
+
+{"sections": ["general", "analysis"], "type": "sha256", "type_title": "FileHash-SHA256", "indicator": "17485b175a4ca46adbce11efa571f875fb530922b9cc7d5ad60078846ce0f603", "validation": [], "base_indicator": {}, "pulse_info": {"count": 0, "pulses": [], "references": [], "related": {"alienvault": {"adversary": [], "malware_families": [], "industries": []}, "other": {"adversary": [], "malware_families": [], "industries": []}}}, "false_positive": []}
+
+--------------------------------------------------------------------------------
+[threatfox_pfx_154.36.183.]  2026-10-08 12:10:40 UTC
+POST https://threatfox-api.abuse.ch/api/v1/
+(cabecera Auth-Key enviada, valor omitido)
+HTTP 200
+
+{
+    "query_status": "no_result",
+    "data": "Your search did not yield any results"
+}
+
+--------------------------------------------------------------------------------
+[threatfox_pfx_128.241.231.]  2026-10-08 12:10:40 UTC
+POST https://threatfox-api.abuse.ch/api/v1/
+(cabecera Auth-Key enviada, valor omitido)
+HTTP 200
+
+{
+    "query_status": "no_result",
+    "data": "Your search did not yield any results"
+}
+

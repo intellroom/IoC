@@ -1,0 +1,38 @@
+================================================================================
+  IOCs / ACCIONES -- Agente Linux en Go (VShell probable) y cambio de panel
+================================================================================
+Defanged: 154[.]36[.]183[.]100 = 154.36.183.100
+
+INDICADORES PARA BLOQUEO RAPIDO
+
+[BLOQUEAR -- REVISAR el 2026-11-08]
+154[.]36[.]183[.]100            # C2 (TCP 18089, segun la config descifrada) y staging
+                                # (directorio abierto en 8899). IP de VPS: reasignable.
+128[.]241[.]231[.]135           # panel ANTERIOR del operador; un agente sin migrar
+                                # puede seguir llamando aqui. IP de VPS: reasignable.
+
+[BLOQUEAR -- hash, sin riesgo de dano colateral]
+17485b175a4ca46adbce11efa571f875fb530922b9cc7d5ad60078846ce0f603   # agent2 (ELF Go x86-64), hash del autor; sin muestra publica
+
+[DETECTAR -- en red]
+TCP saliente a 154[.]36[.]183[.]100:18089       # canal de C2 del agente
+Cualquier conexion saliente a 128[.]241[.]231[.]135
+
+[DETECTAR -- en hosts Linux]
+crond-helper.service            # unidad systemd de persistencia
+/usr/lib/.crond-helper          # ruta oculta del agente
+.ksvc                           # ruta del agente (el post la da sin carpeta padre)
+ELF estatico de Go sin simbolos ejecutandose desde una ruta oculta bajo /usr/lib
+
+[VIGILAR -- NO bloquear ciegamente]
+AS979 / AS213802 / bloques de Cogent y NTT America   # no bloquear ASN ni bloques enteros
+install_panel.sh / btmonitoragent.sh                 # tambien nombres del panel de hosting BT (aaPanel)
+
+[NO ES UN IOC -- no crear reglas sobre esto]
+"Directory listing for /"       # pagina por defecto del servidor de archivos de Python
+Puertos 22 / 80                 # estandar
+CVE listados por Shodan InternetDB   # inferidos de banners, NO verificados
+Hunt.io                         # plataforma donde el autor encontro el directorio
+
+Familia VShell: probable, NO confirmada (ni por el autor ni por Intellroom).
+Deteccion: hipotesis a validar antes de desplegar (redactado con apoyo de IA).

@@ -6,7 +6,14 @@ Defanged: los dominios van con [.].
 INDICADORES PARA BLOQUEO RAPIDO
 
 [BLOQUEAR]
-bagueie[.]xyz                                      # C2 vigente desde 28-sep 06:15 UTC, resuelve
+sayosay[.]cc                                       # C2 VIGENTE desde 05-oct 08:57 UTC, resuelve (act. 08-oct)
+crying881[.]beer                                   # C2, 05-oct, vigente solo 6 minutos
+jrxciw2[.]xyz                                      # C2, 03-oct a 05-oct
+couhe79[.]xyz                                      # C2, 02-oct a 03-oct, resuelve
+nomaiei[.]sbs                                      # C2, 01-oct a 02-oct
+hugg1ngvx[.]top                                    # C2, 30-sep a 01-oct, serverHold
+hahah1101[.]mom                                    # C2, 30-sep, serverHold
+bagueie[.]xyz                                      # C2, 28-sep a 30-sep, sin registro A
 xynero[.]xyz                                       # C2, 25-sep a 28-sep, resuelve
 electronic72[.]pro                                 # C2, 22-sep a 25-sep, resuelve
 namanami[.]top                                     # C2, 18-sep a 22-sep, serverHold
@@ -34,7 +41,7 @@ johncon[.]my                                       # escrito 2 veces el 29-jun; 
 [DETECTAR -- comportamiento, no valor de red]
 0xA3a603F8a454a9c905b4c579Bb72628F7C15C2A0         # contrato resolvedor (Polygon)
 0x2686ecea                                         # getServerURL(), devuelve el C2 (eth_call)
-0x363AeAF1F67f1FB7ABdDC3f9806a301f1C64AbE3         # wallet del operador, firma cada cambio
+0x363AeAF1F67f1FB7ABdDC3f9806a301f1C64AbE3         # wallet del operador, firma los 38 cambios
 osascript que lanza curl con "eth_call"            # consulta al contrato desde un Mac
 curl -d "check" hacia el dominio devuelto          # prueba de disponibilidad del C2
 POST a nodos RPC de Polygon desde un Mac           # equipos sin uso de cripto
@@ -48,6 +55,6 @@ rutube.ru / facebook.com / vk.com / example.com    # valores de prueba del opera
 104.21.x.x / 172.67.x.x                            # Cloudflare delante de los C2
 0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3         # DelegationManager, contrato publico compartido
 
-El C2 cambia cada pocos dias: para el vigente, leer el contrato (seccion 5 de la ficha).
-Detalle en Phexia_macOS_Polygon_C2_28092026.txt. Fuente: fab0 (@FABO97662188) en X, 27-09-2026.
+El C2 cambia cada pocas horas o dias: para el vigente, leer el contrato (seccion 5 de la ficha).
+Detalle en Phexia_macOS_Polygon_C2_28092026.txt. Fuente: fab0 (@FABO97662188) en X, 27-09 y 07-10-2026.
 Deteccion: hipotesis a validar antes de desplegar (redactado con apoyo de IA).

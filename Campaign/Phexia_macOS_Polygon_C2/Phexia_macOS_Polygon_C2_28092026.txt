@@ -4,6 +4,43 @@
   Fecha de analisis: 2026-09-28
 ================================================================================
 
+--------------------------------------------------------------------------------
+ACTUALIZACION 2026-10-08: INDICADORES NUEVOS (7 C2 del 2026-09-30 al 10-05)
+--------------------------------------------------------------------------------
+  sayosay[.]cc          VIGENTE desde 2026-10-05 08:57 UTC; alta 10-04,
+                        NameSilo; resuelve, detras de Cloudflare
+  crying881[.]beer      2026-10-05 08:51 a 08:57 (6 min 33 s); alta 09-30
+  jrxciw2[.]xyz         2026-10-03 a 10-05; alta 10-02, NameSilo
+  couhe79[.]xyz         2026-10-02 a 10-03; alta 10-02, Eranet; resuelve
+  nomaiei[.]sbs         2026-10-01 a 10-02; alta 09-30, NameSilo
+  hugg1ngvx[.]top       2026-09-30 a 10-01; alta 09-27; serverHold
+  hahah1101[.]mom       2026-09-30 04:44 a 16:23; alta 09-30 04:39; serverHold
+  bagueie[.]xyz         (ya listado) 2026-09-28 a 09-30; hoy sin registro A
+
+Disparador: fab0 (@FABO97662188) publico en X el 2026-10-07 la lista de los
+ultimos 8 valores (captura 05). Intellroom la contrasto contra la blockchain:
+coincide 8 de 8, en el mismo orden. El 2026-10-08 se reconstruyeron TODAS las
+transacciones de la wallet desde el 28-sep (metodo por nonce, sin huecos):
+7 escrituras nuevas, ninguna otra transaccion, y el contrato devuelve hoy
+sayosay[.]cc. Totales historicos: 38 escrituras y 29 dominios con forma de C2.
+
+Que cambio en el patron:
+  - La rotacion se acelero: en septiembre el valor duraba 3 a 11 dias; entre
+    el 30-sep y el 5-oct duro entre 6 minutos y poco mas de 2 dias.
+  - Los dominios se registran casi siempre de a pares, entre 5 minutos y casi
+    5 dias antes de usarse; 7 de 8 en NameSilo, todos con DNS de Cloudflare.
+  - Leccion para el vigia diario de Intellroom: registro 3 de los 7
+    (hahah1101, nomaiei, sayosay). El 2, 3 y 4-oct la lectura fallo (el
+    equipo desperto sin red: error de DNS) y, aun sin fallas, una lectura
+    por dia no ve valores que duran horas. Para el historial completo hay
+    que leer las transacciones, no solo el valor actual.
+  - La API de Blockscout quedo detras de un desafio de Cloudflare; el
+    historial se saco por JSON-RPC (evidencia_historial_contrato_08102026.txt).
+
+Evidencia nueva: 05_evidencia_x_post_fab0_07102026.png,
+evidencia_historial_contrato_08102026.txt y evidencia_dns_rdap_08102026.txt.
+Diagramas 01 y 02 regenerados con el C2 vigente.
+
 0. FUENTE PRIMARIA Y QUE AGREGA ESTA FICHA
 --------------------------------------------------------------------------------
 El 2026-09-27 el investigador fab0 (@FABO97662188, en X) publico siete lineas,
@@ -230,7 +267,8 @@ nodo publico de Polygon):
      equipos sin uso de cripto.
   3. No confiar en listas publicadas, esta incluida: el C2 cambia cada pocos
      dias. Leer el contrato (seccion 5). Intellroom lo lee a diario.
-  4. Vigilar la wallet 0x363AeAF1...C64AbE3: un contrato nuevo desplegado por
+  4. Bloquear tambien los 7 dominios de la ACTUALIZACION 2026-10-08.
+  5. Vigilar la wallet 0x363AeAF1...C64AbE3: un contrato nuevo desplegado por
      ella seria el proximo resolvedor.
   Las ideas de deteccion son hipotesis a validar antes de desplegar
   (redactado con apoyo de IA).
@@ -267,4 +305,8 @@ nodo publico de Polygon):
   evidencia_wallet_operador_28092026.txt    las 35 transacciones de la wallet
   evidencia_dns_rdap_28092026.txt           DNS de los 22 dominios y RDAP de
                                             los seis mas recientes
+  05_evidencia_x_post_fab0_07102026.png     post de fab0 del 07-10 (embed publico)
+  evidencia_historial_contrato_08102026.txt las 7 escrituras nuevas por JSON-RPC,
+                                            con las respuestas crudas
+  evidencia_dns_rdap_08102026.txt           DNS y RDAP de los 8 dominios recientes
   evidencia.sha256                          sumas de verificacion

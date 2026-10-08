@@ -18,6 +18,12 @@ https://github.com/intellroom/IoC#macfinger_clickfix_macos
 
 Ordenadas de la más reciente a la más antigua.
 
+### VShell_OpenDir_Migracion_Panel
+
+**2026-10-08** · Directorio abierto (`154[.]36[.]183[.]100:8899`) con un agente Linux en Go (VShell probable, no confirmado), C2 por TCP `:18089` con config AES-128-CBC embebida y scripts para migrar agentes desde el panel anterior `128[.]241[.]231[.]135`; persistencia `crond-helper.service`
+
+[Carpeta](Campaign/VShell_OpenDir_Migracion_Panel) · [iocs.txt](Campaign/VShell_OpenDir_Migracion_Panel/iocs.txt)
+
 ### OpenDir_AD_Toolkit
 
 **2026-09-29** · Directorio abierto (`131[.]123[.]43[.]239:8123`, VPS AlexHost) con un kit de intrusión a Active Directory: 115 archivos de enum LDAP, spraying, Kerberos, evasión de EDR, persistencia y loot
@@ -32,7 +38,7 @@ Ordenadas de la más reciente a la más antigua.
 
 ### Phexia_macOS_Polygon_C2
 
-**2026-09-28** · Phexia: stealer de macOS que lee su C2 desde un contrato en Polygon
+**2026-09-28** (act. **2026-10-08**) · Phexia: stealer de macOS que lee su C2 desde un contrato en Polygon; C2 vigente `sayosay[.]cc`, 29 dominios en total
 
 [Carpeta](Campaign/Phexia_macOS_Polygon_C2) · [iocs.txt](Campaign/Phexia_macOS_Polygon_C2/iocs.txt)
 

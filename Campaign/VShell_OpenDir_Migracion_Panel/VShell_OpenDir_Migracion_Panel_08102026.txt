@@ -1,0 +1,245 @@
+================================================================================
+  Agente Linux en Go (VShell probable) en un directorio abierto, con scripts
+  para mover agentes de un panel viejo a uno nuevo
+  Campana VSH-2026-1006  ·  TLP:CLEAR  ·  Intellroom Threat Intelligence
+  Fecha de analisis: 2026-10-08
+================================================================================
+
+Etiquetas de origen usadas en esta ficha:
+  [S] lo dice la fuente (el post de X o sus imagenes)
+  [R] registro publico consultado por Intellroom (RDAP, RIPEstat, Shodan, abuse.ch)
+  [I] inferencia de Intellroom
+
+
+--------------------------------------------------------------------------------
+1. INDICADORES (defanged)
+--------------------------------------------------------------------------------
+1.1 Red
+
+  154[.]36[.]183[.]100     C2 y servidor de staging [S]. El agente se conecta por
+                           TCP al puerto 18089 (config descifrada por el autor) y
+                           el puerto 8899 servia el directorio abierto.
+                           Registro ARIN: Cogent. Anuncio BGP hoy: AS979 NetLab
+                           Global. Sin PTR. [R]
+                           Accion: BLOQUEAR y REVISAR el 2026-11-08 (IP de VPS,
+                           reasignable).
+
+  128[.]241[.]231[.]135    Panel ANTERIOR del operador [S]: aparece en un comando
+                           de descarga del .bash_history del servidor expuesto.
+                           Registro ARIN: NTT America (contacto tecnico VIPAR).
+                           Anuncio BGP hoy: AS213802 TF Tianfeng (Hong Kong).
+                           Shodan ve FTP, SSH, nginx, MySQL y el puerto 18888. [R]
+                           Accion: BLOQUEAR y REVISAR el 2026-11-08. Un agente que
+                           no se migro puede seguir llamando a esta IP.
+
+1.2 Archivo, rutas y servicio
+
+  agent2                   binario Go, ELF 64-bit x86-64, estatico y sin simbolos,
+                           7.864.320 bytes [S]. SHA-256 en la seccion 1.3.
+  .ksvc                    ruta de instalacion del agente; el post la da relativa,
+                           sin carpeta padre [S]
+  /usr/lib/.crond-helper   segunda ruta de instalacion, oculta (empieza con punto) [S]
+  crond-helper.service     unidad systemd que da la persistencia [S]
+
+1.3 Hash del agente (segun la fuente, sin muestra publica)
+
+  SHA-256  17485b175a4ca46adbce11efa571f875fb530922b9cc7d5ad60078846ce0f603  agent2
+
+  El hash lo publica el autor [S]. Intellroom no tuvo el archivo: no esta en
+  MalwareBazaar ni en ThreatFox ni en OTX al 2026-10-08 [R]. Bloquearlo por hash
+  no tiene costo ni riesgo de dano colateral.
+
+
+--------------------------------------------------------------------------------
+2. LO QUE NO ES UN IOC (no crear reglas sobre esto)
+--------------------------------------------------------------------------------
+- Los puertos 22 y 80 de las dos IP: estandar.
+- "Directory listing for /": la pagina por defecto del servidor de archivos de
+  Python. Comunisima y legitima. Sirve solo junto a la IP de arriba.
+- La lista "vulns" que Shodan InternetDB asocia a 128[.]241[.]231[.]135: la
+  infiere Shodan de los banners. NO esta verificada y no es un hallazgo.
+- Los ASN y bloques completos (AS979, AS213802, Cogent, NTT America): no
+  bloquearlos enteros, caen terceros inocentes.
+- Hunt.io: es la plataforma donde el autor encontro el directorio, no parte del
+  ataque.
+- Los nombres de script del listado (vps_login2.py, vps_socks.py, oms2303b.py,
+  install_panel.sh, btmonitoragent.sh): sirven como pista de caza junto a la IP,
+  nunca como firma aislada. install_panel.sh y btmonitoragent.sh son ademas
+  nombres que usa el panel de hosting BT (aaPanel) [I], o sea pueden ser
+  software legitimo del VPS.
+
+
+--------------------------------------------------------------------------------
+3. RESUMEN
+--------------------------------------------------------------------------------
+El 2026-10-06 el investigador Yusuf Can Cakir (@Yusufcancakiir) publico en X que,
+cazando en Hunt.io, encontro un directorio abierto en el puerto 8899 de un VPS.
+Contenia un agente para Linux escrito en Go ("agent2"), scripts de instalacion y
+scripts para MOVER agentes ya instalados desde un panel viejo a uno nuevo [S].
+
+Con analisis estatico del binario el autor llego a su configuracion embebida:
+cifrada con AES-128-CBC y con los mismos 16 bytes como clave y como vector de
+inicializacion. Descifrada, apunta a la misma IP por TCP, puerto 18089, que
+coincide con la direccion del panel nuevo en los scripts de migracion [S]. Los
+campos de la configuracion (server, type, vkey, proxy, salt, l, e, d, h) salen
+en su captura con vkey y salt tapados [S].
+
+El autor sospecha que es VShell por las referencias a VShell en los scripts,
+pero dice expresamente que no confirmo la familia [S]. VShell es una
+herramienta de acceso remoto en Go, de origen chino, que usan varios grupos;
+NTT Security describio en TROOPERS26 que su binario sin etapas trae la
+configuracion embebida, "incluido el vkey". Ese campo aparece en esta config,
+lo que es consistente con VShell pero no lo prueba [I].
+
+Evaluacion de Intellroom: es muy probable que la IP haya alojado el directorio
+y sea el C2 de esta configuracion. Las capturas del autor son coherentes entre
+si (hash, tamano, secciones Go del ELF y config), pero Intellroom no pudo
+verificar el binario de forma independiente. La familia VShell es PROBABLE
+(confianza media). No hay victimas identificadas, ni actor, ni campana conocida.
+
+
+--------------------------------------------------------------------------------
+4. LINEA DE TIEMPO (UTC)
+--------------------------------------------------------------------------------
+Antes del 2026-10-06  El operador administra agentes desde un panel en
+                      128[.]241[.]231[.]135 y prepara uno nuevo en
+                      154[.]36[.]183[.]100 [S].
+Antes del 2026-10-06  Desde el servidor nuevo se descarga material del panel
+                      viejo (comando en .bash_history) [S].
+2026-10-06 20:16      Yusuf Can Cakir publica el hallazgo en X [S].
+2026-10-08 12:0x      Intellroom contrasta la fuente con RDAP, RIPEstat, Shodan
+                      InternetDB, ThreatFox, URLhaus, MalwareBazaar, OTX y
+                      urlscan. Cero coincidencias previas en fuentes abiertas [R].
+
+Nota: no se sabe desde cuando estan arriba los servidores ni si siguen
+sirviendo el directorio. Shodan InternetDB NO lista hoy los puertos 8899 ni
+18089 de 154[.]36[.]183[.]100 (ve 22, 80 y 15082) [R]: el directorio pudo
+cerrarse o Shodan no lo indexo.
+
+
+--------------------------------------------------------------------------------
+5. QUE SE OBSERVO EN EL DIRECTORIO (por nombre, en la captura del autor)
+--------------------------------------------------------------------------------
+La captura 04 muestra el listado de la raiz [S]. Por los archivos ocultos
+(.bash_history, .bashrc, .profile, .ssh/, .cache/) es el directorio personal
+del operador servido entero, incluida su carpeta de claves SSH [I].
+
+  .bash_history  .bashrc  .cache/  .config/  .pip/  .profile  .ssh/
+  .wget-hsts  __pycache__/  btmonitoragent.sh  dl/  install_panel.sh
+  oms2303b.py  snap/  vps_login2.py  vps_login3.py  vps_login4.py
+  vps_login5.py  vps_socks.log  vps_socks.py
+
+Lectura por nombre [I]: varias versiones de un script de acceso a VPS
+(vps_login2 a 5) y uno de proxy SOCKS con su log sugieren que el operador
+administra una flota de VPS y los usa como relay. agent2 no aparece en la raiz:
+probablemente esta en dl/. Nada de esto se abrio.
+
+Intellroom NO contacto el servidor, NO descargo ningun archivo y NO toco el
+puerto 18089. Todo lo del directorio sale de las capturas del autor.
+
+
+--------------------------------------------------------------------------------
+6. EVALUACION DE LA FUENTE (Admiralty)
+--------------------------------------------------------------------------------
+B2. Autor con trayectoria publica en caza de directorios abiertos; Intellroom ya
+publico tres casos suyos (Erebus_C2_OpenDir, OpenDir_Operador_SurAsia y
+Pfcloud_OpenDir_Staging). Las capturas son coherentes entre si (hash, tamano,
+secciones Go del ELF y config). No se pudo verificar el binario de forma
+independiente: por eso 2 y no 1.
+
+
+--------------------------------------------------------------------------------
+7. MITRE ATT&CK (Enterprise v19.2, IDs verificados contra la matriz oficial)
+--------------------------------------------------------------------------------
+T1583.003  Virtual Private Server ............ dos VPS del operador [I]
+T1608.001  Upload Malware .................... agente en el directorio abierto [S]
+T1105      Ingress Tool Transfer ............. descarga desde el panel viejo [S]
+T1543.002  Systemd Service ................... crond-helper.service [S]
+T1564.001  Hidden Files and Directories ...... .ksvc y /usr/lib/.crond-helper [S]
+T1036.004  Masquerade Task or Service ........ crond-helper imita a crond [I]
+T1027.013  Encrypted/Encoded File ............ config AES-128-CBC embebida [S]
+T1095      Non-Application Layer Protocol .... C2 por TCP crudo ("type": "tcp") [S]
+T1571      Non-Standard Port ................. puerto 18089 [I]
+
+No mapeado por falta de evidencia: acceso inicial, ejecucion en la victima,
+acciones sobre el objetivo. Que VShell las tenga no significa que se hayan
+usado aqui.
+
+
+--------------------------------------------------------------------------------
+8. IDEAS DE CAZA Y DETECCION (hipotesis, validar antes de desplegar)
+--------------------------------------------------------------------------------
+En red:
+  - Conexiones salientes a 154[.]36[.]183[.]100 (en especial TCP 18089) o a
+    128[.]241[.]231[.]135, desde cualquier servidor Linux.
+En el host Linux:
+  - Existe /etc/systemd/system/crond-helper.service, o cualquier unidad con
+    "crond-helper" en el nombre:  systemctl list-unit-files | grep -i crond-helper
+  - Existe /usr/lib/.crond-helper o un archivo o carpeta .ksvc en el home de
+    algun usuario o en /root.
+  - Un binario ELF estatico de Go, sin simbolos, corriendo desde una ruta oculta
+    bajo /usr/lib.
+  - La combinacion importa: un nombre "crond-helper" solo puede ser un falso
+    positivo; con la IP o la ruta oculta deja de serlo.
+
+Redactado con apoyo de IA. Validar antes de desplegar.
+
+
+--------------------------------------------------------------------------------
+9. CORRELACION CON OTROS CASOS DEL REPO
+--------------------------------------------------------------------------------
+VShell ya aparecio dos veces en intellroom/IoC: como C2 vecino en el /24 de
+SilverFox_WhatsApp_Malasia y en el arsenal del operador de
+OpenDir_Operador_SurAsia. Es una herramienta compartida por muchos actores: la
+coincidencia de familia NO es coincidencia de actor. No hay infraestructura en
+comun con esos casos [R].
+
+Mismo modo de hallazgo (directorio abierto sobre un servidor de archivos de
+Python) que Erebus_C2_OpenDir, OpenDir_AD_Toolkit y Pfcloud_OpenDir_Staging.
+
+
+--------------------------------------------------------------------------------
+10. LO QUE NO SE PUDO VERIFICAR
+--------------------------------------------------------------------------------
+- El binario: no hay muestra publica; el hash, el tamano y la config son del
+  autor.
+- La familia: probable VShell, no confirmada ni por el autor ni por Intellroom.
+- Si el directorio sigue abierto y desde cuando: no se contacto el servidor.
+- El contenido de los scripts de instalacion y migracion: solo se conocen por
+  el post.
+- VirusTotal y Hunt.io: no consultados (sin clave).
+- Victimas, sector y pais: desconocidos. No hay senal de que toque Chile o
+  LATAM.
+
+
+--------------------------------------------------------------------------------
+11. ACCIONES RECOMENDADAS
+--------------------------------------------------------------------------------
+1. Bloquear las dos IP en el perimetro, con fecha de revision 2026-11-08.
+2. Buscar en los logs de los ultimos 30 dias conexiones salientes a esas IP.
+3. En servidores Linux expuestos a internet, revisar la unidad systemd y las
+   rutas ocultas de la seccion 8.
+4. Bloquear el SHA-256 en el EDR o antivirus.
+
+
+--------------------------------------------------------------------------------
+12. EVIDENCIA
+--------------------------------------------------------------------------------
+01_flujo_ataque.png                       cadena del ataque (gris = no observado)
+02_modelo_diamante.png                    Modelo del Diamante con panel de IOCs
+03_fuente_x_post_yusufcancakiir_06102026.png  captura del post (embed publico de
+                                          X) con banda de procedencia
+04_fuente_x_directorio_abierto.png        imagen original del autor: el listado
+05_fuente_x_elf_agent2.png                imagen original del autor: ELF y hash
+06_fuente_x_config_descifrada.png         imagen original del autor: la config
+evidencia_fuente_x_08102026.txt           texto completo del post y URL + SHA-256
+                                          de cada imagen descargada
+evidencia_ip_rdap_08102026.txt            RDAP, RIPEstat, PTR e InternetDB, tal cual
+evidencia_reputacion_08102026.txt         ThreatFox, URLhaus, MalwareBazaar, OTX y
+                                          urlscan, tal cual (cero coincidencias)
+evidencia.sha256                          sumas de todo lo anterior
+
+Fuente: Yusuf Can Cakir (@Yusufcancakiir) en X, 2026-10-06:
+https://x.com/Yusufcancakiir/status/2107565588210229261
+Referencia de contexto (VShell y su vkey): NTT Security, "Unshelling VShell at
+Scale", TROOPERS26: https://troopers.de/troopers26/talks/fz7lbk/

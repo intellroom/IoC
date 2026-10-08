@@ -1,0 +1,83 @@
+================================================================================
+  Evidencia: escrituras del contrato de Phexia del 2026-09-28 al 2026-10-08
+================================================================================
+Contrato: 0xA3a603F8a454a9c905b4c579Bb72628F7C15C2A0 (Polygon PoS)
+Wallet que firma: 0x363AeAF1F67f1FB7ABdDC3f9806a301f1C64AbE3
+
+Metodo (cambio respecto del 28-sep): la API de polygon.blockscout.com quedo
+detras de un desafio de Cloudflare (HTTP 403 "Just a moment...") y no se intento
+saltarlo. En su lugar se leyo la blockchain directo por JSON-RPC en un nodo
+publico con historial (polygon.drpc.org):
+  1. eth_getTransactionByHash de la escritura de bagueie[.]xyz (28-sep) -> su
+     bloque (94580666) y su nonce (34).
+  2. eth_getTransactionCount de la wallet en el ultimo bloque (95170932) ->
+     42 transacciones en total, o sea 7 nuevas despues de bagueie.
+  3. Para cada nonce nuevo, busqueda binaria del bloque donde el contador sube y
+     eth_getBlockByNumber de ese bloque para sacar la transaccion de la wallet.
+  4. eth_call a getServerURL() (0x2686ecea) en el ultimo bloque.
+Metodo completo y exhaustivo: el nonce no deja huecos, asi que no puede faltar
+ninguna transaccion de la wallet en el periodo.
+
+Valores decodificados (ABI string) de cada escritura al selector 0xd75d1ba6:
+
+fecha_utc            | bloque    | nonce | valor              | tx
+---------------------+-----------+-------+--------------------+-------------------------------------------------------------------
+2026-09-28 06:15:39  | 94580666  | 34    | bagueie[.]xyz      | 0x7d481a0459322565e22353c5c3cb9c1a62da2d47f959f0168bfc62b898d949b9
+2026-09-30 04:44:11  | 94692207  | 35    | hahah1101[.]mom    | 0x8555c2c3680cc0dbbc6ccde2a0430a04b12d3416c0fcb25f9b1a93032a68b185
+2026-09-30 16:23:44  | 94720189  | 36    | hugg1ngvx[.]top    | 0xbc95b4c22ddf1712afc7eb0eddf64ae1d253a0947f1f9f6fa08ec5063aff803e
+2026-10-01 11:11:15  | 94765290  | 37    | nomaiei[.]sbs      | 0xe7144c9ad80c89bcbd2f05bbab36726770b927c3cd533ab7e9e4e0b8f186489c
+2026-10-02 06:17:56  | 94811157  | 38    | couhe79[.]xyz      | 0xec5c3128a8eeeea496bceac673528eb3e624a171fda5cb8a7f530a7bbc30018a
+2026-10-03 07:05:30  | 94870660  | 39    | jrxciw2[.]xyz      | 0x34a064ed6319dc79c964ac646c05f03a70639908333db0304a23c5382f96ea66
+2026-10-05 08:51:07  | 94990077  | 40    | crying881[.]beer   | 0x8e444d60e7de441528a6e33521a47db282edf7523936e74056d25d451b756ff7
+2026-10-05 08:57:40  | 94990339  | 41    | sayosay[.]cc       | 0xb2ed028022f61323a23d940961ece1dcd133d48486c010fdb2ba8b3c993be318
+
+Resumen: 7 escrituras nuevas, las 7 al contrato, las 7 con forma de C2 y
+ninguna repetida de las 22 anteriores. Total historico: 38 escrituras y 29
+dominios con forma de C2. crying881[.]beer estuvo vigente solo 6 min 33 s
+(2026-10-05 08:51:07 a 08:57:40).
+C2 vigente leido con eth_call en el bloque 95170932: sayosay[.]cc
+
+La lista que fab0 publico el 2026-10-07 coincide 8 de 8, en el mismo orden.
+
+Respuestas JSON-RPC tal cual (hora UTC de cada consulta):
+
+--------------------------------------------------------------------------------
+[2026-10-08 12:13:23 UTC] POST https://polygon.drpc.org  eth_getTransactionByHash  params=["0x7d481a0459322565e22353c5c3cb9c1a62da2d47f959f0168bfc62b898d949b9"]
+{"id":1,"jsonrpc":"2.0","result":{"blockHash":"0x4cadabec38e63a07cf0033f8d3d972c101dd81c7dd2af68a92839322110e292c","blockNumber":"0x5a32fba","from":"0x363aeaf1f67f1fb7abddc3f9806a301f1c64abe3","gas":"0xa996","gasPrice":"0x410f46d371","maxFeePerGas":"0x7b1d98e008","maxPriorityFeePerGas":"0x6fc23ac00","hash":"0x7d481a0459322565e22353c5c3cb9c1a62da2d47f959f0168bfc62b898d949b9","input":"0xd75d1ba60000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000b626167756569652e78797a000000000000000000000000000000000000000000","nonce":"0x22","to":"0xa3a603f8a454a9c905b4c579bb72628f7c15c2a0","transactionIndex":"0x46","value":"0x0","type":"0x2","accessList":[],"chainId":"0x89","v":"0x0","r":"0x807020ea7ba8456c665c9ab6464ddf3b6185379401f7fc218367af8d35b3ca4b","s":"0x29095396c21fbe84bd0e60235018cd9d651219f4f389cd4617fcb104edae6840","yParity":"0x0"}}
+
+--------------------------------------------------------------------------------
+[2026-10-08 12:13:24 UTC] POST https://polygon.drpc.org  eth_blockNumber  params=[]
+{"id":1,"jsonrpc":"2.0","result":"0x5ac3174"}
+
+--------------------------------------------------------------------------------
+[2026-10-08 12:13:33 UTC] POST https://polygon.drpc.org  eth_getBlockByNumber (tx extraida)  params=["0x5a4e36f", true]
+{"blockHash": "0x729589658ecb8d88c9710be1564e83e2e81542ecc980bfe84809274344f09849", "blockNumber": "0x5a4e36f", "from": "0x363aeaf1f67f1fb7abddc3f9806a301f1c64abe3", "gas": "0xa9b3", "gasPrice": "0x3ff6db0ae4", "maxFeePerGas": "0x799a88c1a0", "maxPriorityFeePerGas": "0x6fc23ac00", "hash": "0x8555c2c3680cc0dbbc6ccde2a0430a04b12d3416c0fcb25f9b1a93032a68b185", "input": "0xd75d1ba60000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000d6861686168313130312e6d6f6d00000000000000000000000000000000000000", "nonce": "0x23", "to": "0xa3a603f8a454a9c905b4c579bb72628f7c15c2a0", "transactionIndex": "0x41", "value": "0x0", "type": "0x2", "accessList": [], "chainId": "0x89", "v": "0x1", "r": "0x708ce7b83e55699f64e4e6ed78dc07a36a74c03cba07a7630be0d985a53b8d17", "s": "0x472eeb98726e4ec95e864b96482b22919ad9943e344e2769d4d903f8f8af7820", "yParity": "0x1"}
+
+--------------------------------------------------------------------------------
+[2026-10-08 12:13:43 UTC] POST https://polygon.drpc.org  eth_getBlockByNumber (tx extraida)  params=["0x5a550bd", true]
+{"blockHash": "0xc726ff3edf692b5a60506be15c97293f38867cbc1cdc23fd6ab21a8e8a4c9730", "blockNumber": "0x5a550bd", "from": "0x363aeaf1f67f1fb7abddc3f9806a301f1c64abe3", "gas": "0xa9b3", "gasPrice": "0x3f8c4f8c40", "maxFeePerGas": "0x78ea467b8a", "maxPriorityFeePerGas": "0x6fc23ac00", "hash": "0xbc95b4c22ddf1712afc7eb0eddf64ae1d253a0947f1f9f6fa08ec5063aff803e", "input": "0xd75d1ba60000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000d68756767316e6776782e746f7000000000000000000000000000000000000000", "nonce": "0x24", "to": "0xa3a603f8a454a9c905b4c579bb72628f7c15c2a0", "transactionIndex": "0x43", "value": "0x0", "type": "0x2", "accessList": [], "chainId": "0x89", "v": "0x0", "r": "0x3653559e9b2839d6145303db8b2ea7f43ac3503cd23536640778fd2a5aefcffa", "s": "0xd0a043f6d686abe9c0887095df8e2725436912f4b0df7cfe76a4ea8e1df9c16", "yParity": "0x0"}
+
+--------------------------------------------------------------------------------
+[2026-10-08 12:13:52 UTC] POST https://polygon.drpc.org  eth_getBlockByNumber (tx extraida)  params=["0x5a600ea", true]
+{"blockHash": "0xe9f09a23b7258db2a6560cbdbee17ea9ef0ab4011a390266d06c76aa8c6a3eda", "blockNumber": "0x5a600ea", "from": "0x363aeaf1f67f1fb7abddc3f9806a301f1c64abe3", "gas": "0xa996", "gasPrice": "0x406f6cf069", "maxFeePerGas": "0x7ae9509508", "maxPriorityFeePerGas": "0x6fc23ac00", "hash": "0xe7144c9ad80c89bcbd2f05bbab36726770b927c3cd533ab7e9e4e0b8f186489c", "input": "0xd75d1ba60000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000b6e6f6d616965692e736273000000000000000000000000000000000000000000", "nonce": "0x25", "to": "0xa3a603f8a454a9c905b4c579bb72628f7c15c2a0", "transactionIndex": "0x4c", "value": "0x0", "type": "0x2", "accessList": [], "chainId": "0x89", "v": "0x1", "r": "0x820c30d4b4df6d465ff50c4dd68badd397e050ee228db0484275e8c8b942dc30", "s": "0x3470eaf47b120b13b8f771795c4ef08435550504195bfcede5b5973456b78415", "yParity": "0x1"}
+
+--------------------------------------------------------------------------------
+[2026-10-08 12:14:00 UTC] POST https://polygon.drpc.org  eth_getBlockByNumber (tx extraida)  params=["0x5a6b415", true]
+{"blockHash": "0x888852ccd3e29a5d9b58dc044eeca8c00f693baf529c838f7ccd3d9becc8158d", "blockNumber": "0x5a6b415", "from": "0x363aeaf1f67f1fb7abddc3f9806a301f1c64abe3", "gas": "0xa996", "gasPrice": "0x3f5c056fbb", "maxFeePerGas": "0x788e7a9f4c", "maxPriorityFeePerGas": "0x6fc23ac00", "hash": "0xec5c3128a8eeeea496bceac673528eb3e624a171fda5cb8a7f530a7bbc30018a", "input": "0xd75d1ba60000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000b636f75686537392e78797a000000000000000000000000000000000000000000", "nonce": "0x26", "to": "0xa3a603f8a454a9c905b4c579bb72628f7c15c2a0", "transactionIndex": "0x3f", "value": "0x0", "type": "0x2", "accessList": [], "chainId": "0x89", "v": "0x1", "r": "0xe1d92d04881ca268dd1d73713cdbb843d18f9880861eb9b6df42365a51a7b72c", "s": "0x7aa71ce3fda9853f85f0065fb388533855c4e7c38d1b877f78d01605882d93bb", "yParity": "0x1"}
+
+--------------------------------------------------------------------------------
+[2026-10-08 12:14:09 UTC] POST https://polygon.drpc.org  eth_getBlockByNumber (tx extraida)  params=["0x5a79c84", true]
+{"blockHash": "0x7f3536305499c0174d6f3cb33b63f4701ab15ca5a33c97c672f49586c29f2cdc", "blockNumber": "0x5a79c84", "from": "0x363aeaf1f67f1fb7abddc3f9806a301f1c64abe3", "gas": "0xa996", "gasPrice": "0x37d88ebad5", "maxFeePerGas": "0x6910d19492", "maxPriorityFeePerGas": "0x6fc23ac00", "hash": "0x34a064ed6319dc79c964ac646c05f03a70639908333db0304a23c5382f96ea66", "input": "0xd75d1ba60000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000b6a7278636977322e78797a000000000000000000000000000000000000000000", "nonce": "0x27", "to": "0xa3a603f8a454a9c905b4c579bb72628f7c15c2a0", "transactionIndex": "0x58", "value": "0x0", "type": "0x2", "accessList": [], "chainId": "0x89", "v": "0x1", "r": "0xf66e07e03e50e8b61fa242bcd928ad06ff92cfd11ef97fe93d56d5aa10b40b3d", "s": "0x505eb2354244c507dfe966879862abedabe2c2c9ac0016e777738a86a77db1b4", "yParity": "0x1"}
+
+--------------------------------------------------------------------------------
+[2026-10-08 12:14:18 UTC] POST https://polygon.drpc.org  eth_getBlockByNumber (tx extraida)  params=["0x5a96efd", true]
+{"blockHash": "0x935542452d9ebfa18ddc623c7e646552feabf22f17d89a56e902775609e3338e", "blockNumber": "0x5a96efd", "from": "0x363aeaf1f67f1fb7abddc3f9806a301f1c64abe3", "gas": "0xa9c2", "gasPrice": "0x40b15070fa", "maxFeePerGas": "0x79f4d95342", "maxPriorityFeePerGas": "0x6fc23ac00", "hash": "0x8e444d60e7de441528a6e33521a47db282edf7523936e74056d25d451b756ff7", "input": "0xd75d1ba60000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000e637279696e673838312e62656572000000000000000000000000000000000000", "nonce": "0x28", "to": "0xa3a603f8a454a9c905b4c579bb72628f7c15c2a0", "transactionIndex": "0x5b", "value": "0x0", "type": "0x2", "accessList": [], "chainId": "0x89", "v": "0x0", "r": "0xa32a524d2d17a18479329269c58a00ed1ffd1389af3df433799e511db6fa5a75", "s": "0x1a2d2d28d7c1fe30bb23418759874506ebf2c4d98d6ea28844aea7742142fd0e", "yParity": "0x0"}
+
+--------------------------------------------------------------------------------
+[2026-10-08 12:14:26 UTC] POST https://polygon.drpc.org  eth_getBlockByNumber (tx extraida)  params=["0x5a97003", true]
+{"blockHash": "0x0777e5dbbcc6b709c5b284e1b720cdfe125863c02447a2659d0aabed6dbe7d7b", "blockNumber": "0x5a97003", "from": "0x363aeaf1f67f1fb7abddc3f9806a301f1c64abe3", "gas": "0xa988", "gasPrice": "0x40dc30590b", "maxFeePerGas": "0x7aa9930624", "maxPriorityFeePerGas": "0x6fc23ac00", "hash": "0xb2ed028022f61323a23d940961ece1dcd133d48486c010fdb2ba8b3c993be318", "input": "0xd75d1ba60000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000a7361796f7361792e636300000000000000000000000000000000000000000000", "nonce": "0x29", "to": "0xa3a603f8a454a9c905b4c579bb72628f7c15c2a0", "transactionIndex": "0x4b", "value": "0x0", "type": "0x2", "accessList": [], "chainId": "0x89", "v": "0x0", "r": "0xe9234bece0da8992c31a147565feed7af67ee29118e0125dcb1147a5ba030063", "s": "0x706cfb00e254c3ad4e844045e98dc9079bd9bd8cc8ad5573dfece364c8f6cd1e", "yParity": "0x0"}
+
+--------------------------------------------------------------------------------
+[2026-10-08 12:14:27 UTC] POST https://polygon.drpc.org  eth_call  params=[{"to": "0xa3a603f8a454a9c905b4c579bb72628f7c15c2a0", "data": "0x2686ecea"}, "0x5ac3174"]
+{"id":1,"jsonrpc":"2.0","result":"0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000a7361796f7361792e636300000000000000000000000000000000000000000000"}
+
