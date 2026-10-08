@@ -64,9 +64,8 @@ Etiquetas de origen usadas en esta ficha:
   ataque.
 - Los nombres de script del listado (vps_login2.py, vps_socks.py, oms2303b.py,
   install_panel.sh, btmonitoragent.sh): sirven como pista de caza junto a la IP,
-  nunca como firma aislada. install_panel.sh y btmonitoragent.sh son ademas
-  nombres que usa el panel de hosting BT (aaPanel) [I], o sea pueden ser
-  software legitimo del VPS.
+  nunca como firma aislada. Sin abrirlos no se sabe si son del agente o
+  software de administracion corriente del VPS.
 
 
 --------------------------------------------------------------------------------
@@ -153,7 +152,6 @@ independiente: por eso 2 y no 1.
 --------------------------------------------------------------------------------
 T1583.003  Virtual Private Server ............ dos VPS del operador [I]
 T1608.001  Upload Malware .................... agente en el directorio abierto [S]
-T1105      Ingress Tool Transfer ............. descarga desde el panel viejo [S]
 T1543.002  Systemd Service ................... crond-helper.service [S]
 T1564.001  Hidden Files and Directories ...... .ksvc y /usr/lib/.crond-helper [S]
 T1036.004  Masquerade Task or Service ........ crond-helper imita a crond [I]
@@ -162,7 +160,9 @@ T1095      Non-Application Layer Protocol .... C2 por TCP crudo ("type": "tcp") 
 T1571      Non-Standard Port ................. puerto 18089 [I]
 
 No mapeado por falta de evidencia: acceso inicial, ejecucion en la victima,
-acciones sobre el objetivo. Que VShell las tenga no significa que se hayan
+acciones sobre el objetivo. La descarga desde el panel viejo que muestra el
+.bash_history ocurrio en el servidor del operador, no en una victima: por eso
+NO se mapea a T1105 (Ingress Tool Transfer). Que VShell las tenga no significa que se hayan
 usado aqui.
 
 

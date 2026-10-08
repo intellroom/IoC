@@ -26,7 +26,7 @@ ELF estatico de Go sin simbolos ejecutandose desde una ruta oculta bajo /usr/lib
 
 [VIGILAR -- NO bloquear ciegamente]
 AS979 / AS213802 / bloques de Cogent y NTT America   # no bloquear ASN ni bloques enteros
-install_panel.sh / btmonitoragent.sh                 # tambien nombres del panel de hosting BT (aaPanel)
+install_panel.sh / btmonitoragent.sh                 # nombres del listado: pista de caza junto a la IP, nunca firma aislada
 
 [NO ES UN IOC -- no crear reglas sobre esto]
 "Directory listing for /"       # pagina por defecto del servidor de archivos de Python
