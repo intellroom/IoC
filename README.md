@@ -38,7 +38,7 @@ Ordenadas de la más reciente a la más antigua.
 
 ### Phexia_macOS_Polygon_C2
 
-**2026-09-28** (act. **2026-10-08**) · Phexia: stealer de macOS que lee su C2 desde un contrato en Polygon; C2 vigente `sayosay[.]cc`, 29 dominios en total
+**2026-09-28** (act. **2026-10-08**) · Phexia: stealer de macOS que lee su C2 desde un contrato en Polygon; C2 vigente `sayosay[.]cc`, 29 dominios en total; entrega ClickFix en Cloudflare Pages
 
 [Carpeta](Campaign/Phexia_macOS_Polygon_C2) · [iocs.txt](Campaign/Phexia_macOS_Polygon_C2/iocs.txt)
 

