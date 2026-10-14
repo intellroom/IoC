@@ -31,3 +31,13 @@ share.google y www.google.com   (acortador legitimo de Google, abusado)
 mediafire.com   (hosting legitimo; bloquear solo la ruta /file/g15xjg3aawyvz7u)
 alexis.ns.cloudflare.com y jen.ns.cloudflare.com   (NS compartidos de Cloudflare)
 15.197.148.33 y 3.33.130.190   (IP compartidas de GoDaddy)
+
+ATRIBUCION: Grandoreiro (troyano bancario brasileno, Delphi, MITRE S0531).
+Confirmada por analisis en sandbox (ANY.RUN) de un segundo sample de la misma campana.
+
+SEGUNDO SAMPLE (mismo kit; confirmado Grandoreiro en sandbox)
+[DETECTAR]
+hxxps://share[.]google/I91XnAATjc2UHTXwT   (envoltorio del 2do sample; URL exacta)
+ZIP nombre: 54192SerieX304.GX1K4A-UGLZR.Elec.zip   (SHA-256 pendiente, tarea ANY.RUN)
+VBScript: _306042Impues-3949_xuley.Procuzzmcp.vbs   (CRC32 C5B2659C; 4.459.215 bytes)
+dropper: C:\Users\Public\6TzIetO%8xGvA2Ofo.exe   (soltado por el VBS; mutex de Grandoreiro)

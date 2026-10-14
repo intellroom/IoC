@@ -48,8 +48,28 @@ INFRAESTRUCTURA
 PERFILAMIENTO (estimativo)
 Operador de habla portuguesa: codigo comentado en portugues, idioma por defecto
 pt-br, senuelo tributario (factura de un pais de la region, prefijo "Trib" en el
-nombre del ZIP). Patron del crimeware bancario de Latinoamerica. La familia de
-malware no se pudo atribuir porque el ZIP no se analizo.
+nombre del ZIP). Patron del crimeware bancario de Latinoamerica. Ver ATRIBUCION abajo.
+
+ATRIBUCION (actualizacion 2026-10-14)
+Familia Grandoreiro (troyano bancario brasileno escrito en Delphi, MITRE S0531).
+Confirmada por analisis dinamico en sandbox (ANY.RUN) de un segundo sample de la
+misma campana: se halla el mutex de Grandoreiro y la deteccion marca banker,
+stealer y delphi. Encaja con la actividad 2026 de la familia documentada en
+AlienVault (88 pulsos): expansion de Brasil a Mexico ("goes north", Acronis e IBM
+X-Force), "rented delivery hosts" que coincide con los VPS de Contabo, y loaders
+post-desmantelamiento (el grupo sigue activo pese a los arrestos de 2024). El
+senuelo de factura CFDI mexicana calza con el objetivo Mexico. La atribucion es por
+FAMILIA (comportamiento y TTP), no por coincidencia de indicador: la infraestructura
+de esta campana no figura aun en AlienVault, asi que el aporte propio es el vector de
+entrega (TDS por share.google, SharePoint falso y MediaFire) para Grandoreiro.
+Referencia: MITRE ATT&CK S0531 (https://attack.mitre.org/software/S0531/).
+
+SEGUNDO SAMPLE (mismo kit, confirmado Grandoreiro en sandbox)
+Enlace envoltorio: hxxps://share[.]google/I91XnAATjc2UHTXwT
+ZIP: 54192SerieX304.GX1K4A-UGLZR.Elec.zip (SHA-256 pendiente, tarea ANY.RUN)
+VBScript dentro del ZIP: _306042Impues-3949_xuley.Procuzzmcp.vbs (CRC32 C5B2659C,
+  4.459.215 bytes), que suelta el dropper C:\Users\Public\6TzIetO%8xGvA2Ofo.exe.
+El sample lo detono el analista en ANY.RUN (sandbox), no en un equipo de trabajo.
 
 EVASIONES OBSERVADAS
 - Envoltorio de dominio de confianza (share.google) ante el visible.
