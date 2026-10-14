@@ -1,0 +1,106 @@
+PHISHING POR ENLACE DE GOOGLE A SHAREPOINT FALSO CON ZIP EN MEDIAFIRE
+Analisis Intellroom CTI. TLP:CLEAR. Fecha de analisis: 2026-10-13 (13:15 a 13:32 UTC).
+
+RESUMEN
+Un enlace acortado de Google (share.google) abre, en dos saltos, una cadena de
+phishing que termina entregando un archivo ZIP a la victima. El valor del
+envoltorio es que el filtro de correo y la persona solo ven un dominio de Google.
+La cadena filtra por sistema operativo (solo entrega a Windows de escritorio) e
+incorpora una verificacion anti-bot invisible. El codigo del kit esta comentado en
+portugues y traduce las paginas a seis idiomas (pt-br por defecto), con senuelo de
+tematica tributaria. El destino final suplanta a Microsoft SharePoint, con una
+factura electronica de fondo, y entrega un ZIP alojado en MediaFire. El hash del
+ZIP es el que informa MediaFire sobre el archivo almacenado; el binario no se
+descargo ni se analizo. Analisis pasivo y dinamico, sin contacto con el C2 mas
+alla de seguir la cadena como lo haria una victima.
+
+CADENA OBSERVADA
+1. share.google/m9BPktOgGG0TuoRxS responde 302 a un redireccionador de Google y
+   este responde 301 a hxxps://vltwjsm[.]com/.
+2. vltwjsm[.]com filtra por sistema operativo:
+   - A un equipo que no es Windows (Mac, Linux) lo manda a una pagina estatica
+     "No compatible / Solo en computadoras", traducida por el idioma del navegador.
+   - A Windows lo manda a una pagina de verificacion anti-bot (parametro tipo=inv).
+3. Verificacion invisible: la pagina espera mas de 1 segundo y envia por POST un
+   token y una marca de tiempo; el servidor exige que pase al menos 1 segundo
+   (comentario en portugues en el codigo). Solo tras validar, la raiz redirige al
+   segundo dominio.
+4. 2026pdf[.]com repite el mismo kit (mismo registrador, mismo par de NS de
+   Cloudflare, mismo proveedor de VPS) y lleva a la pagina final.
+5. Pagina final: suplanta a Microsoft SharePoint ("Este archivo fue compartido
+   contigo"), con una factura electronica borrosa de fondo y un boton de descarga.
+6. El boton pide al servidor el enlace real y recibe una URL de MediaFire al ZIP
+   61256Trib-QEPVYnltnru_CB36U6194705.Copia.zip (3.586.327 bytes), subido el
+   2026-10-13. El ZIP no se descargo.
+
+INFRAESTRUCTURA
+- vltwjsm[.]com: creado 2026-10-04 13:49 UTC (Namecheap, privacidad). A directo a
+  169.58.45[.]188 (Contabo, AS51167), sin proxy de Cloudflare. NS alexis y jen de
+  Cloudflare. TXT google-site-verification.
+- 2026pdf[.]com: creado 2026-10-06 12:07 UTC (Namecheap). A 169.58.124[.]177
+  (Contabo, AS51167). Mismo par de NS de Cloudflare.
+- Correo del kit: simplesfiscalnota[.]woltya[.]store resuelve a 169.58.45[.]188 y
+  su SPF autoriza esa IP. woltya[.]store (GoDaddy) y su MX
+  simplesnotafiscalnow[.]woltya[.]store (5.45.184[.]242, G-Core) quedan en
+  vigilancia, sin confirmar como emisores de este correo.
+- Payload alojado en MediaFire (hosting legitimo abusado).
+
+PERFILAMIENTO (estimativo)
+Operador de habla portuguesa: codigo comentado en portugues, idioma por defecto
+pt-br, senuelo tributario (factura de un pais de la region, prefijo "Trib" en el
+nombre del ZIP). Patron del crimeware bancario de Latinoamerica. La familia de
+malware no se pudo atribuir porque el ZIP no se analizo.
+
+EVASIONES OBSERVADAS
+- Envoltorio de dominio de confianza (share.google) ante el visible.
+- Filtro por sistema operativo: solo Windows de escritorio recibe la cadena; Mac y
+  Linux reciben una pagina benigna "no compatible", lo que oculta la carga a los
+  sandboxes y a muchos analistas.
+- Verificacion anti-bot invisible basada en tiempo mas un token firmado de un solo
+  uso. El kit trae ademas un captcha de cuadricula visible de reserva, hoy apagado.
+- Bloqueo por IP en la puerta de entrada: tras repetidas solicitudes la raiz pasa a
+  devolver 404 a esa IP, mientras los archivos estaticos y el payload siguen en
+  linea. Un sandbox que reintenta queda fuera y el sitio aparenta estar caido.
+
+INDICADORES
+Ver iocs.txt en esta misma carpeta (con accion por linea).
+Dominios: vltwjsm[.]com, 2026pdf[.]com, simplesfiscalnota[.]woltya[.]store
+IP: 169.58.45[.]188, 169.58.124[.]177 (Contabo, AS51167)
+URL envoltorio: hxxps://share[.]google/m9BPktOgGG0TuoRxS
+URL payload: hxxps://www[.]mediafire[.]com/file/g15xjg3aawyvz7u/file
+ZIP SHA-256 (informado por MediaFire): bd9575dbcbdc23b8a0f7cc026e627e26b27f0f9cbe61a9def37153229174afd7
+ZIP nombre: 61256Trib-QEPVYnltnru_CB36U6194705.Copia.zip
+
+LO QUE NO ES UN IOC
+- share.google y www.google.com: acortador legitimo de Google, es la pieza
+  abusada, no el atacante. Bloquear solo la URL exacta.
+- mediafire.com: hosting legitimo. Bloquear solo la ruta /file/g15xjg3aawyvz7u.
+- alexis.ns.cloudflare.com y jen.ns.cloudflare.com: NS compartidos de Cloudflare;
+  un par de NS no identifica una cuenta.
+- 15.197.148.33 y 3.33.130.190: IP compartidas de GoDaddy (apex de woltya.store).
+- El SHA-256 del ZIP lo informa MediaFire; no se calculo sobre el binario.
+
+MITRE ATT&CK (validar contra la matriz vigente)
+- T1583.001 Adquirir infraestructura: dominios
+- T1583.003 Adquirir infraestructura: VPS
+- T1608.001 Preparar capacidades: subir malware (MediaFire)
+- T1608.005 Preparar capacidades: preparar el enlace
+- T1656 Suplantacion (falso Microsoft SharePoint)
+- T1566.002 Phishing por enlace (probable; el canal de entrega no se observo)
+- T1204.002 Ejecucion por el usuario: archivo malicioso (probable; requiere abrir el ZIP)
+
+EVIDENCIA
+En esta carpeta:
+- 01_flujo_ataque.png, 02_modelo_diamante.png: diagramas de la campana.
+- 03_navegador_mac_no_compatible.jpg: lo que ve un equipo no Windows.
+- 04_sharepoint_falso.jpg: la pagina final (copia local saneada, sin el script de
+  descarga; la factura de fondo va borrosa).
+- 05 a 10 (consolas): salida real de cada comando, con hora UTC: resolucion del
+  enlace, emulacion de PC (Mac vs Windows), verificacion anti-bot, segundo dominio,
+  enlace del payload y perfilamiento por idioma.
+- evidencia_*.txt: peticiones y respuestas crudas, DNS, WHOIS, RDAP y fuentes
+  pasivas, con hora UTC.
+- evidencia.sha256: sumas de todo lo anterior.
+Solo consultas pasivas y seguir la cadena como una victima. El ZIP no se descargo:
+descargar malware de origen no confiable a un equipo de trabajo es mala practica; el
+binario, si se analiza, va a un entorno aislado.

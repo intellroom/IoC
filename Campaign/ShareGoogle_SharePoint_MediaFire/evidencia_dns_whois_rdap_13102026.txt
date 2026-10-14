@@ -1,0 +1,560 @@
+# Evidencia: DNS (DoH dns.google), WHOIS y RDAP. dig directo a 1.1.1.1 dio timeout (bloqueado en esta red), ver bloque final.
+## DoH vltwjsm.com @ 2026-10-13T13:18:09Z
+2026-10-13T13:18:22Z
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"vltwjsm.com.","type":1}],"Answer":[{"name":"vltwjsm.com.","type":1,"TTL":286,"data":"169.58.45.188"}]}
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"vltwjsm.com.","type":28}],"Authority":[{"name":"vltwjsm.com.","type":6,"TTL":1800,"data":"alexis.ns.cloudflare.com. dns.cloudflare.com. 2416617071 10000 2400 604800 1800"}],"Comment":"Response from 172.64.33.60."}
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"vltwjsm.com.","type":2}],"Answer":[{"name":"vltwjsm.com.","type":2,"TTL":21587,"data":"alexis.ns.cloudflare.com."},{"name":"vltwjsm.com.","type":2,"TTL":21587,"data":"jen.ns.cloudflare.com."}]}
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"vltwjsm.com.","type":15}],"Answer":[{"name":"vltwjsm.com.","type":15,"TTL":300,"data":"10 eforward1.registrar-servers.com."},{"name":"vltwjsm.com.","type":15,"TTL":300,"data":"20 eforward5.registrar-servers.com."},{"name":"vltwjsm.com.","type":15,"TTL":300,"data":"15 eforward4.registrar-servers.com."},{"name":"vltwjsm.com.","type":15,"TTL":300,"data":"10 eforward3.registrar-servers.com."},{"name":"vltwjsm.com.","type":15,"TTL":300,"data":"10 eforward2.registrar-servers.com."}],"Comment":"Response from 172.64.33.60."}
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"vltwjsm.com.","type":16}],"Answer":[{"name":"vltwjsm.com.","type":16,"TTL":300,"data":"v=spf1 include:spf.efwd.registrar-servers.com ~all"},{"name":"vltwjsm.com.","type":16,"TTL":300,"data":"google-site-verification=r78dNsDTyzbaMYNqB3w6iFEVfNO-iEPZMm8iv2c-wcE"}],"Comment":"Response from 172.64.33.60."}
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"vltwjsm.com.","type":6}],"Answer":[{"name":"vltwjsm.com.","type":6,"TTL":1800,"data":"alexis.ns.cloudflare.com. dns.cloudflare.com. 2416617071 10000 2400 604800 1800"}],"Comment":"Response from 173.245.59.60."}
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"vltwjsm.com.","type":257}],"Authority":[{"name":"vltwjsm.com.","type":6,"TTL":1800,"data":"alexis.ns.cloudflare.com. dns.cloudflare.com. 2416617071 10000 2400 604800 1800"}],"Comment":"Response from 108.162.193.60."}
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"www.vltwjsm.com.","type":1}],"Answer":[{"name":"www.vltwjsm.com.","type":1,"TTL":300,"data":"169.58.45.188"}],"Comment":"Response from 172.64.33.60."}
+
+## DoH woltya.store y subdominios
+== DoH woltya 2026-10-13T13:21:36Z
+simplesfiscalnota.woltya.store A: ['169.58.45.188']
+simplesfiscalnota.woltya.store NS: []
+simplesfiscalnota.woltya.store MX: []
+simplesfiscalnota.woltya.store TXT: ['v=spf1 ip4:169.58.45.188 ip6:2a02:c207:2345:2865::1 -all']
+woltya.store A: ['15.197.148.33', '3.33.130.190']
+woltya.store NS: ['ns70.domaincontrol.com.', 'ns69.domaincontrol.com.']
+woltya.store MX: ['10 simplesnotafiscalnow.woltya.store.']
+woltya.store TXT: ['v=spf1 ip4:5.45.184.242 -all']
+www.woltya.store A: ['woltya.store.', '15.197.148.33', '3.33.130.190']
+www.woltya.store NS: ['woltya.store.', 'ns70.domaincontrol.com.', 'ns69.domaincontrol.com.']
+www.woltya.store MX: ['woltya.store.', '10 simplesnotafiscalnow.woltya.store.']
+www.woltya.store TXT: ['woltya.store.', 'v=spf1 ip4:5.45.184.242 -all']
+simplesnotafiscalnow.woltya.store A: ['5.45.184.242']
+simplesnotafiscalnow.woltya.store AAAA: []
+simplesnotafiscalnow.woltya.store TXT: ['v=spf1 ip4:5.45.184.242 -all']
+PTR 5.45.184.242: ['free.ds.']
+
+## WHOIS vltwjsm.com @ 2026-10-13T13:17:53Z
+% IANA WHOIS server
+% for more information on IANA, visit http://www.iana.org
+% This query returned 1 object
+
+refer:        whois.verisign-grs.com
+
+domain:       COM
+
+organisation: VeriSign Global Registry Services
+address:      12061 Bluemont Way
+address:      Reston VA 20190
+address:      United States of America (the)
+
+contact:      administrative
+name:         Registry Customer Service
+organisation: VeriSign Global Registry Services
+address:      12061 Bluemont Way
+address:      Reston VA 20190
+address:      United States of America (the)
+phone:        +1 703 925-6999
+fax-no:       +1 703 948 3978
+e-mail:       info@verisign-grs.com
+
+contact:      technical
+name:         Registry Customer Service
+organisation: VeriSign Global Registry Services
+address:      12061 Bluemont Way
+address:      Reston VA 20190
+address:      United States of America (the)
+phone:        +1 703 925-6999
+fax-no:       +1 703 948 3978
+e-mail:       info@verisign-grs.com
+
+nserver:      A.GTLD-SERVERS.NET 192.5.6.30 2001:503:a83e:0:0:0:2:30
+nserver:      B.GTLD-SERVERS.NET 192.33.14.30 2001:503:231d:0:0:0:2:30
+nserver:      C.GTLD-SERVERS.NET 192.26.92.30 2001:503:83eb:0:0:0:0:30
+nserver:      D.GTLD-SERVERS.NET 192.31.80.30 2001:500:856e:0:0:0:0:30
+nserver:      E.GTLD-SERVERS.NET 192.12.94.30 2001:502:1ca1:0:0:0:0:30
+nserver:      F.GTLD-SERVERS.NET 192.35.51.30 2001:503:d414:0:0:0:0:30
+nserver:      G.GTLD-SERVERS.NET 192.42.93.30 2001:503:eea3:0:0:0:0:30
+nserver:      H.GTLD-SERVERS.NET 192.54.112.30 2001:502:8cc:0:0:0:0:30
+nserver:      I.GTLD-SERVERS.NET 192.43.172.30 2001:503:39c1:0:0:0:0:30
+nserver:      J.GTLD-SERVERS.NET 192.48.79.30 2001:502:7094:0:0:0:0:30
+nserver:      K.GTLD-SERVERS.NET 192.52.178.30 2001:503:d2d:0:0:0:0:30
+nserver:      L.GTLD-SERVERS.NET 192.41.162.30 2001:500:d937:0:0:0:0:30
+nserver:      M.GTLD-SERVERS.NET 192.55.83.30 2001:501:b1f9:0:0:0:0:30
+ds-rdata:     19718 13 2 8acbb0cd28f41250a80a491389424d341522d946b0da0c0291f2d3d771d7805a
+
+whois:        whois.verisign-grs.com
+
+status:       ACTIVE
+remarks:      Registration information: http://www.verisigninc.com
+
+created:      1985-01-01
+changed:      2026-03-10
+source:       IANA
+
+# whois.verisign-grs.com
+
+   Domain Name: VLTWJSM.COM
+   Registry Domain ID: 3149669202_DOMAIN_COM-VRSN
+   Registrar WHOIS Server: whois.namecheap.com
+   Registrar URL: http://www.namecheap.com
+   Updated Date: 2026-10-04T13:52:06Z
+   Creation Date: 2026-10-04T13:49:50Z
+   Registry Expiry Date: 2027-10-04T13:49:50Z
+   Registrar: NameCheap, Inc.
+   Registrar IANA ID: 1068
+   Registrar Abuse Contact Email: abuse@namecheap.com
+   Registrar Abuse Contact Phone: +1.6613102107
+   Domain Status: clientTransferProhibited https://icann.org/epp#clientTransferProhibited
+   Name Server: ALEXIS.NS.CLOUDFLARE.COM
+   Name Server: JEN.NS.CLOUDFLARE.COM
+   DNSSEC: unsigned
+   URL of the ICANN Whois Inaccuracy Complaint Form: https://www.icann.org/wicf/
+>>> Last update of whois database: 2026-10-13T13:17:53Z <<<
+
+# whois.namecheap.com
+
+Domain name: vltwjsm.com
+Registry Domain ID: 3149669202_DOMAIN_COM-VRSN
+Registrar WHOIS Server: whois.namecheap.com
+Registrar URL: http://www.namecheap.com
+Updated Date: 0001-01-01T00:00:00.00Z
+Creation Date: 2026-10-04T13:49:50.00Z
+Registrar Registration Expiration Date: 2027-10-04T13:49:50.00Z
+Registrar: NAMECHEAP INC
+Registrar IANA ID: 1068
+Registrar Abuse Contact Email: abuse@namecheap.com
+Registrar Abuse Contact Phone: +1.9854014545
+Reseller: NAMECHEAP INC
+Domain Status: clientTransferProhibited https://icann.org/epp#clientTransferProhibited
+Registry Registrant ID: 
+Registrant Name: Redacted for Privacy
+Registrant Organization: Privacy service provided by Withheld for Privacy ehf
+Registrant Street: Kalkofnsvegur 2 
+Registrant City: Reykjavik
+Registrant State/Province: Capital Region
+Registrant Postal Code: 101
+Registrant Country: IS
+Registrant Phone: +354.4212434
+Registrant Phone Ext: 
+Registrant Fax: 
+Registrant Fax Ext: 
+Registrant Email: 9215318dd01a46a7b1d83df86dc11d92.protect@withheldforprivacy.com
+Registry Admin ID: 
+Admin Name: Redacted for Privacy
+Admin Organization: Privacy service provided by Withheld for Privacy ehf
+Admin Street: Kalkofnsvegur 2 
+Admin City: Reykjavik
+Admin State/Province: Capital Region
+Admin Postal Code: 101
+Admin Country: IS
+Admin Phone: +354.4212434
+Admin Phone Ext: 
+Admin Fax: 
+Admin Fax Ext: 
+Admin Email: 9215318dd01a46a7b1d83df86dc11d92.protect@withheldforprivacy.com
+Registry Tech ID: 
+Tech Name: Redacted for Privacy
+Tech Organization: Privacy service provided by Withheld for Privacy ehf
+Tech Street: Kalkofnsvegur 2 
+Tech City: Reykjavik
+Tech State/Province: Capital Region
+Tech Postal Code: 101
+Tech Country: IS
+Tech Phone: +354.4212434
+Tech Phone Ext: 
+Tech Fax: 
+Tech Fax Ext: 
+Tech Email: 9215318dd01a46a7b1d83df86dc11d92.protect@withheldforprivacy.com
+Name Server: alexis.ns.cloudflare.com
+Name Server: jen.ns.cloudflare.com
+DNSSEC: unsigned
+URL of the ICANN WHOIS Data Problem Reporting System: http://wdprs.internic.net/
+>>> Last update of WHOIS database: 2026-10-12T21:18:04.93Z <<<
+
+
+## WHOIS woltya.store @ 2026-10-13T13:21:42Z
+% IANA WHOIS server
+% for more information on IANA, visit http://www.iana.org
+% This query returned 1 object
+
+refer:        whois.nic.store
+
+domain:       STORE
+
+organisation: Radix Technologies Inc.
+address:      Services Cayman Limited, P.O. Box 10008, Willow House, Cricket Square, Grand Cayman
+address:      KY1-1001
+address:      Cayman Islands (the)
+
+contact:      administrative
+name:         Director
+organisation: Radix Technologies Inc.
+address:      Services Cayman Limited, P.O. Box 10008, Willow House, Cricket Square, Grand Cayman
+address:      KY1-1001
+address:      Cayman Islands (the)
+phone:        +971 44487934
+e-mail:       admin@radix.email
+
+contact:      technical
+name:         Vice President, Engineering
+organisation: Tucows.com, Co.
+address:      96 Mowat Avenue
+address:      Toronto ON M6K3M1
+address:      Canada
+phone:        +1 415 8911348
+e-mail:       trs-ops@tucows.com
+
+nserver:      NS01.TRS-DNS.COM 2620:57:4001:0:0:0:0:1 64.96.1.1
+nserver:      NS01.TRS-DNS.NET 2620:57:4002:0:0:0:0:1 64.96.2.1
+nserver:      NS10.TRS-DNS.INFO 2620:171:812:1534:8:0:0:1 64.78.204.1
+nserver:      NS10.TRS-DNS.ORG 2620:171:813:1534:8:0:0:1 64.78.205.1
+ds-rdata:     2327 13 2 fabe791546e2eab3ff93db790d5fa1fc750a9149aa6b712545d2acc27e101209
+
+whois:        whois.nic.store
+
+status:       ACTIVE
+remarks:      Registration information: https://radix.website/
+
+created:      2016-02-11
+changed:      2026-04-27
+source:       IANA
+
+# whois.nic.store
+
+Domain Name: woltya.store
+Registry Domain ID: DO_30133a36a3596590825e49623f128131-RADIX
+Registrar WHOIS Server: whois.godaddy.com
+Registrar URL: https://godaddy.com
+Updated Date: 2026-07-25T02:32:31.338Z
+Creation Date: 2026-07-20T02:30:08.692Z
+Registry Expiry Date: 2027-07-20T02:30:08.692Z
+Registrar: GoDaddy.com, LLC
+Registrar IANA ID: 146
+Registrar Abuse Contact Email: abuse@godaddy.com
+Registrar Abuse Contact Phone: 
+Domain Status: clientTransferProhibited https://icann.org/epp#clientTransferProhibited
+Domain Status: clientRenewProhibited https://icann.org/epp#clientRenewProhibited
+Domain Status: clientDeleteProhibited https://icann.org/epp#clientDeleteProhibited
+Domain Status: clientUpdateProhibited https://icann.org/epp#clientUpdateProhibited
+Name Server: ns69.domaincontrol.com
+Name Server: ns70.domaincontrol.com
+DNSSEC: unsigned
+URL of the ICANN RDDS Inaccuracy Complaint Form: https://icann.org/wicf
+
+>>> Last update of WHOIS database: 2026-10-13T13:21:43.681Z <<<
+
+# whois.godaddy.com
+
+Domain Name: woltya.store
+Registry Domain ID: DO_30133a36a3596590825e49623f128131-RADIX
+Registrar WHOIS Server: whois.godaddy.com
+Registrar URL: https://www.godaddy.com
+Updated Date: 2026-07-20T02:30:09Z
+Creation Date: 2026-07-20T02:30:08Z
+Registrar Registration Expiration Date: 2027-07-20T02:30:08Z
+Registrar: GoDaddy.com, LLC
+Registrar IANA ID: 146
+Registrar Abuse Contact Email: abuse@godaddy.com
+Registrar Abuse Contact Phone: +1.4806242505
+Domain Status: clientTransferProhibited https://icann.org/epp#clientTransferProhibited
+Domain Status: clientUpdateProhibited https://icann.org/epp#clientUpdateProhibited
+Domain Status: clientRenewProhibited https://icann.org/epp#clientRenewProhibited
+Domain Status: clientDeleteProhibited https://icann.org/epp#clientDeleteProhibited
+Registry Registrant ID: Not Available From Registry
+Registrant Name: Registration Private
+Registrant Organization: Domains By Proxy, LLC
+Registrant Street: DomainsByProxy.com
+Registrant Street: 100 S. Mill Ave, Suite 1600
+Registrant City: Tempe
+Registrant State/Province: Arizona
+Registrant Postal Code: 85281
+Registrant Country: US
+Registrant Phone: +1.4806242599
+Registrant Phone Ext:
+Registrant Fax: 
+Registrant Fax Ext:
+Registrant Email: https://www.godaddy.com/whois/results.aspx?domain=woltya.store&action=contactDomainOwner
+Name Server: NS69.DOMAINCONTROL.COM
+Name Server: NS70.DOMAINCONTROL.COM
+DNSSEC: unsigned
+URL of the ICANN WHOIS Data Problem Reporting System: http://wdprs.internic.net/
+>>> Last update of WHOIS database: 2026-10-13T13:21:44Z <<<
+
+
+## RDAP RIPE 169.58.45.188 @ 2026-10-13T13:18:32Z
+{
+  "handle" : "169.58.0.0 - 169.58.127.255",
+  "startAddress" : "169.58.0.0",
+  "endAddress" : "169.58.127.255",
+  "ipVersion" : "v4",
+  "name" : "TT-20260630",
+  "type" : "LEGACY",
+  "country" : "DE",
+  "parentHandle" : "169.58.0.0 - 169.58.255.255",
+  "cidr0_cidrs" : [ {
+    "v4prefix" : "169.58.0.0",
+    "length" : 17
+  } ],
+  "status" : [ "active" ],
+  "entities" : [ {
+    "handle" : "MH7476-RIPE",
+    "vcardArray" : [ "vcard", [ [ "version", { }, "text", "4.0" ], [ "fn", { }, "text", "Johannes Selg" ], [ "kind", { }, "text", "individual" ], [ "adr", {
+      "label" : "Contabo GmbH\nWelfenstr. 22\n81541 München"
+    }, "text", [ "", "", "", "", "", "", "" ] ], [ "tel", {
+      "type" : "voice"
+    }, "text", "+49 89 21268372" ], [ "tel", {
+      "type" : "fax"
+    }, "text", "+49 89 21665862" ] ] ],
+    "roles" : [ "administrative", "technical" ],
+    "links" : [ {
+      "value" : "https://rdap.db.ripe.net/ip/169.58.45.188",
+      "rel" : "self",
+      "href" : "https://rdap.db.ripe.net/entity/MH7476-RIPE"
+    }, {
+      "value" : "http://www.ripe.net/data-tools/support/documentation/terms",
+      "rel" : "copyright",
+      "href" : "http://www.ripe.net/data-tools/support/documentation/terms"
+    } ],
+    "objectClassName" : "entity"
+  }, {
+    "handle" : "MNT-CONTABO",
+    "vcardArray" : [ "vcard", [ [ "version", { }, "text", "4.0" ], [ "fn", { }, "text", "MNT-CONTABO" ], [ "kind", { }, "text", "individual" ] ] ],
+    "roles" : [ "registrant" ],
+    "links" : [ {
+      "value" : "https://rdap.db.ripe.net/ip/169.58.45.188",
+      "rel" : "self",
+      "href" : "https://rdap.db.ripe.net/entity/MNT-CONTABO"
+    }, {
+      "value" : "http://www.ripe.net/data-tools/support/documentation/terms",
+      "rel" : "copyright",
+      "href" : "http://www.ripe.net/data-tools/support/documentation/terms"
+    } ],
+    "objectClassName" : "entity"
+  }, {
+    "handle" : "ORG-CG316-RIPE",
+    "vcardArray" : [ "vcard", [ [ "version", { }, "text", "4.0" ], [ "fn", { }, "text", "Contabo GmbH" ], [ "kind", { }, "text", "org" ], [ "adr", {
+      "label" : "Welfenstrasse 22\n81541\nMunchen\nGERMANY"
+    }, "text", [ "", "", "", "", "", "", "" ] ], [ "tel", {
+      "type" : "voice"
+    }, "text", "+498921268372" ], [ "tel", {
+      "type" : "fax"
+    }, "text", "+498921665862" ] ] ],
+    "roles" : [ "registrant" ],
+    "links" : [ {
+      "value" : "https://rdap.db.ripe.net/ip/169.58.45.188",
+      "rel" : "self",
+      "href" : "https://rdap.db.ripe.net/entity/ORG-CG316-RIPE"
+    }, {
+      "value" : "http://www.ripe.net/data-tools/support/documentation/terms",
+      "rel" : "copyright",
+      "href" : "http://www.ripe.net/data-tools/support/documentation/terms"
+    } ],
+    "objectClassName" : "entity"
+  }, {
+    "handle" : "MH12453-RIPE",
+    "vcardArray" : [ "vcard", [ [ "version", { }, "text", "4.0" ], [ "fn", { }, "text", "CONTABO ABUSE DEPARTMENT" ], [ "kind", { }, "text", "group" ], [ "adr", {
+      "label" : "Contabo GmbH\nWelfenstr. 22\n81541 München\nGermany"
+    }, "text", [ "", "", "", "", "", "", "" ] ], [ "email", {
+      "type" : "abuse"
+    }, "text", "abuse@contabo.de" ] ] ],
+    "roles" : [ "abuse" ],
+    "entities" : [ {
+      "handle" : "MH7476-RIPE",
+      "vcardArray" : [ "vcard", [ [ "version", { }, "text", "4.0" ], [ "fn", { }, "text", "Johannes Selg" ], [ "kind", { }, "text", "individual" ], [ "adr", {
+        "label" : "Contabo GmbH\nWelfenstr. 22\n81541 München"
+      }, "text", [ "", "", "", "", "", "", "" ] ], [ "tel", {
+        "type" : "voice"
+      }, "text", "+49 89 21268372" ], [ "tel", {
+        "type" : "fax"
+      }, "text", "+49 89 21665862" ] ] ],
+      "roles" : [ "administrative", "technical" ],
+      "links" : [ {
+        "value" : "https://rdap.db.ripe.net/ip/169.58.45.188",
+        "rel" : "self",
+        "href" : "https://rdap.db.ripe.net/entity/MH7476-RIPE"
+      }, {
+        "value" : "http://www.ripe.net/data-tools/support/documentation/terms",
+        "rel" : "copyright",
+        "href" : "http://www.ripe.net/data-tools/support/documentation/terms"
+      } ],
+      "objectClassName" : "entity"
+    }, {
+      "handle" : "MNT-CONTABO",
+      "vcardArray" : [ "vcard", [ [ "version", { }, "text", "4.0" ], [ "fn", { }, "text", "MNT-CONTABO" ], [ "kind", { }, "text", "individual" ] ] ],
+      "roles" : [ "registrant" ],
+      "links" : [ {
+        "value" : "https://rdap.db.ripe.net/ip/169.58.45.188",
+        "rel" : "self",
+        "href" : "https://rdap.db.ripe.net/entity/MNT-CONTABO"
+      }, {
+        "value" : "http://www.ripe.net/data-tools/support/documentation/terms",
+        "rel" : "copyright",
+        "href" : "http://www.ripe.net/data-tools/support/documentation/terms"
+      } ],
+      "objectClassName" : "entity"
+    } ],
+    "objectClassName" : "entity"
+  } ],
+  "remarks" : [ {
+    "description" : [ "Contabo GmbH" ]
+  } ],
+  "links" : [ {
+    "value" : "https://rdap.db.ripe.net/ip/169.58.45.188",
+    "rel" : "rdap-up",
+    "href" : "https://rdap.db.ripe.net/ips/rirSearch1/rdap-up/169.58.0.0%20-%20169.58.127.255",
+    "type" : "application/rdap+json"
+  }, {
+    "value" : "https://rdap.db.ripe.net/ip/169.58.45.188",
+    "rel" : "rdap-up rdap-active",
+    "href" : "https://rdap.db.ripe.net/ips/rirSearch1/rdap-up/169.58.0.0%20-%20169.58.127.255?status=active",
+    "type" : "application/rdap+json"
+  }, {
+    "value" : "https://rdap.db.ripe.net/ip/169.58.45.188",
+    "rel" : "rdap-down",
+    "href" : "https://rdap.db.ripe.net/ips/rirSearch1/rdap-down/169.58.0.0%20-%20169.58.127.255",
+    "type" : "application/rdap+json"
+  }, {
+    "value" : "https://rdap.db.ripe.net/ip/169.58.45.188",
+    "rel" : "rdap-top",
+    "href" : "https://rdap.db.ripe.net/ips/rirSearch1/rdap-top/169.58.0.0%20-%20169.58.127.255",
+    "type" : "application/rdap+json"
+  }, {
+    "value" : "https://rdap.db.ripe.net/ip/169.58.45.188",
+    "rel" : "rdap-top rdap-active",
+    "href" : "https://rdap.db.ripe.net/ips/rirSearch1/rdap-top/169.58.0.0%20-%20169.58.127.255?status=active",
+    "type" : "application/rdap+json"
+  }, {
+    "value" : "https://rdap.db.ripe.net/ip/169.58.45.188",
+    "rel" : "rdap-bottom",
+    "href" : "https://rdap.db.ripe.net/ips/rirSearch1/rdap-bottom/169.58.0.0%20-%20169.58.127.255",
+    "type" : "application/rdap+json"
+  }, {
+    "value" : "https://rdap.db.ripe.net/ip/169.58.45.188",
+    "rel" : "self",
+    "href" : "https://rdap.db.ripe.net/ip/169.58.45.188",
+    "type" : "application/rdap+json"
+  }, {
+    "value" : "http://www.ripe.net/data-tools/support/documentation/terms",
+    "rel" : "copyright",
+    "href" : "http://www.ripe.net/data-tools/support/documentation/terms"
+  } ],
+  "events" : [ {
+    "eventAction" : "registration",
+    "eventDate" : "2026-06-30T15:16:48Z"
+  }, {
+    "eventAction" : "last changed",
+    "eventDate" : "2026-07-10T08:40:12Z"
+  } ],
+  "rdapConformance" : [ "geofeed1", "rirSearch1", "ips", "cidr0", "rdap_level_0", "nro_rdap_profile_0", "redacted" ],
+  "notices" : [ {
+    "title" : "Filtered",
+    "description" : [ "This output has been filtered." ]
+  }, {
+    "title" : "Whois Inaccuracy Reporting",
+    "description" : [ "If you see inaccuracies in the results, please visit:" ],
+    "links" : [ {
+      "value" : "https://rdap.db.ripe.net/ip/169.58.45.188",
+      "rel" : "inaccuracy-report",
+      "href" : "https://www.ripe.net/contact-form?topic=ripe_dbm&show_form=true",
+      "type" : "text/html"
+    } ]
+  }, {
+    "title" : "Source",
+    "description" : [ "Objects returned came from source", "RIPE" ]
+  }, {
+    "title" : "Terms and Conditions",
+    "description" : [ "This is the RIPE Database query service. The objects are in RDAP format." ],
+    "links" : [ {
+      "value" : "https://rdap.db.ripe.net/ip/169.58.45.188",
+      "rel" : "terms-of-service",
+      "href" : "http://www.ripe.net/db/support/db-terms-conditions.pdf",
+      "type" : "application/pdf"
+    } ]
+  } ],
+  "port43" : "whois.ripe.net",
+  "objectClassName" : "ip network",
+  "redacted" : [ {
+    "name" : {
+      "description" : "Personal e-mail information"
+    },
+    "reason" : {
+      "description" : "Personal data"
+    },
+    "prePath" : "$.entities[?(@.handle=='ORG-CG316-RIPE')].vcardArray[1][?(@[0]=='e-mail')]",
+    "method" : "removal"
+  }, {
+    "name" : {
+      "description" : "Personal e-mail information"
+    },
+    "reason" : {
+      "description" : "Personal data"
+    },
+    "prePath" : "$.entities[?(@.handle=='MH12453-RIPE')].vcardArray[1][?(@[0]=='e-mail')]",
+    "method" : "removal"
+  } ]
+}
+## ASN (whois.cymru.com)
+AS      | IP               | BGP Prefix          | CC | Registry | Allocated  | AS Name
+51167   | 169.58.45.188    | 169.58.0.0/17       | DE | ripencc  | 1993-09-01 | CONTABO - Contabo GmbH, DE
+AS      | IP               | BGP Prefix          | CC | Registry | Allocated  | AS Name
+202422  | 5.45.184.242     | 5.45.184.0/24       | LU | ripencc  | 2012-05-29 | GHOST - G-Core Labs S.A., LU
+AS      | IP                                       | BGP Prefix          | CC | Registry | Allocated  | AS Name
+51167   | 2a02:c207:2345:2865::1                   | 2a02:c207::/32      | DE | ripencc  | 2012-09-17 | CONTABO - Contabo GmbH, DE
+
+## Salida original (dig fallido + whois)
+2026-10-13T13:16:02Z
+== A
+;; connection timed out; no servers could be reached
+== AAAA
+;; connection timed out; no servers could be reached
+== NS
+;; connection timed out; no servers could be reached
+== MX
+;; connection timed out; no servers could be reached
+== TXT
+;; connection timed out; no servers could be reached
+== SOA
+;; connection timed out; no servers could be reached
+== CNAME
+;; connection timed out; no servers could be reached
+== www A
+;; connection timed out; no servers could be reached
+
+% for more information on IANA, visit http://www.iana.org
+organisation: VeriSign Global Registry Services
+name:         Registry Customer Service
+organisation: VeriSign Global Registry Services
+name:         Registry Customer Service
+organisation: VeriSign Global Registry Services
+status:       ACTIVE
+remarks:      Registration information: http://www.verisigninc.com
+created:      1985-01-01
+   Registry Domain ID: 3149669202_DOMAIN_COM-VRSN
+   Registrar WHOIS Server: whois.namecheap.com
+   Registrar URL: http://www.namecheap.com
+   Updated Date: 2026-10-04T13:52:06Z
+   Creation Date: 2026-10-04T13:49:50Z
+   Registry Expiry Date: 2027-10-04T13:49:50Z
+   Registrar: NameCheap, Inc.
+   Registrar IANA ID: 1068
+   Registrar Abuse Contact Email: abuse@namecheap.com
+   Registrar Abuse Contact Phone: +1.6613102107
+   Domain Status: clientTransferProhibited https://icann.org/epp#clientTransferProhibited
+   Name Server: ALEXIS.NS.CLOUDFLARE.COM
+   Name Server: JEN.NS.CLOUDFLARE.COM
+   URL of the ICANN Whois Inaccuracy Complaint Form: https://www.icann.org/wicf/
+>>> Last update of whois database: 2026-10-13T13:17:53Z <<<
+Registry Domain ID: 3149669202_DOMAIN_COM-VRSN
+Registrar WHOIS Server: whois.namecheap.com
+Registrar URL: http://www.namecheap.com
+Updated Date: 0001-01-01T00:00:00.00Z
+Creation Date: 2026-10-04T13:49:50.00Z
+Registrar Registration Expiration Date: 2027-10-04T13:49:50.00Z
+Registrar: NAMECHEAP INC
+Registrar IANA ID: 1068
+Registrar Abuse Contact Email: abuse@namecheap.com
+Registrar Abuse Contact Phone: +1.9854014545
+Domain Status: clientTransferProhibited https://icann.org/epp#clientTransferProhibited
+Registry Registrant ID: 
+Registrant Name: Redacted for Privacy
+Registrant Organization: Privacy service provided by Withheld for Privacy ehf
+Registrant Street: Kalkofnsvegur 2 
+Registrant City: Reykjavik
+
+[exited with code 0]

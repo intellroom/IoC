@@ -1,0 +1,137 @@
+# Evidencia: fuentes pasivas de terceros (Shodan, OTX, Cert Spotter, urlscan, Wayback, Safe Browsing, HackerTarget)
+
+## certspotter.json (hora de consulta: ver ficha, 2026-10-13 13:18 a 13:24 UTC)
+[
+	{
+		"id": "17579554760",
+		"tbs_sha256": "6904378b88b365d12e050520fc3f4044aa175bb1d0fee81b30de9350a22a221a",
+		"cert_sha256": "033731376836bec7d3bcb997b55c51226507f795b8b2189e54eb19d2b728185d",
+		"dns_names": [
+			"*.vltwjsm.com",
+			"vltwjsm.com"
+		],
+		"pubkey_sha256": "77f381f105ebd8888f391d25c9de2ff714603ae63b0aa776f8b684ded3ef282c",
+		"issuer": {
+			"friendly_name": "Let's Encrypt",
+			"pubkey_sha256": "b3fb5d00e994cddf2cc9a4eea9f806bc5727e83cc0e4299bf956f2d524fe5376",
+			"name": "C=US, O=Let's Encrypt, CN=YE2"
+		},
+		"not_before": "2026-10-04T12:55:46Z",
+		"not_after": "2027-01-02T12:55:45Z",
+		"revoked": false
+	},
+	{
+		"id": "17579617424",
+		"tbs_sha256": "1645667467caa24542910b735efc4906d5dfcaafc71036acbfbb9f0ad849d6d7",
+		"cert_sha256": "610b2e9515f708cdbb9ffd73231dd29c3565e659463d7a6d1afa2894e28d3322",
+		"dns_names": [
+			"vltwjsm.com",
+			"www.vltwjsm.com"
+		],
+		"pubkey_sha256": "776a147b63ec11d98d6c1ec1d24008086a95c83a3a47271cb78567fa35144aae",
+		"issuer": {
+			"friendly_name": "Let's Encrypt",
+			"pubkey_sha256": "9d637b3d27a9e570d07607b9ccadb80a70915c7af72afce12841b1b1da825fd1",
+			"name": "C=US, O=Let's Encrypt, CN=YR2"
+		},
+		"not_before": "2026-10-04T13:00:18Z",
+		"not_after": "2027-01-02T13:00:17Z",
+		"revoked": false
+	},
+	{
+		"id": "17581774345",
+		"tbs_sha256": "f92e9e4f347196fededbdcc839ea257d377cc0acd7b6b442f7e862be31d867d3",
+		"cert_sha256": "5de6d5bf7074d0d60069eb34dbe1bb2f52bf843599daeb21c9c304d9457ea50d",
+		"dns_names": [
+			"*.vltwjsm.com",
+			"vltwjsm.com"
+		],
+		"pubkey_sha256": "39081dd032ab694cb4cfa0313bc3733dc13a9e6fb4923e41a398d8abc4e84dfa",
+		"issuer": {
+			"friendly_name": "SSL.com",
+			"pubkey_sha256": "1959e38fb7d3fc16bee5e20e834e2c6667bf0e9e6b9806b86bd40a6d66c716d0",
+			"name": "C=US, O=SSL Corporation, CN=Cloudflare TLS Issuing ECC CA 4"
+		},
+		"not_before": "2026-10-04T16:19:21Z",
+		"not_after": "2027-01-02T13:52:58Z",
+		"revoked": false
+	}
+]
+
+
+## shodan_dns.json (hora de consulta: ver ficha, 2026-10-13 13:18 a 13:24 UTC)
+{"domain": "vltwjsm.com", "tags": ["google-verified", "spf"], "subdomains": ["www"], "data": [{"subdomain": "", "type": "A", "options": {"ttl": 300}, "value": "169.58.45.188", "last_seen": "2026-10-11T04:07:44.758000"}, {"subdomain": "", "type": "MX", "options": {"priority": 10, "ttl": 300}, "value": "eforward1.registrar-servers.com", "last_seen": "2026-10-09T10:53:53.416000"}, {"subdomain": "", "type": "MX", "options": {"priority": 10, "ttl": 300}, "value": "eforward2.registrar-servers.com", "last_seen": "2026-10-09T10:53:53.416000"}, {"subdomain": "", "type": "MX", "options": {"priority": 10, "ttl": 300}, "value": "eforward3.registrar-servers.com", "last_seen": "2026-10-09T10:53:53.416000"}, {"subdomain": "", "type": "MX", "options": {"priority": 15, "ttl": 300}, "value": "eforward4.registrar-servers.com", "last_seen": "2026-10-09T10:53:53.416000"}, {"subdomain": "", "type": "MX", "options": {"priority": 20, "ttl": 300}, "value": "eforward5.registrar-servers.com", "last_seen": "2026-10-09T10:53:53.416000"}, {"subdomain": "", "type": "NS", "options": {"ttl": 86400}, "value": "alexis.ns.cloudflare.com", "last_seen": "2026-10-09T10:52:47.397000"}, {"subdomain": "", "type": "NS", "options": {"ttl": 86400}, "value": "jen.ns.cloudflare.com", "last_seen": "2026-10-09T10:52:47.397000"}, {"subdomain": "", "type": "SOA", "options": {"retry": 2400, "expires": 604800, "refresh": 10000, "ttl": 1800, "serial": 2416617071, "hostmaster": "dns.cloudflare.com", "minttl": 1800}, "value": "alexis.ns.cloudflare.com", "last_seen": "2026-10-09T10:54:26.935000"}, {"subdomain": "", "type": "TXT", "options": {"ttl": 300}, "value": "google-site-verification=r78dNsDTyzbaMYNqB3w6iFEVfNO-iEPZMm8iv2c-wcE", "last_seen": "2026-10-09T10:55:35.160000"}, {"subdomain": "", "type": "TXT", "options": {"ttl": 300}, "value": "v=spf1 include:spf.efwd.registrar-servers.com ~all", "last_seen": "2026-10-09T10:55:35.160000"}, {"subdomain": "www", "type": "A", "options": {"ttl": 300}, "value": "169.58.45.188", "last_seen": "2026-10-11T04:07:44.752000"}], "more": false}
+
+## shodan_host.json (hora de consulta: ver ficha, 2026-10-13 13:18 a 13:24 UTC)
+{"region_code": "TX", "tags": [], "ip": 2839162300, "area_code": null, "domains": ["contaboserver.net"], "hostnames": ["vmi3595309.contaboserver.net"], "country_code": "US", "org": "SoftLayer Technologies, Inc.", "data": [{"info": "protocol 2.0", "product": "OpenSSH", "hash": 1136220708, "os": "Linux", "timestamp": "2026-09-24T12:35:03.817777", "isp": null, "transport": "tcp", "cpe": ["cpe:/a:openbsd:openssh:8.9p1", "cpe:/o:canonical:ubuntu_linux"], "ip_str": "169.58.45.188", "_shodan": {"region": "eu", "module": "ssh", "ptr": true, "options": {}, "id": "6d197098-e44f-4e0d-a116-0e1799547fec", "crawler": "cdd92e2d835a37d2798fa6c7105171f4d214012f"}, "cpe23": ["cpe:2.3:a:openbsd:openssh:8.9p1", "cpe:2.3:o:canonical:ubuntu_linux"], "hostnames": ["vmi3595309.contaboserver.net"], "location": {"city": "Dallas", "region_code": "TX", "area_code": null, "longitude": -96.7872, "latitude": 32.9374, "country_code": "US", "country_name": "United States"}, "version": "8.9p1 Ubuntu 3ubuntu0.17", "ip": 2839162300, "domains": ["contaboserver.net"], "org": "SoftLayer Technologies, Inc.", "data": "SSH-2.0-OpenSSH_8.9p1 Ubuntu-3ubuntu0.17\nKey type: ecdsa-sha2-nistp256\nKey: AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBF8vHz+nPLjcES8hanrjif/w\nEfViys14tDDAYPxR1v8lr+p+ty3LqVVJkyJRefEO0jc8DgOktmyuPs/o8DFG3fw=\nFingerprint: b9:0b:c2:6a:f1:c0:13:e1:73:fc:87:21:61:47:e1:22\n\nKex Algorithms:\n\tcurve25519-sha256\n\tcurve25519-sha256@libssh.org\n\tecdh-sha2-nistp256\n\tecdh-sha2-nistp384\n\tecdh-sha2-nistp521\n\tsntrup761x25519-sha512@openssh.com\n\tdiffie-hellman-group-exchange-sha256\n\tdiffie-hellman-group16-sha512\n\tdiffie-hellman-group18-sha512\n\tdiffie-hellman-group14-sha256\n\tkex-strict-s-v00@openssh.com\n\nServer Host Key Algorithms:\n\trsa-sha2-512\n\trsa-sha2-256\n\tecdsa-sha2-nistp256\n\tssh-ed25519\n\nEncryption Algorithms:\n\tchacha20-poly1305@openssh.com\n\taes128-ctr\n\taes192-ctr\n\taes256-ctr\n\taes128-gcm@openssh.com\n\taes256-gcm@openssh.com\n\nMAC Algorithms:\n\tumac-64-etm@openssh.com\n\tumac-128-etm@openssh.com\n\thmac-sha2-256-etm@openssh.com\n\thmac-sha2-512-etm@openssh.com\n\thmac-sha1-etm@openssh.com\n\tumac-64@openssh.com\n\tumac-128@openssh.com\n\thmac-sha2-256\n\thmac-sha2-512\n\thmac-sha1\n\nCompression Algorithms:\n\tnone\n\tzlib@openssh.com\n", "port": 22, "opts": {}, "ssh": {"type": "ecdsa-sha2-nistp256", "fingerprint": "b9:0b:c2:6a:f1:c0:13:e1:73:fc:87:21:61:47:e1:22", "mac": "hmac-sha2-256", "cipher": "aes128-ctr", "key": "AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBF8vHz+nPLjcES8hanrjif/w\nEfViys14tDDAYPxR1v8lr+p+ty3LqVVJkyJRefEO0jc8DgOktmyuPs/o8DFG3fw=\n", "kex": {"unused": 0, "server_host_key_algorithms": ["rsa-sha2-512", "rsa-sha2-256", "ecdsa-sha2-nistp256", "ssh-ed25519"], "encryption_algorithms": ["chacha20-poly1305@openssh.com", "aes128-ctr", "aes192-ctr", "aes256-ctr", "aes128-gcm@openssh.com", "aes256-gcm@openssh.com"], "kex_follows": false, "languages": [""], "kex_algorithms": ["curve25519-sha256", "curve25519-sha256@libssh.org", "ecdh-sha2-nistp256", "ecdh-sha2-nistp384", "ecdh-sha2-nistp521", "sntrup761x25519-sha512@openssh.com", "diffie-hellman-group-exchange-sha256", "diffie-hellman-group16-sha512", "diffie-hellman-group18-sha512", "diffie-hellman-group14-sha256", "kex-strict-s-v00@openssh.com"], "compression_algorithms": ["none", "zlib@openssh.com"], "mac_algorithms": ["umac-64-etm@openssh.com", "umac-128-etm@openssh.com", "hmac-sha2-256-etm@openssh.com", "hmac-sha2-512-etm@openssh.com", "hmac-sha1-etm@openssh.com", "umac-64@openssh.com", "umac-128@openssh.com", "hmac-sha2-256", "hmac-sha2-512", "hmac-sha1"]}, "hassh": "41ff3ecd1458b0bf86e1b4891636213e"}}], "city": "Dallas", "latitude": 32.9374, "isp": null, "longitude": -96.7872, "last_update": "2026-09-24T12:35:03.817777", "country_name": "United States", "ip_str": "169.58.45.188", "os": "Linux", "ports": [22]}
+
+## shodan_sshfp_pivot.json (hora de consulta: ver ficha, 2026-10-13 13:18 a 13:24 UTC)
+{"matches": [{"info": "protocol 2.0", "product": "OpenSSH", "hash": 1136220708, "os": "Linux", "timestamp": "2026-09-24T12:35:03.817777", "isp": null, "transport": "tcp", "cpe": ["cpe:/a:openbsd:openssh:8.9p1", "cpe:/o:canonical:ubuntu_linux"], "ip_str": "169.58.45.188", "_shodan": {"region": "eu", "module": "ssh", "ptr": true, "options": {}, "id": "6d197098-e44f-4e0d-a116-0e1799547fec", "crawler": "cdd92e2d835a37d2798fa6c7105171f4d214012f"}, "cpe23": ["cpe:2.3:a:openbsd:openssh:8.9p1", "cpe:2.3:o:canonical:ubuntu_linux"], "hostnames": ["vmi3595309.contaboserver.net"], "location": {"city": "Dallas", "region_code": "TX", "area_code": null, "longitude": -96.7872, "latitude": 32.9374, "country_code": "US", "country_name": "United States"}, "version": "8.9p1 Ubuntu 3ubuntu0.17", "ip": 2839162300, "domains": ["contaboserver.net"], "org": "SoftLayer Technologies, Inc.", "data": "SSH-2.0-OpenSSH_8.9p1 Ubuntu-3ubuntu0.17\nKey type: ecdsa-sha2-nistp256\nKey: AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBF8vHz+nPLjcES8hanrjif/w\nEfViys14tDDAYPxR1v8lr+p+ty3LqVVJkyJRefEO0jc8DgOktmyuPs/o8DFG3fw=\nFingerprint: b9:0b:c2:6a:f1:c0:13:e1:73:fc:87:21:61:47:e1:22\n\nKex Algorithms:\n\tcurve25519-sha256\n\tcurve25519-sha256@libssh.org\n\tecdh-sha2-nistp256\n\tecdh-sha2-nistp384\n\tecdh-sha2-nistp521\n\tsntrup761x25519-sha512@openssh.com\n\tdiffie-hellman-group-exchange-sha256\n\tdiffie-hellman-group16-sha512\n\tdiffie-hellman-group18-sha512\n\tdiffie-hellman-group14-sha256\n\tkex-strict-s-v00@openssh.com\n\nServer Host Key Algorithms:\n\trsa-sha2-512\n\trsa-sha2-256\n\tecdsa-sha2-nistp256\n\tssh-ed25519\n\nEncryption Algorithms:\n\tchacha20-poly1305@openssh.com\n\taes128-ctr\n\taes192-ctr\n\taes256-ctr\n\taes128-gcm@openssh.com\n\taes256-gcm@openssh.com\n\nMAC Algorithms:\n\tumac-64-etm@openssh.com\n\tumac-128-etm@openssh.com\n\thmac-sha2-256-etm@openssh.com\n\thmac-sha2-512-etm@openssh.com\n\thmac-sha1-etm@openssh.com\n\tumac-64@openssh.com\n\tumac-128@openssh.com\n\thmac-sha2-256\n\thmac-sha2-512\n\thmac-sha1\n\nCompression Algorithms:\n\tnone\n\tzlib@openssh.com\n", "port": 22, "ssh": {"type": "ecdsa-sha2-nistp256", "fingerprint": "b9:0b:c2:6a:f1:c0:13:e1:73:fc:87:21:61:47:e1:22", "mac": "hmac-sha2-256", "cipher": "aes128-ctr", "key": "AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBF8vHz+nPLjcES8hanrjif/w\nEfViys14tDDAYPxR1v8lr+p+ty3LqVVJkyJRefEO0jc8DgOktmyuPs/o8DFG3fw=\n", "kex": {"unused": 0, "server_host_key_algorithms": ["rsa-sha2-512", "rsa-sha2-256", "ecdsa-sha2-nistp256", "ssh-ed25519"], "encryption_algorithms": ["chacha20-poly1305@openssh.com", "aes128-ctr", "aes192-ctr", "aes256-ctr", "aes128-gcm@openssh.com", "aes256-gcm@openssh.com"], "kex_follows": false, "languages": [""], "kex_algorithms": ["curve25519-sha256", "curve25519-sha256@libssh.org", "ecdh-sha2-nistp256", "ecdh-sha2-nistp384", "ecdh-sha2-nistp521", "sntrup761x25519-sha512@openssh.com", "diffie-hellman-group-exchange-sha256", "diffie-hellman-group16-sha512", "diffie-hellman-group18-sha512", "diffie-hellman-group14-sha256", "kex-strict-s-v00@openssh.com"], "compression_algorithms": ["none", "zlib@openssh.com"], "mac_algorithms": ["umac-64-etm@openssh.com", "umac-128-etm@openssh.com", "hmac-sha2-256-etm@openssh.com", "hmac-sha2-512-etm@openssh.com", "hmac-sha1-etm@openssh.com", "umac-64@openssh.com", "umac-128@openssh.com", "hmac-sha2-256", "hmac-sha2-512", "hmac-sha1"]}, "hassh": "41ff3ecd1458b0bf86e1b4891636213e"}}], "total": 1}
+
+## shodan_host_5.45.184.242.json (hora de consulta: ver ficha, 2026-10-13 13:18 a 13:24 UTC)
+{"region_code": "HE", "tags": [], "ip": 86882546, "area_code": null, "domains": ["ds."], "hostnames": ["free.ds"], "country_code": "DE", "org": "G-Core Labs Customer assignment", "data": [{"ip": 86882546, "port": 22, "transport": "tcp", "version": "10.2p1 Ubuntu 2ubuntu3.7", "location": {"city": "Frankfurt am Main", "region_code": "HE", "area_code": null, "longitude": 8.644, "latitude": 50.0837, "country_code": "DE", "country_name": "Germany"}, "product": "OpenSSH", "hash": 540034757, "timestamp": "2026-10-13T07:21:06.520578", "hostnames": ["free.ds"], "ssh": {"type": "ecdsa-sha2-nistp256", "fingerprint": "b8:90:7f:c7:bb:61:a7:1e:a8:6d:f2:b0:9b:57:6c:b6", "mac": "hmac-sha2-256", "cipher": "aes128-ctr", "key": "AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBG6q+6DQm86HmCSc/lIKzrz7\n9vLXlEyk3kkROvG18nwgzxsQ/0K/slWhi/Y0kvZPsglnjz11lPpIGgvQ+DwBhs0=\n", "kex": {"unused": 0, "server_host_key_algorithms": ["rsa-sha2-512", "rsa-sha2-256", "ecdsa-sha2-nistp256", "ssh-ed25519"], "encryption_algorithms": ["chacha20-poly1305@openssh.com", "aes128-gcm@openssh.com", "aes256-gcm@openssh.com", "aes128-ctr", "aes192-ctr", "aes256-ctr"], "kex_follows": false, "languages": [""], "kex_algorithms": ["mlkem768x25519-sha256", "sntrup761x25519-sha512", "sntrup761x25519-sha512@openssh.com", "curve25519-sha256", "curve25519-sha256@libssh.org", "ecdh-sha2-nistp256", "ecdh-sha2-nistp384", "ecdh-sha2-nistp521", "ext-info-s", "kex-strict-s-v00@openssh.com"], "compression_algorithms": ["none", "zlib@openssh.com"], "mac_algorithms": ["umac-64-etm@openssh.com", "umac-128-etm@openssh.com", "hmac-sha2-256-etm@openssh.com", "hmac-sha2-512-etm@openssh.com", "hmac-sha1-etm@openssh.com", "umac-64@openssh.com", "umac-128@openssh.com", "hmac-sha2-256", "hmac-sha2-512", "hmac-sha1"]}, "hassh": "671c5858369db8e0a60108d866bbf8ec"}, "org": "G-Core Labs Customer assignment", "data": "SSH-2.0-OpenSSH_10.2p1 Ubuntu-2ubuntu3.7\nKey type: ecdsa-sha2-nistp256\nKey: AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBG6q+6DQm86HmCSc/lIKzrz7\n9vLXlEyk3kkROvG18nwgzxsQ/0K/slWhi/Y0kvZPsglnjz11lPpIGgvQ+DwBhs0=\nFingerprint: b8:90:7f:c7:bb:61:a7:1e:a8:6d:f2:b0:9b:57:6c:b6\n\nKex Algorithms:\n\tmlkem768x25519-sha256\n\tsntrup761x25519-sha512\n\tsntrup761x25519-sha512@openssh.com\n\tcurve25519-sha256\n\tcurve25519-sha256@libssh.org\n\tecdh-sha2-nistp256\n\tecdh-sha2-nistp384\n\tecdh-sha2-nistp521\n\text-info-s\n\tkex-strict-s-v00@openssh.com\n\nServer Host Key Algorithms:\n\trsa-sha2-512\n\trsa-sha2-256\n\tecdsa-sha2-nistp256\n\tssh-ed25519\n\nEncryption Algorithms:\n\tchacha20-poly1305@openssh.com\n\taes128-gcm@openssh.com\n\taes256-gcm@openssh.com\n\taes128-ctr\n\taes192-ctr\n\taes256-ctr\n\nMAC Algorithms:\n\tumac-64-etm@openssh.com\n\tumac-128-etm@openssh.com\n\thmac-sha2-256-etm@openssh.com\n\thmac-sha2-512-etm@openssh.com\n\thmac-sha1-etm@openssh.com\n\tumac-64@openssh.com\n\tumac-128@openssh.com\n\thmac-sha2-256\n\thmac-sha2-512\n\thmac-sha1\n\nCompression Algorithms:\n\tnone\n\tzlib@openssh.com\n", "asn": "AS202422", "cpe23": ["cpe:2.3:a:openbsd:openssh:10.2p1", "cpe:2.3:o:canonical:ubuntu_linux"], "info": "protocol 2.0", "isp": "G-Core Labs S.A.", "cpe": ["cpe:/a:openbsd:openssh:10.2p1", "cpe:/o:canonical:ubuntu_linux"], "domains": ["ds."], "ip_str": "5.45.184.242", "os": "Linux", "_shodan": {"region": "na", "module": "ssh", "ptr": true, "options": {}, "id": "4cfdb4c4-3a87-4f3e-9365-b2d7d881c58a", "crawler": "1fbfdc1b0315df33fa363e4b960720395dff69c6"}, "opts": {}}], "asn": "AS202422", "city": "Frankfurt am Main", "latitude": 50.0837, "isp": "G-Core Labs S.A.", "longitude": 8.644, "last_update": "2026-10-13T07:21:06.520578", "country_name": "Germany", "ip_str": "5.45.184.242", "os": "Linux", "ports": [22]}
+
+## otx_general.json (hora de consulta: ver ficha, 2026-10-13 13:18 a 13:24 UTC)
+{"sections": ["general", "geo", "url_list", "passive_dns", "malware", "whois", "http_scans"], "whois": "http://whois.domaintools.com/vltwjsm.com", "alexa": "http://www.alexa.com/siteinfo/vltwjsm.com", "indicator": "vltwjsm.com", "type": "domain", "type_title": "Domain", "validation": [], "base_indicator": {}, "pulse_info": {"count": 0, "pulses": [], "references": [], "related": {"alienvault": {"adversary": [], "malware_families": [], "industries": []}, "other": {"adversary": [], "malware_families": [], "industries": []}}}, "false_positive": []}
+
+## otx_urls.json (hora de consulta: ver ficha, 2026-10-13 13:18 a 13:24 UTC)
+{"url_list": [{"url": "https://vltwjsm.com/MyVPAXDuCEH0b.html", "date": "2026-10-08T02:24:27", "domain": "vltwjsm.com", "hostname": "vltwjsm.com", "result": {"urlworker": {"ip": "169.58.45.188", "http_code": 200}, "safebrowsing": {"matches": []}}, "httpcode": 200, "gsb": [], "encoded": "https%3A//vltwjsm.com/MyVPAXDuCEH0b.html"}, {"url": "https://vltwjsm.com/BwdcIIOHOH0n.html", "date": "2026-10-06T19:56:27", "domain": "vltwjsm.com", "hostname": "vltwjsm.com", "result": {"urlworker": {"ip": "169.58.45.188", "http_code": 200}, "safebrowsing": {"matches": []}}, "httpcode": 200, "gsb": [], "encoded": "https%3A//vltwjsm.com/BwdcIIOHOH0n.html"}], "page_num": 1, "limit": 50, "paged": true, "has_next": false, "full_size": 2, "actual_size": 2}
+
+## otx_urls_ip.json (hora de consulta: ver ficha, 2026-10-13 13:18 a 13:24 UTC)
+{"url_list": [{"url": "https://vltwjsm.com/MyVPAXDuCEH0b.html", "date": "2026-10-08T02:24:27", "domain": "vltwjsm.com", "hostname": "vltwjsm.com", "result": {"urlworker": {"ip": "169.58.45.188", "http_code": 200}, "safebrowsing": {"matches": []}}, "httpcode": 200, "gsb": [], "encoded": "https%3A//vltwjsm.com/MyVPAXDuCEH0b.html"}, {"url": "https://vltwjsm.com/BwdcIIOHOH0n.html", "date": "2026-10-06T19:56:27", "domain": "vltwjsm.com", "hostname": "vltwjsm.com", "result": {"urlworker": {"ip": "169.58.45.188", "http_code": 200}, "safebrowsing": {"matches": []}}, "httpcode": 200, "gsb": [], "encoded": "https%3A//vltwjsm.com/BwdcIIOHOH0n.html"}], "page_num": 1, "limit": 100, "paged": true, "has_next": false, "full_size": 2, "actual_size": 2}
+
+## otx_domain_woltya.store.json (hora de consulta: ver ficha, 2026-10-13 13:18 a 13:24 UTC)
+{"sections": ["general", "geo", "url_list", "passive_dns", "malware", "whois", "http_scans"], "whois": "http://whois.domaintools.com/woltya.store", "alexa": "http://www.alexa.com/siteinfo/woltya.store", "indicator": "woltya.store", "type": "domain", "type_title": "Domain", "validation": [], "base_indicator": {}, "pulse_info": {"count": 0, "pulses": [], "references": [], "related": {"alienvault": {"adversary": [], "malware_families": [], "industries": []}, "other": {"adversary": [], "malware_families": [], "industries": []}}}, "false_positive": []}
+
+## otx_IPv4_169.58.45.188.json (hora de consulta: ver ficha, 2026-10-13 13:18 a 13:24 UTC)
+{"whois": "http://whois.domaintools.com/169.58.45.188", "reputation": 0, "indicator": "169.58.45.188", "type": "IPv4", "type_title": "IPv4", "base_indicator": {}, "pulse_info": {"count": 0, "pulses": [], "references": [], "related": {"alienvault": {"adversary": [], "malware_families": [], "industries": []}, "other": {"adversary": [], "malware_families": [], "industries": []}}}, "false_positive": [], "validation": [], "asn": "ASNone ", "city_data": true, "city": null, "region": null, "continent_code": "NA", "country_code3": "USA", "country_code2": "US", "subdivision": null, "latitude": 37.751, "postal_code": null, "longitude": -97.822, "accuracy_radius": 1000, "country_code": "US", "country_name": "United States of America", "dma_code": 0, "charset": 0, "area_code": 0, "flag_url": "/assets/images/flags/us.png", "flag_title": "United States of America", "sections": ["general", "geo", "reputation", "url_list", "passive_dns", "malware", "nids_list", "http_scans"]}
+
+## otx_IPv4_5.45.184.242.json (hora de consulta: ver ficha, 2026-10-13 13:18 a 13:24 UTC)
+{"whois": "http://whois.domaintools.com/5.45.184.242", "reputation": 0, "indicator": "5.45.184.242", "type": "IPv4", "type_title": "IPv4", "base_indicator": {"id": 4415741275, "indicator": "5.45.184.242", "type": "IPv4", "title": "", "description": "", "content": "", "access_type": "public", "access_reason": ""}, "pulse_info": {"count": 2, "pulses": [{"id": "6a21bd3ea24ceb50ffc76437", "name": "Gifted1 Live Perimeter Threat Intelligence Feed", "description": "Enterprise-Grade Perimeter Threat Feed. Live synchronized telemetry tracking active network infrastructure scanners, automated botnets, and brute-force vectors.", "modified": "2026-09-06T13:44:32.869000", "created": "2026-06-04T18:00:30.100000", "tags": ["Scanner", "Malicious-IP", "Threat-Intel", "Blocklist"], "references": [], "public": 1, "adversary": "", "targeted_countries": ["United Kingdom of Great Britain and Northern Ireland", "Germany", "China", "Russian Federation", "United States of America"], "malware_families": [], "attack_ids": [], "industries": [], "TLP": "green", "cloned_from": null, "export_count": 7, "upvotes_count": 0, "downvotes_count": 0, "votes_count": 0, "locked": false, "pulse_source": "api", "validator_count": 0, "comment_count": 0, "follower_count": 0, "vote": 0, "author": {"username": "sovereign1", "id": "399381", "avatar_url": "https://otx.alienvault.com/assets/images/default-avatar.png", "is_subscribed": false, "is_following": false}, "indicator_type_counts": {}, "indicator_count": 0, "is_author": false, "is_subscribing": null, "subscriber_count": 36, "modified_text": "36 days ago ", "is_modified": true, "groups": [], "in_group": false, "threat_hunter_scannable": false, "threat_hunter_has_agents": 1, "related_indicator_type": "IPv4", "related_indicator_is_active": 0}, {"id": "6a31e3858889e28529337db4", "name": "Rimba Siber (Malaysia) SSH Attacker Hosts for 2026-06-16", "description": "List of SSH attacking IPs detected by the Rimba Siber honeypot.", "modified": "2026-07-17T00:06:58.912000", "created": "2026-06-17T00:00:05.339000", "tags": ["RimbaSiber", "ssh", "scanners", "honeypot"], "references": [], "public": 1, "adversary": "", "targeted_countries": ["Malaysia"], "malware_families": [], "attack_ids": [], "industries": [], "TLP": "green", "cloned_from": null, "export_count": 0, "upvotes_count": 0, "downvotes_count": 0, "votes_count": 0, "locked": false, "pulse_source": "api", "validator_count": 0, "comment_count": 0, "follower_count": 0, "vote": 0, "author": {"username": "muhd.hadiyahya", "id": "245033", "avatar_url": "/otxapi/users/avatar_image/media/avatars/user_245033/resized/80/avatar_3b9c358f36.png", "is_subscribed": false, "is_following": false}, "indicator_type_counts": {}, "indicator_count": 0, "is_author": false, "is_subscribing": null, "subscriber_count": 50, "modified_text": "88 days ago ", "is_modified": true, "groups": [], "in_group": false, "threat_hunter_scannable": false, "threat_hunter_has_agents": 1, "related_indicator_type": "IPv4", "related_indicator_is_active": 0}], "references": [], "related": {"alienvault": {"adversary": [], "malware_families": [], "industries": []}, "other": {"adversary": [], "malware_families": [], "industries": []}}}, "false_positive": [], "validation": [], "asn": "ASNone ", "city_data": true, "city": null, "region": null, "continent_code": "AS", "country_code3": "LBN", "country_code2": "LB", "subdivision": null, "latitude": 33.8333, "postal_code": null, "longitude": 35.8333, "accuracy_radius": 50, "country_code": "LB", "country_name": "Lebanon", "dma_code": 0, "charset": 0, "area_code": 0, "flag_url": "/assets/images/flags/lb.png", "flag_title": "Lebanon", "sections": ["general", "geo", "reputation", "url_list", "passive_dns", "malware", "nids_list", "http_scans"]}
+
+## otx_hostname_simplesfiscalnota.woltya.store.json (hora de consulta: ver ficha, 2026-10-13 13:18 a 13:24 UTC)
+{"sections": ["general", "geo", "url_list", "passive_dns", "malware", "whois", "http_scans"], "whois": "http://whois.domaintools.com/simplesfiscalnota.woltya.store", "alexa": "http://www.alexa.com/siteinfo/simplesfiscalnota.woltya.store", "indicator": "simplesfiscalnota.woltya.store", "type": "hostname", "type_title": "Hostname", "domain": "woltya.store", "validation": [], "base_indicator": {}, "pulse_info": {"count": 0, "pulses": [], "references": [], "related": {"alienvault": {"adversary": [], "malware_families": [], "industries": []}, "other": {"adversary": [], "malware_families": [], "industries": []}}}, "false_positive": []}
+
+## urlscan_search_domain.json (hora de consulta: ver ficha, 2026-10-13 13:18 a 13:24 UTC)
+{
+  "results": [],
+  "total": 0,
+  "took": 517,
+  "has_more": false,
+  "search_date_limit_days": 30
+}
+
+## urlscan_search_ip.json (hora de consulta: ver ficha, 2026-10-13 13:18 a 13:24 UTC)
+{
+  "results": [],
+  "total": 0,
+  "took": 2542,
+  "has_more": false,
+  "search_date_limit_days": 30
+}
+
+## urlscan_search_woltya.json (hora de consulta: ver ficha, 2026-10-13 13:18 a 13:24 UTC)
+{
+  "results": [],
+  "total": 0,
+  "took": 34,
+  "has_more": false,
+  "search_date_limit_days": 30
+}
+
+## wayback_vltwjsm.json (hora de consulta: ver ficha, 2026-10-13 13:18 a 13:24 UTC)
+[["urlkey","timestamp","original","mimetype","statuscode","digest","length"],
+["com,vltwjsm)/","20261004143813","https://vltwjsm.com/","text/html","200","JF4FI5KZWCFNILOTE6QGEGU65R66Z5YY","7455"]]
+
+
+## wayback_woltya.json (hora de consulta: ver ficha, 2026-10-13 13:18 a 13:24 UTC)
+[]
+
+
+## reverseip_hackertarget.txt (hora de consulta: ver ficha, 2026-10-13 13:18 a 13:24 UTC)
+simplesfiscalnota.woltya.store
+
+## gsb_status.txt (hora de consulta: ver ficha, 2026-10-13 13:18 a 13:24 UTC)
+)]}'
+
+[["sb.ssr",1,false,false,false,false,false,1791895162832,"vltwjsm.com",false]]

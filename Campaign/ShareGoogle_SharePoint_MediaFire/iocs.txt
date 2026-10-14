@@ -1,0 +1,33 @@
+================================================================================
+  IOCs / ACCIONES -- Phishing por enlace de Google a SharePoint falso con ZIP
+================================================================================
+Defanged: dominios e IP con [.], URLs con hxxps.
+
+INDICADORES PARA BLOQUEO RAPIDO
+
+[BLOQUEAR]
+vltwjsm[.]com
+2026pdf[.]com
+simplesfiscalnota[.]woltya[.]store
+169.58.45[.]188
+169.58.124[.]177
+hxxps://www[.]mediafire[.]com/file/g15xjg3aawyvz7u/file
+
+[DETECTAR]
+ZIP SHA-256 (informado por MediaFire, no calculado): bd9575dbcbdc23b8a0f7cc026e627e26b27f0f9cbe61a9def37153229174afd7
+ZIP nombre: 61256Trib-QEPVYnltnru_CB36U6194705.Copia.zip
+hxxps://share[.]google/m9BPktOgGG0TuoRxS   (URL exacta; NO bloquear share.google completo)
+patron URL: /<aleatorio>.php?tipo=inv&...&<64 hex>   (verificacion anti-bot invisible)
+patron URL: .../<archivo>.php?Iwmn=(KU|uz|Tz|aL)&u8qMS9=<32 hex>   (endpoint del kit)
+titulo de pagina "Microsoft SharePoint" con "Conexao Segura" servido fuera de dominios de Microsoft
+
+[VIGILAR -- NO bloquear ciegamente]
+woltya[.]store
+simplesnotafiscalnow[.]woltya[.]store
+5.45.184[.]242
+
+[NO ES IOC]
+share.google y www.google.com   (acortador legitimo de Google, abusado)
+mediafire.com   (hosting legitimo; bloquear solo la ruta /file/g15xjg3aawyvz7u)
+alexis.ns.cloudflare.com y jen.ns.cloudflare.com   (NS compartidos de Cloudflare)
+15.197.148.33 y 3.33.130.190   (IP compartidas de GoDaddy)

@@ -1,0 +1,46 @@
+# Evidencia: cadena de redirección del enlace share.google (consultas a Google, no al atacante)
+# Hop 1: GET https://share.google/m9BPktOgGG0TuoRxS  @ 2026-10-13T13:15:48Z
+HTTP/2 302 
+location: https://www.google.com/share.google?q=m9BPktOgGG0TuoRxS
+cache-control: private
+content-type: text/html; charset=UTF-8
+x-content-type-options: nosniff
+date: Tue, 13 Oct 2026 13:15:48 GMT
+server: sffe
+content-length: 252
+x-xss-protection: 0
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=utf-8">
+<TITLE>302 Moved</TITLE></HEAD><BODY>
+<H1>302 Moved</H1>
+The document has moved
+<A HREF="https://www.google.com/share.google?q=m9BPktOgGG0TuoRxS">here</A>.
+</BODY></HTML>
+
+
+# Hop 2: GET https://www.google.com/share.google?q=m9BPktOgGG0TuoRxS  @ 2026-10-13T13:15:54Z (set-cookie omitidas)
+HTTP/2 301 
+location: https://vltwjsm.com/
+content-type: text/html; charset=UTF-8
+content-security-policy: object-src 'none';base-uri 'self';script-src 'nonce-0bBrGhJl2GxJide2bOHqfg' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other
+cross-origin-opener-policy: same-origin-allow-popups; report-to="gws"
+report-to: {"group":"gws","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/gws/other"}]}
+permissions-policy: unload=()
+date: Tue, 13 Oct 2026 13:15:54 GMT
+expires: Thu, 12 Nov 2026 13:15:54 GMT
+cache-control: public, max-age=2592000
+server: gws
+content-length: 217
+x-xss-protection: 0
+x-frame-options: SAMEORIGIN
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=utf-8">
+<TITLE>301 Moved</TITLE></HEAD><BODY>
+<H1>301 Moved</H1>
+The document has moved
+<A HREF="https://vltwjsm.com/">here</A>.
+</BODY></HTML>
+
+# No se siguió el hop 3 (https://vltwjsm.com/): regla de solo consultas pasivas.

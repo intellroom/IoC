@@ -186,3 +186,9 @@ Enlace directo a cada carpeta.
 
 ---
 *Intellroom Threat Intelligence. Indicadores publicados con TLP:CLEAR.*
+
+### ShareGoogle_SharePoint_MediaFire
+
+Phishing por enlace de Google (share.google) a un SharePoint falso que entrega un ZIP en MediaFire; filtro por SO, anti-bot invisible y bloqueo por IP
+
+[Carpeta](Campaign/ShareGoogle_SharePoint_MediaFire)
