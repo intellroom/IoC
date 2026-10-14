@@ -70,6 +70,11 @@ ZIP: 54192SerieX304.GX1K4A-UGLZR.Elec.zip (SHA-256 pendiente, tarea ANY.RUN)
 VBScript dentro del ZIP: _306042Impues-3949_xuley.Procuzzmcp.vbs (CRC32 C5B2659C,
   4.459.215 bytes), que suelta el dropper C:\Users\Public\6TzIetO%8xGvA2Ofo.exe.
 El sample lo detono el analista en ANY.RUN (sandbox), no en un equipo de trabajo.
+Esa corrida agrega: un TERCER dominio del kit, kdxmty[.]com (misma ruta
+xAXjDhcsP04R.php), encadenando por 2026pdf[.]com (confirma misma campana); el modo de
+captcha VISIBLE del kit (tipo=vis), ademas del invisible (tipo=inv); y que el enlace
+share.google envuelve una URL de webmail Roundcube de descarga de adjunto, lo que
+indica ENTREGA POR CORREO (los parametros de sesion del buzon se omiten por privacidad).
 
 EVASIONES OBSERVADAS
 - Envoltorio de dominio de confianza (share.google) ante el visible.

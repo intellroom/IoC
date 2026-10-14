@@ -16,7 +16,7 @@ Lista completa con accion por linea en [`iocs.txt`](iocs.txt). Ficha completa en
 
 Dominios `vltwjsm[.]com`, `2026pdf[.]com`, `simplesfiscalnota[.]woltya[.]store` · IP `169.58.45[.]188`, `169.58.124[.]177` (Contabo) · payload `mediafire[.]com/file/g15xjg3aawyvz7u` · ZIP SHA-256 `bd9575db...74afd7` (informado por MediaFire).
 
-**Segundo sample** (mismo kit, Grandoreiro en sandbox): enlace `share.google/I91XnAATjc2UHTXwT`, ZIP `54192SerieX304.GX1K4A-UGLZR.Elec.zip` con un VBScript (`_306042Impues-3949_xuley.Procuzzmcp.vbs`, CRC32 `C5B2659C`) que suelta `C:\Users\Public\6TzIetO%8xGvA2Ofo.exe`. SHA-256 pendiente (tarea ANY.RUN).
+**Segundo sample** (mismo kit, Grandoreiro en sandbox): enlace `share.google/I91XnAATjc2UHTXwT`, ZIP `54192SerieX304.GX1K4A-UGLZR.Elec.zip` con un VBScript (`_306042Impues-3949_xuley.Procuzzmcp.vbs`, CRC32 `C5B2659C`) que suelta `C:\Users\Public\6TzIetO%8xGvA2Ofo.exe`. SHA-256 pendiente (tarea ANY.RUN). Esa corrida suma un tercer dominio del kit `kdxmty[.]com` (encadena por `2026pdf[.]com`), el modo captcha visible `tipo=vis`, y entrega por correo (el enlace envuelve una URL de webmail Roundcube).
 
 ## Figuras
 

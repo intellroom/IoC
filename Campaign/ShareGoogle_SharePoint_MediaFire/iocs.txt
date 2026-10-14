@@ -8,6 +8,7 @@ INDICADORES PARA BLOQUEO RAPIDO
 [BLOQUEAR]
 vltwjsm[.]com
 2026pdf[.]com
+kdxmty[.]com
 simplesfiscalnota[.]woltya[.]store
 169.58.45[.]188
 169.58.124[.]177
@@ -17,7 +18,7 @@ hxxps://www[.]mediafire[.]com/file/g15xjg3aawyvz7u/file
 ZIP SHA-256 (informado por MediaFire, no calculado): bd9575dbcbdc23b8a0f7cc026e627e26b27f0f9cbe61a9def37153229174afd7
 ZIP nombre: 61256Trib-QEPVYnltnru_CB36U6194705.Copia.zip
 hxxps://share[.]google/m9BPktOgGG0TuoRxS   (URL exacta; NO bloquear share.google completo)
-patron URL: /<aleatorio>.php?tipo=inv&...&<64 hex>   (verificacion anti-bot invisible)
+patron URL: /<aleatorio>.php?tipo=(inv|vis)&...&<64 hex>   (verificacion anti-bot; inv=invisible, vis=captcha visible)
 patron URL: .../<archivo>.php?Iwmn=(KU|uz|Tz|aL)&u8qMS9=<32 hex>   (endpoint del kit)
 titulo de pagina "Microsoft SharePoint" con "Conexao Segura" servido fuera de dominios de Microsoft
 
@@ -41,3 +42,7 @@ hxxps://share[.]google/I91XnAATjc2UHTXwT   (envoltorio del 2do sample; URL exact
 ZIP nombre: 54192SerieX304.GX1K4A-UGLZR.Elec.zip   (SHA-256 pendiente, tarea ANY.RUN)
 VBScript: _306042Impues-3949_xuley.Procuzzmcp.vbs   (CRC32 C5B2659C; 4.459.215 bytes)
 dropper: C:\Users\Public\6TzIetO%8xGvA2Ofo.exe   (soltado por el VBS; mutex de Grandoreiro)
+
+NOTA (2026-10-14): el 2do sample encadena por un TERCER dominio del kit, kdxmty[.]com,
+y reutiliza 2026pdf[.]com (misma campana). El enlace share.google envuelve una URL de
+webmail Roundcube de descarga de adjunto: entrega por correo (parametros de sesion omitidos).
