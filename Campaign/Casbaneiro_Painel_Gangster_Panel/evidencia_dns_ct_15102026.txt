@@ -1,0 +1,77 @@
+# EVIDENCIA · DNS y Certificate Transparency de los dominios (2026-10-15T19:25:13Z)
+# dig contra 8.8.8.8 y crt.sh. Consultas pasivas; ningun dominio fue visitado salvo la pagina publica del hunt.
+
+== DNS (resolutor 8.8.8.8) · 2026-10-15T19:23:07Z
+--- n1.youconnectedssl.digital
+ A:   172.67.173.176 104.21.63.250 
+ NS:  
+ MX:  
+--- youconnectedssl.digital
+ A:   
+ NS:  drew.ns.cloudflare.com. jade.ns.cloudflare.com. 
+ MX:  
+--- updatehostingfree.top
+ A:   
+ NS:  
+ MX:  
+--- euromasterx.com
+ A:   212.85.9.163 
+ NS:  hermes.dns-parking.com. artemis.dns-parking.com. 
+ MX:  
+--- xdrivewin.com
+ A:   
+ NS:  
+ MX:  
+--- uixfilepdfview.top
+ A:   
+ NS:  
+ MX:  
+--- locuralocuralocuraloocura.top
+ A:   
+ NS:  
+ MX:  
+--- arneighti.com
+ A:   
+ NS:  
+ MX:  
+--- knowledgerknolle.com
+ A:   
+ NS:  
+ MX:  
+--- learnflourishspace.com
+ A:   
+ NS:  
+ MX:  
+--- zytherostudio.com
+ A:   
+ NS:  
+ MX:  
+
+== Certificate Transparency (crt.sh) · 2026-10-15T19:23:42Z
+--- %.youconnectedssl.digital
+  nb 2025-05-26 |  youconnectedssl.digital |  C=US, O=Google Trust Services, CN=WE1
+  nb 2025-05-27 |  youconnectedssl.digital |  C=GB, ST=Greater Manchester, L=Salford, O=Sectigo Limit
+  nb 2025-05-27 |  youconnectedssl.digital |  C=GB, ST=Greater Manchester, L=Salford, O=Sectigo Limit
+  nb 2025-07-24 |  youconnectedssl.digital |  C=US, O=Google Trust Services, CN=WE1
+  nb 2025-07-25 |  youconnectedssl.digital |  C=GB, O=Sectigo Limited, CN=Sectigo Public Server Authe
+  nb 2025-07-25 |  youconnectedssl.digital |  C=GB, O=Sectigo Limited, CN=Sectigo Public Server Authe
+  total entradas: 28
+--- %.euromasterx.com
+  nb 2026-08-31 |  euromasterx.com |  C=US, O=Let's Encrypt, CN=YE2
+  total entradas: 1
+--- %.xdrivewin.com
+  nb 2025-04-27 |  xdrivewin.com |  C=US, O=Google Trust Services, CN=WE1
+  nb 2025-04-27 |  xdrivewin.com |  C=US, O=Google Trust Services, CN=WE1
+  nb 2025-04-28 |  xdrivewin.com |  C=US, O="CLOUDFLARE, INC.", CN=Cloudflare TLS Issuing E
+  nb 2025-06-25 |  xdrivewin.com |  C=US, O=Google Trust Services, CN=WE1
+  nb 2025-06-25 |  xdrivewin.com |  C=US, O=Google Trust Services, CN=WE1
+  nb 2025-07-02 |  xdrivewin.com |  C=US, O="CLOUDFLARE, INC.", CN=Cloudflare TLS Issuing R
+  total entradas: 50
+--- %.knowledgerknolle.com
+  nb 2025-04-15 |  knowledgerknolle.com |  C=US, O=Google Trust Services, CN=WE1
+  nb 2025-04-15 |  knowledgerknolle.com |  C=US, O=Google Trust Services, CN=WE1
+  nb 2025-04-15 |  knowledgerknolle.com |  C=US, O="CLOUDFLARE, INC.", CN=Cloudflare TLS Issuing E
+  nb 2025-06-13 |  knowledgerknolle.com |  C=US, O=Google Trust Services, CN=WE1
+  nb 2025-06-13 |  knowledgerknolle.com |  C=US, O=Google Trust Services, CN=WE1
+  nb 2025-06-19 |  knowledgerknolle.com |  C=US, O="CLOUDFLARE, INC.", CN=Cloudflare TLS Issuing R
+  total entradas: 50

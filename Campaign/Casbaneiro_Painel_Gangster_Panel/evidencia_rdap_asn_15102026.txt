@@ -1,0 +1,46 @@
+# EVIDENCIA · RDAP y ASN de los 8 servidores (consultas pasivas, 2026-10-15T19:25:13Z)
+# ARIN/LACNIC RDAP + Team Cymru whois. Ninguna IP fue contactada.
+
+== RDAP IPs · 2026-10-15T19:22:41Z
+--- 216.203.21.119
+name: BNL-77 | handle: NET-216-203-20-0-1 | start: 216.203.20.0 | cidr: [23]
+ org: BNL-77 ['BL Networks']
+--- 190.2.184.201
+name: NET190 | handle: NET-190-0-0-0-1 | start: 190.0.0.0 | cidr: [8]
+ org: LACNIC ['Latin American and Caribbean IP address Regional Registry']
+--- 216.203.20.116
+name: BNL-77 | handle: NET-216-203-20-0-1 | start: 216.203.20.0 | cidr: [23]
+ org: BNL-77 ['BL Networks']
+--- 65.38.121.128
+name: BNL-77 | handle: NET-65-38-120-0-1 | start: 65.38.120.0 | cidr: [23]
+ org: BNL-77 ['BL Networks']
+--- 134.209.200.162
+name: DIGITALOCEAN-134-209-0-0 | handle: NET-134-209-0-0-1 | start: 134.209.0.0 | cidr: [16]
+ org: DO-13 ['DigitalOcean, LLC']
+--- 142.93.109.181
+name: DIGITALOCEAN-142-93-0-0 | handle: NET-142-93-0-0-1 | start: 142.93.0.0 | cidr: [16]
+ org: DO-13 ['DigitalOcean, LLC']
+--- 45.76.69.213
+name: NET-45-76-68-0-23 | handle: NET-45-76-68-0-1 | start: 45.76.68.0 | cidr: [23]
+ org: VHL-60 ['Vultr Holdings, LLC']
+--- 45.61.136.99
+name: BLNETWORKS-01 | handle: NET-45-61-136-0-1 | start: 45.61.136.0 | cidr: [24]
+ org: BNL-77 ['BL Networks']
+--- 190.2.184.201 (LACNIC)
+--- 190.2.184.201 whois LACNIC (puerto 43)
+inetnum:     190.2.184.0/22
+aut-num:     AS270564
+abuse-c:     LUCAR2046
+owner:       MASTER DA WEB DATACENTER LTDA
+ownerid:     29.697.405/0001-02
+country:     BR
+nserver:     ns1.cloud.masterdaweb.com
+nserver:     ns2.cloud.masterdaweb.com
+--- ASN de cada IP (Team Cymru)
+  216.203.21.119 | 
+  190.2.184.201 | 270564  | 190.2.184.201    | 190.2.184.0/24      | BR | lacnic   | 2006-08-24 | AS270564 - MASTER DA WEB DATACENTER LTDA, BR
+  65.38.121.128 | 
+  134.209.200.162 | 
+  142.93.109.181 | 
+  45.76.69.213 | 
+  45.61.136.99 | 

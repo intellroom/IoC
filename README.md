@@ -18,6 +18,12 @@ https://github.com/intellroom/IoC#macfinger_clickfix_macos
 
 Ordenadas de la más reciente a la más antigua.
 
+### Casbaneiro_Painel_Gangster_Panel
+
+**2026-10-15** · Troyano bancario Casbaneiro (Metamorfo/Ponteiro) con extensión Chromium maliciosa y panel de operador «Painel Gangster»; 8 servidores de panel/C2 (4 en BL Networks, 2 DigitalOcean, 1 Vultr, C2 Delphi `190[.]2[.]184[.]201` en Brasil), resolutor `n1[.]youconnectedssl[.]digital/pt.txt` y entrega por `euromasterx[.]com`; detectado en vivo el 15-oct por scanmalware.com. Objetivo: bancos PT/BR (la familia también ataca Chile, FortiGuard). Fuente: Unit 42. Solo análisis pasivo.
+
+[Carpeta](Campaign/Casbaneiro_Painel_Gangster_Panel) · [iocs.txt](Campaign/Casbaneiro_Painel_Gangster_Panel/iocs.txt)
+
 ### VShell_OpenDir_Migracion_Panel
 
 **2026-10-08** · Directorio abierto (`154[.]36[.]183[.]100:8899`) con un agente Linux en Go (VShell probable, no confirmado), C2 por TCP `:18089` con config AES-128-CBC embebida y scripts para migrar agentes desde el panel anterior `128[.]241[.]231[.]135`; persistencia `crond-helper.service`

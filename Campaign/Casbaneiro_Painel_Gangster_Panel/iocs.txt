@@ -1,0 +1,56 @@
+============================================================================
+ CASBANEIRO · EXTENSION CHROMIUM + PANEL 'PAINEL GANGSTER' · 2026-10-15
+============================================================================
+
+[BLOQUEAR] | ip     | 216.203.21[.]119   | Panel operador + C2 WebSocket (contactado en la intrusion de Unit 42); BL Networks
+[BLOQUEAR] | ip     | 216.203.20[.]116   | Panel operador adyacente al C2; BL Networks; activo sep-2026
+[BLOQUEAR] | ip     | 65.38.121[.]128    | Panel operador + C2 WebSocket de larga data; BL Networks
+[BLOQUEAR] | ip     | 45.61.136[.]99     | Panel operador que ademas alojo dominios del actor; BL Networks
+[BLOQUEAR] | ip     | 134.209.200[.]162  | Panel operador; DigitalOcean; visto en vivo el 2026-10-15
+[BLOQUEAR] | ip     | 142.93.109[.]181   | Panel operador (captura del login en evidencia); DigitalOcean; visto en vivo el 2026-10-15
+[BLOQUEAR] | ip     | 45.76.69[.]213     | Panel operador; Vultr
+[BLOQUEAR] | ip     | 190.2.184[.]201    | C2 del troyano Delphi (puertos 8082 y 8398); Master da Web Datacenter, Brasil
+[BLOQUEAR] | dominio| n1.youconnectedssl[.]digital | Resolutor dead-drop: sirve pt.txt con la direccion del C2 WebSocket activo
+[BLOQUEAR] | dominio| youconnectedssl[.]digital    | Apex del resolutor; inscrito 2025-05-26; detras de Cloudflare
+[BLOQUEAR] | dominio| euromasterx[.]com  | Entrega del utilitario firmado y la DLL maliciosa (/kayaba/2.dll, /good/VmLauncher.exe)
+[BLOQUEAR] | dominio| xdrivewin[.]com    | Entrega de la extension e infraestructura de phishing (?cid=<email victima>)
+[BLOQUEAR] | dominio| updatehostingfree[.]top      | Resolutor dead-drop de generacion anterior (w.txt)
+[BLOQUEAR] | dominio| uixfilepdfview[.]top         | Entrega del paquete .crx de la extension
+[BLOQUEAR] | dominio| locuralocuralocuraloocura[.]top | Dominio de phishing con enlaces segmentados por victima
+[BLOQUEAR] | dominio| arneighti[.]com    | Dominio de los overlays de phishing referenciado por el panel
+[BLOQUEAR] | dominio| knowledgerknolle[.]com      | Dominio de panel operador detras de CDN
+[BLOQUEAR] | dominio| learnflourishspace[.]com    | Dominio de panel operador detras de CDN
+[BLOQUEAR] | dominio| zytherostudio[.]com         | Dominio de panel operador detras de CDN
+[BLOQUEAR] | url    | hxxps://n1.youconnectedssl[.]digital/pt.txt | Config dead-drop que devuelve el C2 WebSocket activo
+[BLOQUEAR] | url    | hxxps://euromasterx[.]com/kayaba/2.dll | DLL maliciosa (se renombra a zlibai.dll en el host)
+[BLOQUEAR] | url    | hxxps://euromasterx[.]com/good/VmLauncher.exe | Utilitario Caphyon firmado usado como host del side-load
+[BLOQUEAR] | sha256 | d180a1978cd547f8aa4c387f951c720f0b2ff9641a45a8153994a8f29cfdf610 | zlibai.dll enmascarada (payload Delphi empaquetado)
+[BLOQUEAR] | sha256 | 6cdf132ee130b4cec889e39e06b07559fb4119c61a62d48c03cf357f66eb8900 | zlibai.dll loader (exporta funciones zlib señuelo; parcha entry point)
+[BLOQUEAR] | sha256 | c14c25792af4e1552b54b4fe0aca6e405ed052b4ba4af67a439bfdad5b3919ed | EXTENSAO2.0.0D.crx (extension Chromium empaquetada)
+[BLOQUEAR] | sha256 | 36f7a35c3e811fc1f66836297bc7a5d1dcc8443e7873a6369fb6d5e99351d26a | background.js service worker (build actual v1.0.4)
+[BLOQUEAR] | sha256 | d2ae1aca06c35bd3b80f33754394aad246f81bde8040d78122c90be72753c648 | background.js service worker (v1.0.3)
+[BLOQUEAR] | sha256 | 91b9e6fc3e4e95626c725cf309ecd7c5de750a8e77fd9a91af51db33176509da | 7482874728.js build anterior (v3.0.0DST, con secuestro de navegacion)
+[BLOQUEAR] | sha256 | f91e37f4951dfd606c0faf9b77aa4e640f735a92319f10e572941e647a9b991d | boss.zip archivo de entrega de la extension
+[BLOQUEAR] | sha256 | b6b3e02ca585f52289206f057f0b9f0f58ad519c23471f2a03cafb69b2c8cf00 | st.zip archivo de entrega de la extension
+
+[DETECTAR] | ruta_panel | /api/sites | Ruta expuesta por los paneles 'Painel Gangster'; usar junto con las de abajo como firma de escaneo
+[DETECTAR] | ruta_panel | /api/custom_html_for_auto_injection?url= | Endpoint de overlays del panel
+[DETECTAR] | ruta_panel | /api/limpar | Endpoint del panel (limpiar)
+[DETECTAR] | ruta_panel | /api/telegram/mute | Silenciado de notificaciones via Telegram
+[DETECTAR] | ruta_panel | /sounds/notification.mp3 | Recurso del panel
+[DETECTAR] | string | Painel Gangster | Texto del cuerpo del panel; auto-marca del operador (firma de escaneo)
+[DETECTAR] | string | Monitoring Panel Login | Titulo del login en el build en ingles del panel
+[DETECTAR] | puerto | TCP 773 | Puerto no estandar de admin visto en dos paneles
+[DETECTAR] | dom_id | __ext_injected_overlay_wrapper_id_ | Prefijo de ID DOM creado al inyectar un overlay (artefacto en telemetria de navegador)
+[DETECTAR] | dom_id | __ext_injected_style_id_ | Prefijo de ID DOM del estilo del overlay inyectado
+[DETECTAR] | dom_id | extbtn_submit | ID del boton de envio en los overlays inyectados
+[DETECTAR] | ext_hash | b3a4d98b2258ae935924207c6727f32bd60a6c38f6ea0dfeb0ab9c86763ea7bd | Hash de permisos de la extension, compartido por toda la familia
+[DETECTAR] | host_art | chrome.exe --load-extension=C:\chrome | Linea de comando del side-load de la extension
+[DETECTAR] | host_art | HKLM\...\Services\ScreenConnect Client (<16 hex>) | Servicio del cliente RMM abusado
+
+[VIGILAR — NO bloquear ciegamente] | infra | Cloudflare (104.21.x / 172.67.x) frente a n1.youconnectedssl[.]digital | El apex usa Cloudflare: bloquear la IP de borde tumba terceros. Bloquear el dominio, no la IP de Cloudflare.
+[VIGILAR — NO bloquear ciegamente] | cert | Comodin de youconnectedssl[.]digital rota entre Google Trust Services (WE1) y Sectigo (y Let's Encrypt en dominios hermanos) | Una regla de hunting por un solo emisor no sirve: rotan a proposito.
+
+[NO ES IOC] | infra | Caphyon Advanced Installer / VmLauncher.exe | Utilitario legitimo y firmado, abusado como host del side-load. No bloquear el producto.
+[NO ES IOC] | infra | Producto RMM / ScreenConnect | Software legitimo de acceso remoto; el abuso es de un tenant trial del atacante, no del producto.
+[NO ES IOC] | infra | zlib | La DLL maliciosa SUPLANTA a la libreria zlib; la zlib real no es un indicador.

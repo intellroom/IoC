@@ -1,0 +1,166 @@
+================================================================================
+ FICHA CTI · CASBANEIRO + EXTENSION CHROMIUM MALICIOSA · PANEL "PAINEL GANGSTER"
+ Intellroom Threat Intelligence · 2026-10-15 · TLP:CLEAR
+================================================================================
+
+RESUMEN
+-------
+Casbaneiro (tambien rastreado como Metamorfo y Ponteiro) es una familia de
+troyano bancario de America Latina. En esta oleada se distribuye junto con una
+extension de navegador Chromium maliciosa que roba cookies, captura cada campo
+de formulario que llena la victima (incluidas contraseñas), toma capturas de
+pantalla e inyecta superposiciones HTML falsas sobre las paginas del banco por
+orden del operador. La extension y el troyano se controlan desde un panel web
+de operador que los propios operadores marcan "Painel Gangster" (login
+"Painel de Monitoramento" en portugues, "Monitoring Panel" en el build en
+ingles).
+
+La cadena parte de un correo de phishing que lleva a instalar un cliente de un
+producto legitimo de acceso remoto (RMM), desde un tenant de prueba inscrito por
+el atacante. Con esa sesion el operador corre PowerShell, baja la extension y un
+utilitario firmado de Caphyon (VmLauncher.exe) junto a una DLL Delphi maliciosa
+(zlibai.dll) que suplanta a la libreria zlib y se carga por orden de busqueda.
+La extension resuelve su C2 descargando un archivo de texto (pt.txt) de un host
+resolutor y mantiene un WebSocket con ese servidor.
+
+El objetivo declarado del kit son clientes de unos 65 portales bancarios
+portugueses y brasileños, 11 exchanges de criptomonedas y varios proveedores de
+webmail. La familia Casbaneiro tambien ataca bancos chilenos segun el reporte de
+FortiGuard del 10-sep-2026 (ya cargado en la instancia VTF); esta oleada, en
+cambio, apunta a PT/BR. Se reporta aqui por ser la misma familia con una
+variante nueva (extension + panel) y por su relevancia para el panorama LATAM.
+
+ORIGEN Y CONFIANZA
+------------------
+- Fuente primaria: nota de Unit 42 (Palo Alto Networks) del 2026-10-13
+  "Casbaneiro Banking Trojan Paired With Malicious Chromium Extension and
+  Delivered via Abused Remote Access Tooling" (repo publico Unit42-timely-threat-intel).
+- Fuente de vigilancia: hunt publico de scanmalware.com "casbaneiro-extension-panel-2026-10"
+  (short scanmalware.com/h/287), con regla YARA Casbaneiro_Painel_Gangster_Panel.
+- Detecciones en vivo el 2026-10-15 (UTC) en el hunt: 142.93.109.181, 216.203.21.119
+  y 134.209.200.162 (coincidencia YARA sobre /, /login.html y el HTML), y el
+  resolutor n1.youconnectedssl.digital por consulta.
+- Enriquecimiento propio: RDAP (ARIN/LACNIC), ASN (Team Cymru), DNS (8.8.8.8) y
+  Certificate Transparency (crt.sh), todo pasivo.
+- Confianza: Alta en lo observado (reporte de proveedor + hunt independiente +
+  enriquecimiento propio). ATRIBUCION a la familia Casbaneiro = reportada por la
+  fuente, no verificada de forma independiente por Intellroom.
+- NO se contacto ningun panel ni C2. La unica interaccion fue la lectura de la
+  pagina publica del hunt y una captura de la pagina de login del panel
+  142.93.109.181 (documentado por la fuente como alcanzable por HTTP plano).
+
+CADENA DEL ATAQUE  (ver 01_flujo_ataque.png)
+--------------------------------------------
+1. ENTREGA  - Correo de phishing lleva a instalar un cliente RMM de un tenant
+   trial abusado; se instala como servicio de Windows (acceso interactivo
+   persistente).
+2. ACCESO   - Desde esa sesion, PowerShell baja la extension Chromium (ZIP de un
+   servicio de archivos publico) y, por separado, un utilitario firmado + una DLL
+   desde un servidor del atacante.
+3. EJECUCION- La DLL se renombra para calzar con los imports del utilitario
+   firmado; al correr el utilitario, Windows carga la DLL maliciosa por orden de
+   busqueda. La DLL Delphi parcha el entry point del proceso host en memoria y
+   descifra comandos con un XOR de tabla de 150 bytes (caracteristico de la familia).
+4. NAVEGADOR- El navegador se lanza con --load-extension apuntando al directorio
+   de la extension. Manifest V3; pide storage, tabs, webNavigation, scripting,
+   activeTab y cookies; sin clave publica ni update URL: solo side-load, nunca
+   pasa por la Chrome Web Store.
+5. C2 / EXFIL - La extension baja pt.txt del resolutor, obtiene el WebSocket C2
+   activo, genera un ID de 10 caracteres en mayusculas y mantiene la sesion.
+   Comandos del servidor: captura de pantalla, robo de cookies, inyeccion y
+   remocion de HTML. Un content script captura URL, nombre, valor y hora de cada
+   campo de formulario al perder el foco; los campos de contraseña siempre.
+6. IMPACTO  - Robo de credenciales bancarias (bancos PT/BR, exchanges, webmail)
+   y toma de cuenta mediante overlays HTML sobre las paginas del banco.
+
+INFRAESTRUCTURA  (ver evidencia_rdap_asn y evidencia_dns_ct)
+------------------------------------------------------------
+Paneles de operador y C2 (8 servidores):
+  216.203.21.119   BL Networks (NET-216-203-20-0-1)   Panel + C2 WebSocket (contactado)
+  216.203.20.116   BL Networks                         Panel adyacente al C2
+  65.38.121.128    BL Networks (NET-65-38-120-0-1)     Panel + C2 WebSocket de larga data
+  45.61.136.99     BL Networks (NET-45-61-136-0-1)     Panel; alojo dominios del actor
+  134.209.200.162  DigitalOcean (AS14061)              Panel; en vivo 2026-10-15
+  142.93.109.181   DigitalOcean (AS14061)              Panel; en vivo 2026-10-15 (login capturado)
+  45.76.69.213     Vultr Holdings                      Panel
+  190.2.184.201    Master da Web Datacenter, BR (AS270564) C2 del troyano Delphi (TCP 8082/8398)
+  -> Cuatro de ocho estan en BL Networks (AS, concentracion observada); BL Networks figura en reportes de terceros como hosting a prueba de balas [inferencia, no verificada por Intellroom].
+  -> Compartimentacion deliberada: panel/extension y el payload Delphi en proveedores distintos.
+
+Resolutor (dead-drop):
+  n1.youconnectedssl.digital  -> Cloudflare (104.21.63.250 / 172.67.173.176) al 2026-10-15
+  youconnectedssl.digital     apex en Cloudflare (NS drew/jade); inscrito 2025-05-26
+  updatehostingfree.top       resolutor de generacion anterior (hoy sin resolucion)
+
+Entrega / phishing:
+  euromasterx.com  -> 212.85.9.163 (NS dns-parking.com); cert Let's Encrypt 2026-08-31
+  xdrivewin.com    (entrega de la extension y landing de phishing con ?cid=<email>)
+  uixfilepdfview.top, locuralocuralocuraloocura.top, arneighti.com (hoy sin resolucion)
+
+Paneles detras de CDN:
+  knowledgerknolle.com, learnflourishspace.com, zytherostudio.com
+
+Certificados (crt.sh): el comodin de youconnectedssl.digital rota entre Google
+Trust Services (WE1) y Sectigo desde 2025-05-26; los dominios hermanos (xdrivewin,
+knowledgerknolle) suman Cloudflare y Let's Encrypt. Rotar entre varias CA
+derrota las reglas de hunting por un solo emisor.
+
+FIRMA DE DETECCION DEL PANEL
+----------------------------
+Los paneles "Painel Gangster" corren Node.js Express tras nginx y exponen un
+set consistente de rutas, utiles juntas como firma de escaneo de hosts de panel:
+  /api/sites   /api/custom_html_for_auto_injection?url=   /api/limpar
+  /api/telegram/mute   /sounds/notification.mp3
+Mas: texto de cuerpo "Painel Gangster", login "Monitoring Panel Login" (build EN),
+puerto admin no estandar TCP 773 en dos paneles.
+Artefacto de telemetria de navegador (overlays): IDs DOM con prefijo
+__ext_injected_overlay_wrapper_id_ y __ext_injected_style_id_, y boton extbtn_submit.
+
+MITRE ATT&CK  (verificar IDs contra attack.mitre.org antes de desplegar reglas)
+------------------------------------------------------------------------------
+  T1566         Phishing (correo inicial)
+  T1219         Remote Access Software (cliente RMM de tenant trial abusado)
+  T1059.001     Command and Scripting Interpreter: PowerShell
+  T1574.001     Hijack Execution Flow: DLL Search-Order Hijacking (zlibai.dll)
+  T1554         Compromise Host Software Binary / side-load via utilitario firmado
+  T1176         Browser Extensions (extension Chromium side-load)
+  T1539         Steal Web Session Cookie
+  T1056.001     Input Capture: Keylogging (captura de campos de formulario)
+  T1113         Screen Capture
+  T1185         Browser Session Hijacking (overlays HTML inyectados)
+  T1095         Non-Application Layer Protocol (C2 WebSocket)
+  T1008         Fallback Channels (resolutor dead-drop pt.txt)
+  T1657         Financial Theft (objetivo final)
+  -> Mapeo derivado del comportamiento descrito por Unit 42; IDs por verificar.
+
+LO QUE NO ES UN IOC
+-------------------
+- Caphyon Advanced Installer / VmLauncher.exe: utilitario legitimo y firmado,
+  abusado como host del side-load. No bloquear el producto.
+- Producto RMM / ScreenConnect: software legitimo; el abuso es de un tenant trial
+  del atacante, no del producto. No bloquear el producto.
+- zlib: la DLL maliciosa suplanta a zlib; la libreria real no es un indicador.
+- IPs de borde de Cloudflare (104.21.x / 172.67.x) frente al resolutor: bloquear
+  el dominio, no la IP de Cloudflare (tumba terceros).
+
+EVIDENCIA  (ver evidencia.sha256)
+---------------------------------
+- 01_flujo_ataque.png, 02_modelo_diamante.png  - diagramas branded.
+- 03_captura_panel_login.png  - captura de la pagina de login del panel
+  142.93.109.181/login.html ("Monitoring Panel Login", build en ingles).
+- evidencia_hunt_scanmalware_15102026.txt  - SMQL, anchors y sightings del hunt publico.
+- evidencia_unit42_referencia_15102026.txt  - nota de Unit 42 del 2026-10-13 (fuente primaria).
+- evidencia_rdap_asn_15102026.txt  - RDAP y ASN de los 8 servidores.
+- evidencia_dns_ct_15102026.txt  - DNS (8.8.8.8) y Certificate Transparency de los dominios.
+
+RECOMENDACIONES
+---------------
+- Bloquear los 8 servidores y los dominios de la seccion INDICADORES (dominio, no
+  la IP de Cloudflare del resolutor).
+- Desplegar la firma de rutas del panel para inventariar hosts de panel adicionales.
+- Cazar en telemetria de navegador los IDs DOM de overlay y extensiones MV3 cargadas
+  por --load-extension sin origen en la Chrome Web Store.
+- Alertar instalaciones de clientes RMM no gestionados (servicio ScreenConnect con
+  instancia de 16 hex) y ejecuciones de VmLauncher.exe fuera de su ruta esperada.
+- Validar toda regla de deteccion (YARA/Sigma) antes de desplegar.
+================================================================================
