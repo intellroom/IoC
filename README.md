@@ -18,6 +18,12 @@ https://github.com/intellroom/IoC#macfinger_clickfix_macos
 
 Ordenadas de la más reciente a la más antigua.
 
+### Grandoreiro_VBS_Dropper
+
+**2026-10-15** · Adjunto `.vbs` de 4,7 MB (troyano bancario **Grandoreiro**, familia Delphi) que resultó ser un **dropper autónomo**: lleva el PE final embebido en base64, lo decodifica (MSXML `bin.base64` + ADODB.Stream), lo descomprime en `%PUBLIC%` (Shell.Application `CopyHere`) y lo ejecuta. Ofuscación por token `$<*[#\!=-^` eliminado con `Replace`. Payload `zSEcVPfulS.xnn` = **PE Delphi `MZP` inflado a 77,6 MB** (anti-AV). **Sin C2 en el VBS** (lo resuelve el PE en runtime). Análisis 100% estático. IOC sólido: SHA-256 del VBS `7e33693b…25ff37f8`.
+
+[Carpeta](Campaign/Grandoreiro_VBS_Dropper) · [iocs.txt](Campaign/Grandoreiro_VBS_Dropper/iocs.txt)
+
 ### Casbaneiro_Painel_Gangster_Panel
 
 **2026-10-15** · Troyano bancario Casbaneiro (Metamorfo/Ponteiro) con extensión Chromium maliciosa y panel de operador «Painel Gangster»; 8 servidores de panel/C2 (4 en BL Networks, 2 DigitalOcean, 1 Vultr, C2 Delphi `190[.]2[.]184[.]201` en Brasil), resolutor `n1[.]youconnectedssl[.]digital/pt.txt` y entrega por `euromasterx[.]com`; detectado en vivo el 15-oct por scanmalware.com. Objetivo: bancos PT/BR (la familia también ataca Chile, FortiGuard). Fuente: Unit 42. Solo análisis pasivo.

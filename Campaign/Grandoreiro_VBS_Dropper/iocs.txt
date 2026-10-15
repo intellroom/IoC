@@ -1,0 +1,19 @@
+============================================================================
+ GRANDOREIRO · DROPPER VBS OFUSCADO CON PE DELPHI EMBEBIDO · 2026-10-15
+============================================================================
+
+[BLOQUEAR] | sha256  | 7e33693b21cad1ffd12c7e9b9b6a139ac5686eb58161e93e35273ca325ff37f8 | Muestra VBS (dropper); adjunto de correo con nombre de tramite
+[DETECTAR] | filename| JBYOAnex_RIVBT985693-ConcLN23-Anul_Dsp_Recep9XK3.vbs | Nombre del adjunto (patron tramite/anulacion/despacho; variable por campana)
+[DETECTAR] | archivo | zSEcVPfulS.xnn | Nombre interno del PE dentro del ZIP embebido (extension .xnn disfraza un PE)
+[DETECTAR] | archivo | GGGQBR2dLMcH#7h9te9.xnn | Nombre final del PE tras MoveFile (extension .xnn)
+[DETECTAR] | ruta    | %PUBLIC%\Zo_5Xpk16ExUagJJ* | Carpeta de deposito y ejecucion (C:\Users\Public\...)
+[DETECTAR] | crc32   | 46b54f2d | CRC-32 del miembro del ZIP (PE Delphi); tam. descomp. 81.315.840 B
+[DETECTAR] | string  | $<*[#\!=-^ | Token de ofuscacion eliminado por Replace (funcion cZRLNVBja); artefacto de la familia
+[DETECTAR] | tecnica | SaveToFile + Shell.Application.CopyHere + WScript.Shell.Run desde %PUBLIC% | Dropea PE 'MZP' (Delphi) y lo ejecuta, sin red
+[DETECTAR] | magic   | 4D 5A 50 ("MZP") en un archivo .xnn en %PUBLIC% | Firma de PE Delphi disfrazado
+
+[NO ES IOC] | n/a | Scripting.FileSystemObject, Shell.Application, Microsoft.XMLDOM, ADODB.Stream, WScript.Shell | Objetos COM legitimos de Windows abusados por el script; no bloquear.
+[NO ES IOC] | hash | SHA-256 del PE de 77 MB | No reconstruido (fragmentos base64 reensamblados en orden no trivial) y ademas inflado/polimorfo por build: no sirve como IOC de bloqueo. El IOC solido es el SHA-256 del VBS.
+
+# NOTA: el VBS NO contiene C2 ni descarga de red. El C2 de Grandoreiro lo resuelve el PE Delphi
+# en tiempo de ejecucion (config en la nube), fuera del alcance de este analisis estatico del dropper.

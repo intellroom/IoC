@@ -1,0 +1,90 @@
+================================================================================
+ FICHA CTI · GRANDOREIRO · DROPPER VBS OFUSCADO CON PE DELPHI EMBEBIDO
+ Intellroom Threat Intelligence · 2026-10-15 · TLP:CLEAR
+================================================================================
+
+RESUMEN
+-------
+Adjunto .vbs de 4,7 MB, llegado por correo con nombre de tramite
+("...ConcLN23-Anul_Dsp_Recep..."), que es un DROPPER AUTONOMO de Grandoreiro
+(troyano bancario de America Latina, familia Delphi; alias Metamorfo/Ponteiro
+en parte de la literatura). El VBS lleva embebido, en base64, el ejecutable
+final; lo decodifica, lo deja en %PUBLIC%, lo descomprime y lo ejecuta. No hay
+descarga de red en el VBS. Analisis 100% estatico: la muestra se leyo como
+datos y NUNCA se ejecuto.
+
+MUESTRA
+-------
+- Nombre: JBYOAnex_RIVBT985693-ConcLN23-Anul_Dsp_Recep9XK3.vbs
+- SHA-256: 7e33693b21cad1ffd12c7e9b9b6a139ac5686eb58161e93e35273ca325ff37f8
+- 4.699.322 bytes, ASCII CRLF, lineas de hasta 98 KB.
+
+OFUSCACION
+----------
+- Relleno: lineas de solo ':' y comentarios (') con palabras-basura y cadenas
+  aleatorias; decenas de funciones matematicas muertas. Sube el peso y estorba
+  el analisis.
+- Cadenas: un token literal "$<*[#\!=-^" se intercala entre fragmentos y lo
+  elimina la funcion cZRLNVBja = Replace(s, token, ""). Asi se arman los
+  CreateObject (Scripting.FileSystemObject, Shell.Application, Microsoft.XMLDOM,
+  ADODB.Stream, WScript.Shell) y los nombres.
+
+CADENA DE EJECUCION  (ver 01_flujo_ataque.png y evidencia_deofuscacion)
+----------------------------------------------------------------------
+1. Arma un blob base64 de ~3,17 MB troceado en el script.
+2. MSXML (Microsoft.XMLDOM, DataType "bin.base64") lo decodifica; ADODB.Stream
+   lo escribe a disco con SaveToFile -> un ZIP en %PUBLIC%.
+3. Shell.Application.NameSpace(...).CopyHere items,4 -> descomprime el ZIP (sin
+   utilidad externa).
+4. .MoveFile -> mueve el PE extraido a %PUBLIC%\Zo_5Xpk16ExUagJJ...
+5. WScript.Shell.Run -> ejecuta el PE.
+
+PAYLOAD EMBEBIDO  (listado por la cabecera local del ZIP, sin extraer ni ejecutar)
+---------------------------------------------------------------------------------
+- Miembro unico: zSEcVPfulS.xnn (nombre final tras MoveFile: GGGQBR2dLMcH#7h9te9.xnn)
+- Descomprimido: 81.315.840 B (~77,6 MB) · comprimido: 3.176.258 B (deflate)
+- CRC-32 (cabecera del ZIP): 46b54f2d
+- Primeros bytes descomprimidos: 4D 5A 50 ("MZP") = PE Delphi/Borland.
+- El inflado 3 MB -> 77 MB es tecnica de Grandoreiro para evadir subida a
+  sandboxes y limites de AV.
+
+SOBRE EL C2 (importante)
+------------------------
+- El VBS NO contiene C2 ni ninguna descarga de red. No se extrae un C2 de este
+  dropper. El C2 de Grandoreiro lo resuelve el PE Delphi en tiempo de ejecucion
+  (config alojada en la nube, p. ej. documentos/servicios web), fuera del
+  alcance del analisis estatico del dropper.
+- Para obtener el C2: detonar el PE en un sandbox con red real controlada
+  (ANY.RUN/Triage con cuenta, o un Windows VM con captura de red). El payload es
+  Windows x86, no corre nativo en Mac ARM. No se hizo aqui.
+- El SHA-256 del PE de 77 MB no se reconstruyo (los ~59 fragmentos base64 se
+  reensamblan en orden no trivial) y ademas, al estar inflado/polimorfo por
+  build, no es un IOC de bloqueo util. El IOC solido es el SHA-256 del VBS.
+
+MITRE ATT&CK  (verificar IDs antes de desplegar reglas)
+-------------------------------------------------------
+  T1566.001  Spearphishing Attachment (el .vbs por correo)
+  T1059.005  Command and Scripting Interpreter: Visual Basic
+  T1140      Deobfuscate/Decode Files or Information (token via Replace; base64)
+  T1027.001  Obfuscated Files: Binary Padding / inflado del PE
+  T1564      Hide Artifacts (extension .xnn para un PE)
+  T1204.002  User Execution: Malicious File
+  T1055 / T1185 (banca por overlays) -> etapa del PE Delphi, no del dropper
+  T1657      Financial Theft (objetivo de la familia)
+
+LO QUE NO ES UN IOC
+-------------------
+- Scripting.FileSystemObject, Shell.Application, Microsoft.XMLDOM, ADODB.Stream,
+  WScript.Shell: objetos COM legitimos de Windows abusados por el script.
+- El SHA-256 del PE de 77 MB: ver "SOBRE EL C2".
+
+RECOMENDACIONES
+---------------
+- Bloquear/retro-cazar por el SHA-256 del VBS.
+- Deteccion de comportamiento: VBS que escribe un ZIP en %PUBLIC%, hace CopyHere
+  y ejecuta un archivo con cabecera "MZP" y extension no ejecutable (.xnn) desde
+  %PUBLIC%\Zo_5Xpk16ExUagJJ...; presencia del token "$<*[#\!=-^".
+- Si se necesita el C2: enviar la muestra (o el PE dropeado) a un sandbox con red
+  real y leer el callback; no ejecutarla en el host.
+- Validar toda regla antes de desplegar.
+================================================================================

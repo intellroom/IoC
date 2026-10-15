@@ -1,0 +1,43 @@
+# EVIDENCIA · Desofuscacion estatica del dropper VBS de Grandoreiro · generado 2026-10-15T20:15:21Z
+# Analisis 100% estatico: la muestra se leyo como datos (file, grep, sed, python -I). NUNCA se ejecuto (ni cscript, ni interprete). Sin red.
+# Muestra: JBYOAnex_RIVBT985693-ConcLN23-Anul_Dsp_Recep9XK3.vbs
+# SHA-256: 7e33693b21cad1ffd12c7e9b9b6a139ac5686eb58161e93e35273ca325ff37f8
+# Tamano: 4.699.322 bytes · 827 lineas · ASCII CRLF, con lineas de hasta 98 KB.
+
+## 1. Estructura y ofuscacion
+- Relleno: cientos de lineas de solo ':' y lineas de comentario (') con palabras-basura y cadenas aleatorias (anti-analisis / inflado).
+- Decenas de funciones matematicas muertas (GJmNlzs, jvuuQbN, ZzpASGI...) que no se usan.
+- Ofuscador de cadenas: un token literal basura "$<*[#\!=-^" se intercala entre fragmentos; la funcion cZRLNVBja lo elimina:
+    Function cZRLNVBja(IPYSHifn)
+      cZRLNVBja = Replace(IPYSHifn, PHSktQLA, "")   ' PHSktQLA = "$<*[#\!=-^"
+    End Function
+  Ejemplo: cZRLNVBja("Scri$<*[#\!=-^ptin$<*[#\!=-^g.Fi$<*[#\!=-^leSy$<*[#\!=-^stem$<*[#\!=-^Obje$<*[#\!=-^ct") = "Scripting.FileSystemObject"
+
+## 2. Objetos y cadenas desofuscadas (via cZRLNVBja)
+- "Scripting.FileSystemObject", "Shell.Application", "WScript.Shell"
+- "Microsoft.XMLDOM", "ADODB.Stream", DataType "bin.base64"
+- Nombres: carpeta "Zo_5Xpk16ExUagJJ"; archivo interno "zSEcVPfulS.xnn"; nombre final "GGGQBR2dLMcH#7h9te9.xnn"
+- Carpeta base: QHPnGnpy.ExpandEnvironmentStrings("%PUBLIC%")  (C:\Users\Public)
+
+## 3. Cadena de ejecucion (reconstruida del codigo desofuscado)
+1. bLIYJKK = uVPlCmV0 & uVPlCmV1 & ... (blob base64 ~3,17 MB embebido, troceado en ~59 literales y reensamblado).
+2. MSXML (Microsoft.XMLDOM, DataType bin.base64) decodifica el base64; ADODB.Stream lo escribe a disco:
+     qMmVqfmR.SaveToFile <ruta>,2   -> genera un ZIP en %PUBLIC%
+3. Shell.Application.NameSpace(...).CopyHere items,4  -> DESCOMPRIME el ZIP (sin usar ninguna utilidad externa).
+4. .MoveFile rgsaITM, mzDdYTr   -> mueve el PE extraido a %PUBLIC%\Zo_5Xpk16ExUagJJ...
+5. QHPnGnpy.Run mzDdYTr,1,False  -> EJECUTA el PE.
+- NO hay descarga de red en el VBS (sin http/curl/XMLHTTP reales): es un dropper autonomo. El C2 vive en el PE Delphi y se resuelve en tiempo de ejecucion.
+- No se observo clave Run / Startup en el VBS: la persistencia la hace el modulo principal.
+
+## 4. Payload embebido (listado por cabecera local del ZIP, sin extraer ni ejecutar)
+- Miembro unico: zSEcVPfulS.xnn
+- Tamano descomprimido: 81.315.840 bytes (~77,6 MB)  ·  comprimido: 3.176.258 bytes (deflate, metodo 8)
+- CRC-32 (cabecera del ZIP): 46b54f2d
+- Primeros bytes del archivo descomprimido: 4D 5A 50 ("MZP") = ejecutable PE compilado en Delphi/Borland.
+- El fuerte inflado (3 MB -> 77 MB) es tecnica de Grandoreiro para evadir subida a sandboxes/AV.
+- El SHA-256 del PE no se reconstruye: los ~59 fragmentos base64 se reensamblan en un orden no trivial, y el hash del PET inflado no es un IOC de bloqueo util (cambia por build). El IOC solido es el SHA-256 del VBS.
+
+## 5. Herramientas usadas (todas de lectura, sin ejecutar la muestra)
+- file, wc, strings, grep -a, sed, head, xxd  (triage)
+- python3 -I: Replace del token, base64.b64decode, parseo de cabeceras ZIP (struct), zlib (solo para leer el magic MZP del inicio)
+- Equivalente en Kali/REMnux: ViperMonkey (vmonkey) para emular y confirmar, CyberChef para las cadenas.
