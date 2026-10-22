@@ -1,0 +1,13 @@
+Evidencia -- confirmacion de rutas (probe HTTP, sin enviar datos)
+Fecha: 2026-10-22  ·  Intellroom CTI  ·  TLP:CLEAR
+
+/api/cookie-logger  -> HTTP 405 (la ruta existe; POST-only; GET no permitido)
+
+for p in /dashboard /generator /login /panel /admin:
+  /dashboard   404  8700 b
+  /generator   200  18488 b   <- builder PAGE GENERATOR
+  /login       404  8700 b
+  /panel       404  8700 b
+  /admin       404  8700 b
+
+Home: HTTP 200, server Vercel, content-length 18209 b; pagina 404 de 8700 b.

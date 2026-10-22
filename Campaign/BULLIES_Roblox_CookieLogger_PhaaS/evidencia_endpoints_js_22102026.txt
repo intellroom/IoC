@@ -1,0 +1,20 @@
+Evidencia -- endpoints extraidos del JS del cliente de werunsyou[.]xyz
+Fecha: 2026-10-22  ·  Intellroom CTI  ·  TLP:CLEAR
+Metodo: lectura estatica de los bundles /_next/static/*.js (100% pasivo).
+
+Comando:
+  b=https://werunsyou.xyz
+  curl -s "$b/" | grep -oE '/_next/static/[^"]+\.js' | while read j; do curl -s "$b$j"; done \
+    | grep -oiE 'https?://[^" ]+|/api/[^" ]+' | sort -u
+
+Relevante (resto = ruido de librerias):
+  /api/cookie-logger                 <- endpoint de exfil
+  https://discord.gg/AqXBtrbFvM      <- Discord del actor
+  (core-js, nextjs.org, react.dev, vercel.*, w3.org = dependencias legitimas)
+
+Barrido de maximo recall (rutas):
+  /api/cookie-logger
+  /dashboard     (string en el JS; publicamente da 404)
+  /generator     <- builder (HTTP 200)
+  /insights, /insights/script.js = Vercel Speed Insights (legitimo)
+  /ROOT/node_modules/.pnpm/next@16.0.10_react-dom@19.2.0 ... = fingerprint de build

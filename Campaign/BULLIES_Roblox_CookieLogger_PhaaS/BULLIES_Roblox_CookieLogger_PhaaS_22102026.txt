@@ -1,0 +1,65 @@
+================================================================================
+  BULLIES: builder de cookie-loggers de Roblox (phishing-as-a-service) en Vercel
+  Campana BUL-2026-1022  ·  TLP:CLEAR  ·  Intellroom Threat Intelligence
+  Fecha de analisis: 2026-10-22
+================================================================================
+
+RESUMEN
+--------------------------------------------------------------------------------
+werunsyou[.]xyz (marca "BULLIES") es una plataforma de phishing-as-a-service que
+roba cuentas de Roblox. No es una sola pagina: el modulo /generator permite a
+cualquier operador generar su propia pagina robacookies, que queda viva en el
+patron de ruta /b/[name]. La cookie de sesion .ROBLOSECURITY de la victima se
+valida contra la API de Roblox y se envia por POST a /api/cookie-logger, que la
+reenvia a los webhooks de Discord configurados.
+
+MODELO DE NEGOCIO (DUAL / TRIPLE HOOK)
+--------------------------------------------------------------------------------
+  DUALHOOK    las cookies robadas van al webhook de Discord del operador
+  TRIPLEHOOK  agrega un 2do webhook "reseller": la plataforma BULLIES se queda
+              una copia de cada cookie robada (skim del operador)
+  Registra: perfil y avatar, Robux y RAP, items raros (Korblox, Headless,
+  Valkyrie), estado de 2FA y correo, e historial de transacciones.
+
+INFRAESTRUCTURA
+--------------------------------------------------------------------------------
+  Dominio        werunsyou[.]xyz
+  Creacion       2026-03-09 04:11:57 UTC
+  Registrar      Name.com, Inc. (IANA 625) -- abuse@name.com -- +1.720.310.1849
+  Estado         clientTransferProhibited
+  DNS/Hosting    Vercel (ns1/ns2[.]vercel-dns[.]com ; x-vercel-id iad1 = US East)
+  Stack          Next.js 16.0.10 / React 19.2.0 / pnpm
+  Certificado    wildcard *[.]werunsyou[.]xyz (crt.sh); sin subdominios hermanos
+  NO pivotar por IP: Vercel es infraestructura compartida.
+
+INDICADORES (defang [.])
+--------------------------------------------------------------------------------
+  werunsyou[.]xyz                             dominio de la plataforma -> BLOQUEAR
+  hxxps://werunsyou[.]xyz/api/cookie-logger   exfil (POST; GET=405)   -> BLOQUEAR
+  hxxps://werunsyou[.]xyz/generator           builder PAGE GENERATOR  -> BLOQUEAR
+  discord[.]gg/xDQmmHKAxx                      comunidad BULLIES; expirada (50270) -> VIGILAR
+  discord[.]gg/AqXBtrbFvM                      invite anterior; caida (10006)      -> VIGILAR
+
+EVIDENCIA (verificada 2026-10-22, 100% pasiva)
+--------------------------------------------------------------------------------
+  - /api/cookie-logger -> HTTP 405 (existe; POST-only), sin enviar datos.
+  - /generator -> HTTP 200 (18488 b); /dashboard,/login,/panel,/admin -> 404.
+  - Endpoints leidos del JS del cliente (/_next/static/*.js), sin tocar el logger.
+  - WHOIS + crt.sh; estado de las 2 invitaciones de Discord por la API, sin unirse.
+  - Capturas 03-09 y evidencia_*.txt; hashes en evidencia.sha256.
+
+PENDIENTE
+--------------------------------------------------------------------------------
+  - El destino server-side de /api/cookie-logger (webhooks concretos) no es
+    observable desde el cliente.
+  - No se dispone de una invitacion de Discord viva de la comunidad BULLIES.
+
+RESPUESTA / BAJA
+--------------------------------------------------------------------------------
+  - Vercel abuse (host + DNS): vercel.com/abuse -- viola ToS (robo de credenciales).
+  - Name.com (registrar): abuse@name.com -- suspension del dominio.
+
+FUENTE
+--------------------------------------------------------------------------------
+  Analisis propio de Intellroom (repo intellroom/IoC). Observacion pasiva.
+  Victimas: usuarios de Roblox (categoria generica, sin datos personales).

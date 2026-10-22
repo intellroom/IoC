@@ -1,0 +1,18 @@
+Evidencia -- WHOIS y crt.sh de werunsyou[.]xyz
+Fecha: 2026-10-22  ·  Intellroom CTI  ·  TLP:CLEAR
+
+WHOIS:
+  Registrar WHOIS Server: whois.name.com
+  Registrar URL: http://www.name.com/
+  Creation Date: 2026-03-09T04:11:57.0Z
+  Registrar: Name.com, Inc.  (IANA ID 625)
+  Domain Status: clientTransferProhibited
+  Name Server: NS1.VERCEL-DNS.COM
+  Name Server: NS2.VERCEL-DNS.COM
+  Registrar Abuse Contact Email: abuse@name.com
+  Registrar Abuse Contact Phone: +1.7203101849
+
+crt.sh (q=werunsyou.xyz):
+  *.werunsyou.xyz
+  werunsyou.xyz
+  (certificado wildcard; sin subdominios hermanos)

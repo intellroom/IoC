@@ -1,0 +1,25 @@
+================================================================================
+  IOCs / ACCIONES -- BULLIES: builder de cookie-loggers de Roblox (PhaaS)
+================================================================================
+Defanged: los dominios van con [.].
+Fuente: analisis propio de Intellroom (repo intellroom/IoC). TLP:CLEAR. 2026-10-22.
+
+INDICADORES PARA BLOQUEO RAPIDO
+
+[BLOQUEAR]
+werunsyou[.]xyz                               # plataforma PhaaS "BULLIES" (robacuentas Roblox); Vercel; alta 2026-03-09
+hxxps://werunsyou[.]xyz/api/cookie-logger     # endpoint de exfil de la cookie .ROBLOSECURITY (POST; GET=405)
+hxxps://werunsyou[.]xyz/generator             # builder: genera paginas robacookies (dual/triplehook); paginas en /b/[name]
+
+[VIGILAR]
+discord[.]gg/xDQmmHKAxx                       # comunidad BULLIES; invite EXPIRADA al 2026-10-22 (code 50270); el server probablemente sigue
+discord[.]gg/AqXBtrbFvM                       # invite anterior; CAIDA (Unknown Invite, code 10006)
+
+CONTEXTO (no bloquear a ciegas)
+  Hosting/DNS: Vercel (ns1/ns2[.]vercel-dns[.]com)   # NO bloquear vercel.app ni vercel.com (infra compartida)
+  Registrar  : Name.com (abuse@name.com)             # via de baja del dominio
+  Fingerprint: Next.js 16.0.10 / React 19.2.0 / pnpm
+
+Nota: /api/cookie-logger reenvia la cookie robada a los webhooks de Discord que
+configura cada operador; en modo triplehook agrega un 2do webhook "reseller" y la
+plataforma skimea una copia. Victimas: usuarios de Roblox.

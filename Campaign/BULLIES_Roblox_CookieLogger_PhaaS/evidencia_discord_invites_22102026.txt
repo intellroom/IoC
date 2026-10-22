@@ -1,0 +1,11 @@
+Evidencia -- estado de las invitaciones de Discord (API v10, sin unirse)
+Fecha: 2026-10-22  ·  Intellroom CTI  ·  TLP:CLEAR
+
+GET https://discord.com/api/v10/invites/AqXBtrbFvM
+  {"message": "Unknown Invite", "code": 10006}        -> caida
+
+GET https://discord.com/api/v10/invites/xDQmmHKAxx
+  {"message": "Invite is expired", "code": 50270}     -> expirada
+
+Nota: "expirada" sugiere que el servidor BULLIES probablemente sigue existiendo
+(las invitaciones rotan); no se dispone de un enlace vivo.
