@@ -1,0 +1,58 @@
+================================================================================
+ EVIDENCIA CRUDA -- CARLIY0S (CyberCartel), articulo de Straiker del 2026-10-21
+ Intellroom Threat Intelligence -- TLP:CLEAR
+================================================================================
+Origen     : articulo publico entregado a Intellroom para analisis (2026-10-22)
+Fuente     : https://www.straiker.ai/blog/inside-carliy0s-how-cybercartel-used-multiple-ai-models-to-attack-latin-american-banks
+Analista   : Intellroom CTI
+Metodo     : lectura del articulo publico + consultas pasivas sobre la IP (Shodan InternetDB, RDAP de
+             RIPE, ipinfo, DNS inverso, urlscan) + verificacion de IDs en attack.mitre.org.
+             NO se contacto la IP 157.180.98.220 ni se descargo nada fuera del articulo.
+Contacto   : el articulo se bajo con curl y se abrio en un navegador (cookies rechazadas).
+
+== [1] El articulo ==
+GET 2026-10-22T18:30:37Z (cabecera Date del servidor)   HTTP 200, 320.288 bytes, text/html
+  Titulo   : "CARLIY0S: CyberCartel's AI Attacks on Latin American Banks"
+  Encabezado: "Inside CARLIY0S: How CyberCartel Used Multiple AI Models to Attack 400+ Latin American Banks
+              and Financial Institutions" ; equipo "STAR Labs" ; fecha mostrada: October 21, 2026
+  SHA-256 del HTML : f03968b339ca218c093343396ea703abed85ecf8a434a898218edd5ce9f98d04
+  Cabeceras         : cabeceras_get_straiker_22102026.txt
+  Instantanea completa y texto: SOLO local (carpeta _solo_local, no se publica: es contenido de un tercero).
+  Indicadores en el texto (busqueda con y sin defang): 1 IP (157[.]180[.]98[.]220), 0 hashes, 0 dominios,
+  0 URL. Nombres de archivo y ruta: ver iocs.txt. El informe completo esta tras un formulario ("Read the
+  Full CARLIY0S Threat Intelligence Report") y no se consulto.
+
+== [2] Capturas de la fuente (navegador integrado) ==
+  03_fuente_straiker_portada_22102026.png      2026-10-22T18:32:38Z   portada y titulo (con el aviso de cookies)
+  04_fuente_straiker_ip_hexagon_22102026.png   2026-10-22T18:32:52Z   "Level 0: Hexagon Central Server", IP resaltada
+                                               en rojo por Intellroom (resaltado anadido en pantalla)
+  05_fuente_straiker_figura3_22102026.png      2026-10-22T18:32:59Z   "Figure 3. CARLIY0S Operational Levels"
+  Cada captura lleva un banner de procedencia con el SHA-256 del original. Se pulso "Reject All" en el aviso
+  de cookies; no se acepto nada ni se envio ningun formulario.
+
+== [3] La IP 157.180.98.220, solo pasivo ==
+  DNS inverso (dig -x): static.220.98.180.157.clients.your-server.de.                ptr_157-180-98-220.txt
+  ipinfo.io: Helsinki, Uusimaa, FI ; AS24940 Hetzner Online GmbH                     ipinfo_157-180-98-220.txt
+  RDAP RIPE: HETZNER, 157.180.0.0 - 157.180.127.255 (/17), FI                        rdap_ripe_157-180-98-220.txt
+     (el RDAP se publica RECORTADO: sin los contactos individuales, que son datos personales)
+  Shodan InternetDB: puertos 22, 443, 8001 ; hostnames static.220.98.180.157.clients.your-server.de ;
+     CPE: OpenSSH 9.6p1, Ubuntu, Apache httpd 2.4.58, nginx 1.24.0 ; etiqueta "eol-product" ;
+     62 CVE asociados por banner (inferidos por Shodan, NO verificados)             internetdb_157-180-98-220.txt
+  urlscan.io por IP: 0 resultados                                                    urlscan_ip_157-180-98-220.txt
+  Lectura: el puerto 8001 abierto coincide con el "grafo MCP en el puerto 8001" que describe Straiker.
+  Es un dato de InternetDB (foto de fecha desconocida), no una prueba de que el servicio siga activo ni de
+  lo que corre en el 8001. El 8080 (portal interno segun Straiker) NO aparece en InternetDB.
+
+== [4] Tecnicas ATT&CK verificadas en attack.mitre.org (2026-10-22) ==
+  T1583.004 Acquire Infrastructure: Server ; T1588.007 Obtain Capabilities: Artificial Intelligence ;
+  T1078 Valid Accounts ; T1059 Command and Scripting Interpreter ; T1027 Obfuscated Files or Information ;
+  T1090 Proxy ; T1552.001 Unsecured Credentials: Credentials In Files ; T1552.004 Unsecured Credentials:
+  Private Keys ; T1046 Network Service Discovery. Se comprobo el titulo de cada pagina; la asignacion al caso
+  es inferencia nuestra a partir de la descripcion de Straiker.
+
+== [5] Lo que NO se hizo ni se pudo obtener ==
+  - No se contacto 157.180.98.220 (ni se sondeo ningun puerto).
+  - No se consulto el informe completo de Straiker (formulario) ni se buscaron hashes o dominios fuera del articulo.
+  - No se verifico ninguna cifra del articulo (400 objetivos, 4.493 registros, etc.): son afirmaciones de Straiker.
+  - No se confirmo la atribucion a CyberCartel ni la relacion con Hexagon Security Labs Mexico.
+================================================================================

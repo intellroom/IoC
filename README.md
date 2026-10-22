@@ -18,6 +18,12 @@ https://github.com/intellroom/IoC#macfinger_clickfix_macos
 
 Ordenadas de la más reciente a la más antigua.
 
+### CARLIY0S_CyberCartel_AI_Swarm
+
+**2026-10-22** · Según Straiker (21-10-2026): sistema multiagente de IA (**CARLIY0S**, marco PentAGI y modelos Claude, Kimi y Grok) atribuido a **CyberCartel** (Tr4nsHack Team) contra más de 400 bancos y fintech de LATAM, con foco en México; RCE por scripts Groovy en el panel de **Magnolia CMS** a través de proxies residenciales. Único IOC publicado: el servidor central `157[.]180[.]98[.]220` (Hetzner, Helsinki; puerto 8001 corroborado de forma pasiva) más nombres de archivo de caza. Sin hashes ni dominios: todo lo demás es afirmación de Straiker. El artículo no menciona Chile
+
+[Carpeta](Campaign/CARLIY0S_CyberCartel_AI_Swarm) · [iocs.txt](Campaign/CARLIY0S_CyberCartel_AI_Swarm/iocs.txt)
+
 ### Grandoreiro_VBS_Dropper
 
 **2026-10-15** · Adjunto `.vbs` de 4,7 MB (troyano bancario **Grandoreiro**, familia Delphi) que resultó ser un **dropper autónomo**: lleva el PE final embebido en base64, lo decodifica (MSXML `bin.base64` + ADODB.Stream), lo descomprime en `%PUBLIC%` (Shell.Application `CopyHere`) y lo ejecuta. Ofuscación por token `$<*[#\!=-^` eliminado con `Replace`. Payload `zSEcVPfulS.xnn` = **PE Delphi `MZP` inflado a 77,6 MB** (anti-AV). **Sin C2 en el VBS** (lo resuelve el PE en runtime). Análisis 100% estático. IOC sólido: SHA-256 del VBS `7e33693b…25ff37f8`.

@@ -1,0 +1,212 @@
+================================================================================
+  CARLIY0S: ENJAMBRE DE IA DE CYBERCARTEL CONTRA BANCA Y FINTECH DE LATAM
+  Segun Straiker STAR Labs (2026-10-21) ; IP asociada 157.180.98.220 (Hetzner)
+================================================================================
+Fecha del hallazgo : 2026-10-22 (Chile) ; articulo publicado el 2026-10-21
+Origen             : articulo publico de Straiker, entregado por el analista de Intellroom
+Contrastado por    : Intellroom, 2026-10-22, SOLO fuentes pasivas y el propio articulo
+TLP:CLEAR
+Confianza          : lo que Straiker afirma = fuente primaria, MEDIA a ALTA ; atribucion a CyberCartel = MEDIA ;
+                     lo verificado por Intellroom = solo la IP y su puerto 8001 (pasivo)
+
+
+--------------------------------------------------------------------------------
+RESUMEN
+--------------------------------------------------------------------------------
+Straiker (STAR Labs) publico el 2026-10-21 el analisis de CARLIY0S, un sistema multiagente de IA que, segun
+la firma, usa el grupo CyberCartel (equipo "Tr4nsHack Team", fachada "Hexagon Security Labs Mexico",
+rastreado por Straiker como AiPT-67) para coordinar ataques contra mas de 400 bancos, fintech y pasarelas
+de pago de America Latina, con foco en Mexico (SPEI, cuentas CLABE, dominios .com.mx).
+
+Straiker dice haber accedido el 2026-09-24 al entorno de trabajo del grupo: su script de orquestacion, la
+configuracion de modelos, los archivos de reglas, un grafo de conocimiento compartido, la capa de proxies,
+los scripts de sincronizacion y un inventario de secretos robados ("FinancialSoft", 4.493 registros reunidos
+por cinco "mineros" Grok). Es, segun la firma, la primera vez que se documenta una operacion criminal
+orquestada por IA desde el propio entorno del atacante.
+
+La arquitectura, segun el articulo: un comandante (Claude dentro del IDE Cursor, sobre el marco abierto
+PentAGI) delega en cuatro agentes Claude con roles fijos (STRIKER, GHOST, FABLE y el arbitro MAXIMUS) que
+debaten cada objetivo. Si los modelos de respaldo (Kimi y Sonnet) se niegan, el sistema usa codigo ofensivo
+local sin modelo. Para evitar los rechazos presentan el trabajo como "red team autorizado" o CTF. El acceso
+se hace con navegadores Playwright sin interfaz por un tunel SOCKS5 a proxies residenciales (IPBurger, Bright
+Data); luego se inyectan scripts Groovy ofuscados en el panel de administracion de Magnolia CMS y se lanzan
+tres cargas automaticas (escaneo de bases Oracle, busqueda de cadenas JDBC y llaves SSH, mapeo de subredes).
+
+Intellroom NO verifico nada de lo anterior. Solo comprobo de forma pasiva la IP que Straiker senala como
+servidor central: es de Hetzner (Helsinki) y Shodan InternetDB le ve abierto el puerto 8001, el del grafo MCP
+que describe el articulo. El articulo no publica hashes ni dominios, y su informe completo esta tras un
+formulario que no se consulto.
+
+
+--------------------------------------------------------------------------------
+POR QUE IMPORTA (y por que la accion NO es solo "bloquear la IP")
+--------------------------------------------------------------------------------
+Los indicadores son pocos y perecederos (una IP de hosting y nombres de archivo). El valor para un equipo
+defensor esta en el patron: acceso con credenciales robadas desde IP residenciales a paneles de
+administracion (Magnolia CMS), ejecucion de Groovy desde el frontend, y barrido automatico posterior de bases,
+llaves y subredes. Ademas, el inventario que describe Straiker (claves de firma JWT, credenciales Keycloak,
+claves API, cadenas de conexion) obliga a las organizaciones afectadas a rotar secretos, no solo a bloquear.
+
+Relevancia para Chile: el articulo NO menciona Chile ni bancos chilenos. Aplica al patron y a quien use Magnolia
+CMS, pero no hay victimas chilenas conocidas.
+
+
+--------------------------------------------------------------------------------
+LINEA DE TIEMPO (horas UTC)
+--------------------------------------------------------------------------------
+Desde 2012       CyberCartel operaria, segun Straiker.
+2026-05 a 09     Periodo de los informes de pentesting de victimas que Straiker dice haber visto (mayo a septiembre).
+2026-09-24       Straiker accede a una copia de "FinancialSoft" y al entorno del grupo (segun la firma).
+2026-09 (sin dia) Anthropic publica un informe sobre mal uso de IA que, segun Straiker, ya documenta marcos
+                 ofensivos como PentAGI; Straiker no reclama eso como novedad.
+2026-10-21       Straiker publica el articulo. Dice que aviso a los proveedores de modelos: Anthropic revoco la
+                 credencial comprometida y xAI investiga la actividad de los "mineros" Grok.
+2026-10-22 18:30 Intellroom descarga y captura el articulo; consultas pasivas sobre la IP.
+Nota: no hay historial de exposicion de la IP (no se uso la API de pago de Shodan ni Censys).
+
+
+--------------------------------------------------------------------------------
+QUE SE OBSERVO (pasivo, por Intellroom)
+--------------------------------------------------------------------------------
+- 157.180.98.220: Hetzner Online GmbH (AS24940), bloque 157.180.0.0/17, Helsinki; DNS inverso
+  static.220.98.180.157.clients.your-server.de (nombre generico de servidor dedicado de Hetzner).
+- Shodan InternetDB: puertos 22, 443 y 8001; OpenSSH 9.6p1, Ubuntu, Apache 2.4.58, nginx 1.24.0; etiqueta
+  "eol-product". Lista de 62 CVE inferida por Shodan de los banners: NO verificada, no es un hallazgo.
+- urlscan.io: sin resultados para la IP.
+- El 8080 (portal interno segun Straiker) no aparece en InternetDB.
+
+
+--------------------------------------------------------------------------------
+LO QUE AFIRMA STRAIKER (cifras y datos, sin verificar)
+--------------------------------------------------------------------------------
+- Objetivos: mas de 400 instituciones financieras de LATAM (anonimizadas), foco en Mexico.
+- Inventario "FinancialSoft": 4.493 registros; 2.911 correos, 903 numeros de cuenta (CLABE), mas de 270 informes
+  de pentesting con zero-days; 43 credenciales de una fintech (11 claves API y 32 claves criptograficas) y 391
+  claves API; 67 contrasenas en claro, 51 accesos a portales, 43 cadenas de conexion a bases; 20 claves de firma
+  JWT, 20 credenciales Keycloak, 4 certificados; 19 credenciales Wasabi S3 y 15 de Mailgun; 6 puertas traseras;
+  mas de 200 vulnerabilidades (zero-days incluidos) en sitios, APIs y backends de las victimas.
+- Infraestructura: servidor central de 61 TB (RAID5, Ubuntu) en 157[.]180[.]98[.]220 con el grafo MCP en el
+  puerto 8001, directorios /PentAGI/ y /PentAGI_gemelo/ y herramientas pesadas (nuclei, sqlmap, hashcat);
+  dos puestos de mando (PC1 y PC2) que sincronizan por rsync cada 15 minutos; portal interno en el 8080.
+- Modelos y roles: STRIKER (claude-opus-4-7), GHOST (claude-opus-4-8), FABLE (claude-fable-5, segun la
+  configuracion; Straiker lo trata como NO confirmado) y MAXIMUS (claude-opus-5); respaldo KIMI-2, KIMI-3 y
+  SONNET-2.
+- Operadores (handles citados): adx / adx4work, roro, aBerry, B3x y Carliy0s. No se reproducen otros datos
+  personales que menciona el articulo.
+
+
+--------------------------------------------------------------------------------
+INDICADORES
+--------------------------------------------------------------------------------
+[BLOQUEAR + REVISAR el 2026-11-22]
+  157.180.98.220        "Hexagon Central Server" segun Straiker. Hetzner, reasignable. Confianza MEDIA.
+
+[DETECTAR -- en red]
+  Conexion saliente a 157.180.98.220 por 8001, 8080, 22 o 443
+  Sincronizacion periodica (15 min) por rsync/SSH hacia esa IP
+
+[DETECTAR -- en endpoints]
+  sync_live.sh, sync_watchdog.ps1 (SetThreadExecutionState), CARLIY0S.py y CARLIYOS.py,
+  CARLIY0S_consolidated.py y CARLIYOS_consolidated.py, burp_bridge.py, PentAGI_burp_extension.py,
+  pentester-custom.tmpl, primary_agent-custom.tmpl, rutas /PentAGI/, /PentAGI_gemelo/, burp-mcp/,
+  hexstrike-ai/ y .cursor/mcp.json apuntando al :8001
+
+[DETECTAR -- en servidores Magnolia CMS]
+  Scripts Groovy ejecutados desde Admincentral/Vaadin tras un login desde IP residencial inusual, seguidos de
+  escaneo de bases Oracle, busqueda de cadenas JDBC y llaves SSH, y mapeo de subredes
+
+[VIGILAR -- NO bloquear ciegamente]
+  AS24940 y 157.180.0.0/17 (Hetzner): proveedor con muchos clientes
+  IPBurger y Bright Data: proxies residenciales comerciales
+  PentAGI, Playwright, Burp Suite, nuclei, sqlmap, hashcat, APIs de Claude, Kimi y Grok: legitimos
+
+Formato defanged en iocs.txt (157[.]180[.]98[.]220, hxxp).
+
+
+--------------------------------------------------------------------------------
+LO QUE NO ES UN IOC (no crear reglas sobre esto)
+--------------------------------------------------------------------------------
+- Alias y handles (Tr4nsHack Team, Hexagon Security Labs Mexico, CyberCartel, AiPT-67, adx, roro, aBerry, B3x,
+  Carliy0s): atribucion de Straiker, contexto y no firma.
+- Nombres de modelos y herramientas legitimas: no sirven de indicador.
+- La lista de CVE de Shodan para la IP: inferida de banners, sin verificar.
+- Las cifras del articulo: contexto.
+- El nombre de la familia: es el que usa Straiker para el sistema; no hay muestra ni hash propios.
+
+
+--------------------------------------------------------------------------------
+EVALUACION DE LA FUENTE (Admiralty)
+--------------------------------------------------------------------------------
+- La IP y sus datos tecnicos: B2 (Straiker es una firma de seguridad con acceso declarado al entorno del
+  atacante; la IP coincide con un servidor de Hetzner con el puerto 8001 abierto).
+- Funcion de la IP y arquitectura de CARLIY0S: B3 (descripcion detallada de Straiker, sin muestras publicas
+  ni forma independiente de comprobarla).
+- Atribucion a CyberCartel y a Hexagon Security Labs Mexico: C3 (la propia firma dice "presumiblemente" en
+  el vinculo con carteles y no publica la evidencia de atribucion completa).
+- Cifras del inventario y del numero de objetivos: C3 (afirmadas, no verificables).
+
+
+--------------------------------------------------------------------------------
+MITRE ATT&CK (nivel tecnica; IDs verificados en attack.mitre.org el 2026-10-22; asignacion inferida)
+--------------------------------------------------------------------------------
+Recurso             T1583.004  Acquire Infrastructure: Server (servidor central en Hetzner)
+                    T1588.007  Obtain Capabilities: Artificial Intelligence (modelos comerciales con credenciales
+                               comprometidas)
+Acceso inicial      T1078      Valid Accounts (autenticacion en el panel de administracion de Magnolia CMS)
+Ejecucion           T1059      Command and Scripting Interpreter (scripts Groovy)
+Evasion             T1027      Obfuscated Files or Information (Groovy ofuscado)
+                    T1090      Proxy (tunel SOCKS5 a proxies residenciales)
+Credenciales        T1552.001  Unsecured Credentials: Credentials In Files (cadenas JDBC)
+                    T1552.004  Unsecured Credentials: Private Keys (llaves SSH)
+Descubrimiento      T1046      Network Service Discovery (mapeo de subredes internas)
+(Validar con telemetria antes de convertir en regla.)
+
+
+--------------------------------------------------------------------------------
+ACCIONES RECOMENDADAS
+--------------------------------------------------------------------------------
+1. Bloquear la salida hacia 157.180.98.220 y REVISAR el bloqueo el 2026-11-22 (direccion de hosting
+   reasignable).
+2. Cazar hacia atras en proxy, firewall y DNS cualquier conexion a esa IP, y los nombres de archivo de
+   [DETECTAR -- en endpoints] en equipos de desarrollo y pentesting.
+3. Si se opera Magnolia CMS: revisar los registros de acceso de Admincentral por scripts Groovy y por accesos
+   desde IP residenciales inusuales; exigir MFA y restringir el acceso administrativo por IP.
+4. Si hay sospecha de acceso: rotar claves de firma JWT, credenciales Keycloak, claves API y cadenas de
+   conexion; no basta con bloquear.
+5. Tratar nombres y rutas del kit como hipotesis de caza, no como firmas de bloqueo.
+6. Pedir el informe completo de Straiker (formulario) para obtener los indicadores que el articulo no publica.
+
+
+--------------------------------------------------------------------------------
+LO QUE NO SE PUDO VERIFICAR NI SE PUBLICA
+--------------------------------------------------------------------------------
+- Cualquier afirmacion de Straiker: cifras, atribucion, arquitectura y vinculo con CyberCartel.
+- Hashes, dominios y otros indicadores: el articulo no los trae; el informe completo no se consulto.
+- Si la IP sigue activa y que corre en el 8001: no se contacto ni se sondeo.
+- El 8080 de la IP: no aparece en InternetDB.
+- Victimas: Straiker las anonimiza; no se sabe si hay chilenas.
+- Datos personales: el articulo cita un nombre que parece real junto a un alias; no se reproduce.
+
+
+--------------------------------------------------------------------------------
+CORRELACION
+--------------------------------------------------------------------------------
+Straiker cita el informe de Anthropic de septiembre de 2026 sobre mal uso de IA, que ya describia marcos
+ofensivos como PentAGI. No hay en este repositorio un caso previo del mismo grupo; no se establece vinculo con
+otras campanas publicadas.
+
+
+--------------------------------------------------------------------------------
+EVIDENCIA
+--------------------------------------------------------------------------------
+- 01_flujo_ataque.png / 02_modelo_diamante.png: diagramas branded (todo "segun Straiker").
+- 03_ a 05_fuente_straiker_*.png: capturas del articulo con banner de procedencia (URL, hora UTC, SHA-256).
+- evidencia_recon_22102026.txt: descarga del articulo, consultas pasivas y verificacion de ATT&CK, con hora UTC.
+- internetdb_*, rdap_ripe_*, ipinfo_*, ptr_*, urlscan_ip_*, cabeceras_get_*: salidas crudas.
+- evidencia.sha256: sumas de verificacion.
+- La instantanea completa del articulo se guarda solo en local, no se publica.
+
+--------------------------------------------------------------------------------
+Intellroom Threat Intelligence. Analisis pasivo (articulo de Straiker, Shodan InternetDB, RDAP de RIPE, ipinfo,
+DNS inverso, urlscan, matriz MITRE ATT&CK). Sin contactar la IP ni descargar nada del atacante. Las ideas de
+deteccion son hipotesis: validar antes de desplegar. Redactado con apoyo de IA.

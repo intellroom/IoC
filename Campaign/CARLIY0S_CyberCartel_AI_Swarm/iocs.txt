@@ -1,0 +1,46 @@
+================================================================================
+  IOCs / ACCIONES -- CARLIY0S: enjambre de IA de CyberCartel contra banca de LATAM
+================================================================================
+Defanged: 157[.]180[.]98[.]220 = 157.180.98.220 ; hxxp = http
+
+INDICADORES PARA BLOQUEO RAPIDO
+
+[BLOQUEAR -- REVISAR el 2026-11-22]  confianza MEDIA: IP publicada por Straiker; solo la IP y el puerto 8001 se corroboraron de forma pasiva
+157[.]180[.]98[.]220          # "Hexagon Central Server" segun Straiker: grafo MCP (:8001) y almacenamiento del grupo.
+                              # Servidor de Hetzner Online GmbH (AS24940, Helsinki), PTR
+                              # static.220.98.180.157.clients.your-server.de. Shodan InternetDB ve abiertos 22, 443 y 8001.
+                              # Direccion de hosting: PUEDE REASIGNARSE, por eso el bloqueo lleva fecha de revision.
+
+[DETECTAR -- en red]
+Conexion saliente a 157[.]180[.]98[.]220 por 8001, 8080, 22 o 443   # 8001 = grafo MCP; 8080 = portal interno (segun Straiker)
+Sincronizacion periodica (cada 15 min) por rsync/SSH hacia esa IP   # patron descrito por Straiker; util para caza en hosts
+
+[DETECTAR -- en endpoints]
+sync_live.sh                                     # rsync cada 15 min (segun Straiker)
+sync_watchdog.ps1                                # vigilante de PowerShell; usa SetThreadExecutionState
+CARLIY0S.py / CARLIYOS.py                        # orquestador (el articulo usa las dos grafias)
+CARLIY0S_consolidated.py / CARLIYOS_consolidated.py   # respaldo local de codigo ofensivo
+burp_bridge.py / PentAGI_burp_extension.py       # puentes a Burp Suite
+pentester-custom.tmpl / primary_agent-custom.tmpl     # plantillas de reglas de los agentes
+/PentAGI/ , /PentAGI_gemelo/ , burp-mcp/ , hexstrike-ai/ , .cursor/mcp.json (apuntando a :8001)   # rutas del grupo
+
+[DETECTAR -- en servidores Magnolia CMS]
+Ejecucion de scripts Groovy desde Admincentral/Vaadin tras un login desde una IP residencial inusual, seguida de escaneo
+de bases Oracle, busqueda de cadenas JDBC y llaves SSH, y mapeo de subredes internas   # T1078 / T1059 / T1552 / T1046
+
+[VIGILAR -- NO bloquear ciegamente]
+AS24940 / 157[.]180[.]0[.]0/17 (Hetzner)         # proveedor con muchos clientes: no bloquear el ASN ni el bloque
+IPBurger y Bright Data                           # proxies residenciales comerciales: su trafico comparte rangos con usuarios legitimos
+PentAGI, Playwright, Burp Suite, nuclei, sqlmap, hashcat   # herramientas legitimas; solo cuentan junto al resto
+APIs de Claude, Kimi y Grok                      # servicios legitimos
+
+[NO ES UN IOC -- no crear reglas sobre esto]
+Alias "Tr4nsHack Team", "Hexagon Security Labs Mexico", "CyberCartel", "AiPT-67" y handles adx / adx4work, roro, aBerry, B3x, Carliy0s
+                                                 # atribucion de Straiker: contexto, no firma
+Nombres de modelos (claude-opus-4-7, etc.)       # configuracion del grupo segun Straiker
+Lista de CVE que Shodan asocia a la IP           # inferida de banners, NO verificada por Intellroom
+Cifras del articulo (4.493 registros, 2.911 correos, etc.)   # contexto, no indicador
+
+Las ideas de deteccion son hipotesis: validar antes de desplegar. El articulo no publica hashes
+ni dominios; el informe completo de Straiker esta tras un formulario y no se consulto. Redactado
+con apoyo de IA.

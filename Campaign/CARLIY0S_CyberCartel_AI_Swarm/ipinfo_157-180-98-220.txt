@@ -1,0 +1,13 @@
+UTC 2026-10-22T18:32:06Z
+{
+  "ip": "157.180.98.220",
+  "hostname": "static.220.98.180.157.clients.your-server.de",
+  "city": "Helsinki",
+  "region": "Uusimaa",
+  "country": "FI",
+  "loc": "60.1695,24.9354",
+  "org": "AS24940 Hetzner Online GmbH",
+  "postal": "00100",
+  "timezone": "Europe/Helsinki",
+  "readme": "https://ipinfo.io/missingauth"
+}

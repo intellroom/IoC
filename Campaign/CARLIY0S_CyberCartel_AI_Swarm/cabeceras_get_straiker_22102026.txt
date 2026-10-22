@@ -1,0 +1,23 @@
+HTTP/2 103 
+link: <https://cdn.prod.website-files.com>; crossorigin; rel=preconnect, <https://cdn.prod.website-files.com/67e35850d44d18d58bb2404c/css/straiker.webflow.shared.2cd58405c.min.css>; as=style; crossorigin; integrity=sha384-LNWEBcmhpCEEQeRwRHKwrzPese7M+dHz6Wn4NHKmSBfaHTDgi26ZGzYpHF6QBGsW; rel=preload, <https://cdn.prod.website-files.com/67e35850d44d18d58bb2404c/css/straiker.webflow.67e35850d44d18d58bb240da.9cb48f47e.opt.min.css>; as=style; crossorigin; integrity=sha384-nLSPR+d5/zz5xdtP7XOZo5PPVIC1R92CFzeTiSgeM3eHckI238M1FAn8v3M2Pjg1; rel=preload, <https://cdn-cookieyes.com>; crossorigin; rel=preconnect
+
+HTTP/2 200 
+date: Thu, 22 Oct 2026 18:30:37 GMT
+content-type: text/html; charset=utf-8
+set-cookie: _cfuvid=[valor omitido por Intellroom]; HttpOnly; SameSite=None; Secure; Path=/; Domain=www.straiker.ai
+cf-ray: a4ea93043ff41526-EWR
+cf-cache-status: HIT
+age: 76485
+last-modified: Wed, 21 Oct 2026 21:50:57 GMT
+link: <https://cdn.prod.website-files.com>; rel=preconnect; crossorigin, <https://cdn.prod.website-files.com/67e35850d44d18d58bb2404c/css/straiker.webflow.shared.2cd58405c.min.css>; rel=preload; as=style; crossorigin; integrity="sha384-LNWEBcmhpCEEQeRwRHKwrzPese7M+dHz6Wn4NHKmSBfaHTDgi26ZGzYpHF6QBGsW", <https://cdn.prod.website-files.com/67e35850d44d18d58bb2404c/css/straiker.webflow.67e35850d44d18d58bb240da.9cb48f47e.opt.min.css>; rel=preload; as=style; crossorigin; integrity="sha384-nLSPR+d5/zz5xdtP7XOZo5PPVIC1R92CFzeTiSgeM3eHckI238M1FAn8v3M2Pjg1", <https://cdn-cookieyes.com>; rel=preconnect; crossorigin
+server: cloudflare
+strict-transport-security: max-age=31536000
+vary: accept-encoding
+content-security-policy: frame-ancestors 'self'
+surrogate-control: max-age=432000
+surrogate-key: www.straiker.ai 67e35850d44d18d58bb2404c pageId:67e35850d44d18d58bb240da 67e35850d44d18d58bb2408f 67e35850d44d18d58bb240b3 67e35850d44d18d58bb24075 67e35850d44d18d58bb2408f
+x-frame-options: SAMEORIGIN
+x-lambda-id: bccecee9-aa63-4f40-8161-f314b08bec8b
+x-wf-region: us-east-1
+alt-svc: h3=":443"; ma=86400
+
