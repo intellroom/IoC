@@ -1,4 +1,6 @@
 # Evidencia: DNS (DoH dns.google), WHOIS y RDAP. dig directo a 1.1.1.1 dio timeout (bloqueado en esta red), ver bloque final.
+# Nota (2026-10-22): se redacto el nombre, los telefonos y el handle de RIPE de una persona de contacto
+# (regla de datos personales de Intellroom); el resto de las respuestas va tal cual.
 ## DoH vltwjsm.com @ 2026-10-13T13:18:09Z
 2026-10-13T13:18:22Z
 {"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"vltwjsm.com.","type":1}],"Answer":[{"name":"vltwjsm.com.","type":1,"TTL":286,"data":"169.58.45.188"}]}
@@ -293,19 +295,19 @@ URL of the ICANN WHOIS Data Problem Reporting System: http://wdprs.internic.net/
   } ],
   "status" : [ "active" ],
   "entities" : [ {
-    "handle" : "MH7476-RIPE",
-    "vcardArray" : [ "vcard", [ [ "version", { }, "text", "4.0" ], [ "fn", { }, "text", "Johannes Selg" ], [ "kind", { }, "text", "individual" ], [ "adr", {
+    "handle" : "[REDACTADO: id]",
+    "vcardArray" : [ "vcard", [ [ "version", { }, "text", "4.0" ], [ "fn", { }, "text", "[REDACTADO: persona]" ], [ "kind", { }, "text", "individual" ], [ "adr", {
       "label" : "Contabo GmbH\nWelfenstr. 22\n81541 München"
     }, "text", [ "", "", "", "", "", "", "" ] ], [ "tel", {
       "type" : "voice"
-    }, "text", "+49 89 21268372" ], [ "tel", {
+    }, "text", "[REDACTADO: telefono]" ], [ "tel", {
       "type" : "fax"
-    }, "text", "+49 89 21665862" ] ] ],
+    }, "text", "[REDACTADO: telefono]" ] ] ],
     "roles" : [ "administrative", "technical" ],
     "links" : [ {
       "value" : "https://rdap.db.ripe.net/ip/169.58.45.188",
       "rel" : "self",
-      "href" : "https://rdap.db.ripe.net/entity/MH7476-RIPE"
+      "href" : "https://rdap.db.ripe.net/entity/[REDACTADO: id]"
     }, {
       "value" : "http://www.ripe.net/data-tools/support/documentation/terms",
       "rel" : "copyright",
@@ -355,19 +357,19 @@ URL of the ICANN WHOIS Data Problem Reporting System: http://wdprs.internic.net/
     }, "text", "abuse@contabo.de" ] ] ],
     "roles" : [ "abuse" ],
     "entities" : [ {
-      "handle" : "MH7476-RIPE",
-      "vcardArray" : [ "vcard", [ [ "version", { }, "text", "4.0" ], [ "fn", { }, "text", "Johannes Selg" ], [ "kind", { }, "text", "individual" ], [ "adr", {
+      "handle" : "[REDACTADO: id]",
+      "vcardArray" : [ "vcard", [ [ "version", { }, "text", "4.0" ], [ "fn", { }, "text", "[REDACTADO: persona]" ], [ "kind", { }, "text", "individual" ], [ "adr", {
         "label" : "Contabo GmbH\nWelfenstr. 22\n81541 München"
       }, "text", [ "", "", "", "", "", "", "" ] ], [ "tel", {
         "type" : "voice"
-      }, "text", "+49 89 21268372" ], [ "tel", {
+      }, "text", "[REDACTADO: telefono]" ], [ "tel", {
         "type" : "fax"
-      }, "text", "+49 89 21665862" ] ] ],
+      }, "text", "[REDACTADO: telefono]" ] ] ],
       "roles" : [ "administrative", "technical" ],
       "links" : [ {
         "value" : "https://rdap.db.ripe.net/ip/169.58.45.188",
         "rel" : "self",
-        "href" : "https://rdap.db.ripe.net/entity/MH7476-RIPE"
+        "href" : "https://rdap.db.ripe.net/entity/[REDACTADO: id]"
       }, {
         "value" : "http://www.ripe.net/data-tools/support/documentation/terms",
         "rel" : "copyright",
