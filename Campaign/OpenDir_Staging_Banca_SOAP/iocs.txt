@@ -1,0 +1,42 @@
+================================================================================
+  IOCs / ACCIONES -- Directorio abierto con kit de ataque a credenciales y relevo SOAP de pagos
+================================================================================
+Defanged: 80[.]78[.]23[.]240 = 80.78.23.240 ; hxxp = http
+
+INDICADORES PARA BLOQUEO RAPIDO
+
+[BLOQUEAR -- REVISAR el 2026-11-24]  confianza MEDIA: la IP sale de la captura de un investigador y no esta corroborada de forma independiente
+80[.]78[.]23[.]240            # directorio abierto en :8080 ("Directory listing for /") con 57 archivos de ataque a credenciales,
+                              # un tunel Chisel y dos PHP de relevo SOAP, segun el investigador. VPS de Njalla en Lund (Suecia),
+                              # AS39287 Materialism s.r.l., PTR 504e17f0.host.njalla.net. Direccion de VPS: PUEDE REASIGNARSE,
+                              # por eso el bloqueo lleva fecha de revision (2026-11-24). Shodan InternetDB y urlscan: sin datos.
+
+[DETECTAR -- en red]
+hxxp://80[.]78[.]23[.]240:8080/       # cualquier conexion saliente a esa IP, en especial a este puerto
+Conexiones salientes por 8443 con "Upgrade: websocket" y subprotocolo chisel-v3   # cliente Chisel hacia un servidor de tunel; el post menciona un listener
+                                      # en el 8443 (no dice en que host); la firma chisel-v3 es conocimiento general de Chisel
+
+[DETECTAR -- en endpoints]
+attack228.py, enum_228.py, enum228b.py, ora_brute_full.py, ora_test.py, oracle_results.json     # scripts de ataque y resultados
+oratest_<epoch>.php, portal_700.html, portal_debug.py, portal_fast.py, portal_hit.py, captcha_portal.py, form.html, form2.html, form_700.html
+cuenta_<numero>.html (muchas, con numeros de cuenta como 0000001, 1234567, 99999999)             # paginas generadas por numero de cuenta
+chisel.exe, chisel.log, listener_out.log                                                          # cliente Chisel para Windows y registros
+
+[DETECTAR -- en servidores web y de integracion de un banco o pasarela de pagos]
+PHP que acepta los parametros k, a (consulta|aplica), cta, m, f, h, au y br y hace POST con SOAPAction hacia un servicio interno
+SOAPAction http://tempuri[.]org/wsBnmxCNA/Service1/ConsultaSdo o .../AplicaPago desde un origen distinto del esperado
+Rafagas de autenticacion fallida contra Oracle, SSRS o WinRM desde un mismo origen
+
+[VIGILAR -- NO bloquear ciegamente]
+AS39287 / 80[.]78[.]16[.]0/20 (Materialism s.r.l., Njalla)   # bloque de hosting con otros clientes: no bloquear el ASN ni el bloque
+Chisel                                                        # herramienta legitima y comun; solo cuenta junto al resto
+"Directory listing for /" y servidores http.server de Python  # comunes y legitimos
+
+[NO ES UN IOC -- no crear reglas sobre esto]
+tempuri.org                       # espacio de nombres por defecto de .NET: solo wsBnmxCNA es especifico
+Nombres genericos (form.html, h1.txt, h3.txt, idx.html)   # pista de caza junto a lo demas, nunca firma aislada
+"Banamex" como banco victima      # inferencia de Intellroom a partir de "Bnmx"; el investigador no nombra el banco
+Cifras del post (57 artefactos, 24 scripts)   # contexto
+
+Las ideas de deteccion son hipotesis: validar antes de desplegar. La lectura de los archivos sale de dos imagenes y del
+texto del post del investigador: Intellroom NO contacto el servidor ni descargo ningun archivo. Redactado con apoyo de IA.

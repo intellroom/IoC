@@ -18,6 +18,12 @@ https://github.com/intellroom/IoC#macfinger_clickfix_macos
 
 Ordenadas de la más reciente a la más antigua.
 
+### OpenDir_Staging_Banca_SOAP
+
+**2026-10-24** · Directorio abierto (`80[.]78[.]23[.]240:8080`, VPS de Njalla en Suecia) que un investigador (@Yusufcancakiir) halló con Hunt.io: 57 artefactos de preparación de ataque a una plataforma bancaria y de pagos (24 scripts Python contra Oracle, SSRS, WinRM y ASP.NET, Chisel con listener en el 8443 y dos PHP en Base64 que reenvían SOAP `ConsultaSdo` y `AplicaPago`). Único indicador de red: la IP, sin corroboración independiente; el investigador no demuestra un compromiso. El post no menciona Chile
+
+[Carpeta](Campaign/OpenDir_Staging_Banca_SOAP) · [iocs.txt](Campaign/OpenDir_Staging_Banca_SOAP/iocs.txt)
+
 ### CARLIY0S_CyberCartel_AI_Swarm
 
 **2026-10-22** · Según Straiker (21-10-2026): sistema multiagente de IA (**CARLIY0S**, marco PentAGI y modelos Claude, Kimi y Grok) atribuido a **CyberCartel** (Tr4nsHack Team) contra más de 400 bancos y fintech de LATAM, con foco en México; RCE por scripts Groovy en el panel de **Magnolia CMS** a través de proxies residenciales. Único IOC publicado: el servidor central `157[.]180[.]98[.]220` (Hetzner, Helsinki; puerto 8001 corroborado de forma pasiva) más nombres de archivo de caza. Sin hashes ni dominios: todo lo demás es afirmación de Straiker. El artículo no menciona Chile

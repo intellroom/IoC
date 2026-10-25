@@ -1,0 +1,13 @@
+UTC 2026-10-25T00:01:20Z
+{
+  "ip": "80.78.23.240",
+  "hostname": "504e17f0.host.njalla.net",
+  "city": "Lund",
+  "region": "Skåne",
+  "country": "SE",
+  "loc": "55.7058,13.1932",
+  "org": "AS39287 Materialism s.r.l.",
+  "postal": "220 02",
+  "timezone": "Europe/Stockholm",
+  "readme": "https://ipinfo.io/missingauth"
+}

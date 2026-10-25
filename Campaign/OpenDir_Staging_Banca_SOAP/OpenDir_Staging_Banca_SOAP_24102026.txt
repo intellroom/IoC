@@ -1,0 +1,196 @@
+================================================================================
+  DIRECTORIO ABIERTO CON KIT DE ATAQUE A CREDENCIALES Y RELEVO SOAP DE PAGOS
+  80.78.23.240:8080  (Njalla, Lund, Suecia)  ;  segun un investigador, 2026-10-24
+================================================================================
+Fecha del hallazgo : 2026-10-24 (Chile) ; post del investigador 2026-10-24 18:02 UTC
+Origen             : post publico del investigador @Yusufcancakiir, entregado por el analista de Intellroom
+Contrastado por    : Intellroom, 2026-10-25 00:00 a 00:10 UTC, SOLO el post, sus dos imagenes y fuentes pasivas
+TLP:CLEAR
+Confianza          : lo que afirma el investigador = MEDIA ; la IP = MEDIA (solo su captura) ; la victima = BAJA
+                     (inferida) ; que haya habido compromiso = NO DEMOSTRADO (el propio investigador lo dice)
+
+
+--------------------------------------------------------------------------------
+RESUMEN
+--------------------------------------------------------------------------------
+El 2026-10-24 un investigador (@Yusufcancakiir; Threat Researcher y cofundador de CTI Academy, segun su perfil) publico en X que,
+buscando infraestructura sospechosa en Hunt.io, encontro un directorio de staging expuesto con 57 artefactos:
+24 scripts Python, un binario de Chisel para Windows, registros operativos y herramientas PHP en Base64.
+
+Segun el investigador, los scripts de Python intentan autenticarse contra Oracle y SSRS, comprueban acceso por
+WinRM, sondean ASP.NET y APIs y hacen ataques de credenciales contra varios servicios; varios traen objetivos
+concretos y credenciales escritas en el codigo. Dos scripts PHP en Base64, ya decodificados, reciben parametros
+por HTTP, arman sobres SOAP y los reenvian por POST con cabeceras SOAPAction a un servicio interno de pagos, con
+dos operaciones: ConsultaSdo (consulta de saldo) y AplicaPago (aplicacion de pagos). Un registro de Chisel
+muestra un listener de tunel inverso en el puerto 8443.
+
+Una de las dos imagenes del post es el listado del directorio en http://80.78.23.240:8080/ y la otra el PHP
+decodificado, con el espacio de nombres http://tempuri.org/wsBnmxCNA/Service1/. El investigador concluye que los
+archivos prueban preparacion de ataque e intentos de acceso, pero NO un compromiso exitoso ni manipulacion de pagos.
+
+Intellroom NO contacto el servidor ni descargo archivo alguno. Solo leyo el post y sus imagenes y consulto la IP
+de forma pasiva: es un VPS de Njalla (Lund, Suecia) sin datos en Shodan InternetDB ni en urlscan, o sea que
+nada corrobora el listado de forma independiente.
+
+
+--------------------------------------------------------------------------------
+POR QUE IMPORTA (y por que la accion NO es solo "bloquear la IP")
+--------------------------------------------------------------------------------
+Es la caja de herramientas de un atacante que apuntaba a una plataforma bancaria o de pagos: ataques de
+credenciales a bases de datos y servicios de reportes, un tunel para llegar a redes internas y un relevo que
+permitiria consultar saldos y aplicar pagos a traves de un servicio interno. El indicador de red es debil y
+perecedero (una IP de VPS); lo util para un equipo defensor son los patrones: rafagas de autenticacion contra
+Oracle, SSRS y WinRM desde un mismo origen, llamadas SOAP a ConsultaSdo o AplicaPago desde un origen inesperado y
+conexiones Chisel.
+
+Relevancia para Chile: el post NO menciona Chile ni bancos chilenos. Los nombres de operacion estan en espanol y el
+espacio de nombres wsBnmxCNA sugiere un banco mexicano (Banamex; inferencia de Intellroom, el investigador no nombra
+al banco y redacto el endpoint). No hay victimas chilenas conocidas.
+
+
+--------------------------------------------------------------------------------
+LINEA DE TIEMPO (horas UTC)
+--------------------------------------------------------------------------------
+2026-10-24 09:20  Marca de tiempo del nombre oratest_1792833639.php (epoch 1792833639). Si el nombre se genero al
+                  crear el archivo (INFERIDO), el directorio estaba activo despues de esa hora.
+2026-10-24 18:02  El investigador publica el post (37 me gusta y 7 reposts al 2026-10-25 00:00).
+2026-10-25 00:00  Intellroom lee el post (API publica de fxtwitter), baja sus dos imagenes y consulta la IP de forma
+                  pasiva. 00:05 captura de pantalla del post.
+Nota: no se sabe desde cuando estuvo expuesto ni si sigue arriba (no se contacto ni hay historial de exposicion).
+
+
+--------------------------------------------------------------------------------
+QUE SE OBSERVO
+--------------------------------------------------------------------------------
+Segun la imagen 1 del post (listado "Directory listing for /" en 80.78.23.240:8080; 41 de las 57 entradas que cuenta el investigador son
+visibles, el resto queda fuera de la captura):
+- Carpetas: .font-unix/, .ICE-unix/, .X11-unix/, .XIM-unix/ (son las que crea el sistema en /tmp: el servidor
+  parece servir /tmp de un equipo Linux; INFERIDO) y crack/.
+- Scripts y datos: attack228.py, captcha_portal.py, enum228b.py, enum_228.py, ora_brute_full.py, ora_test.py,
+  oracle_results.json, oratest_1792833639.php, portal_debug.py, portal_fast.py, portal_hit.py, portal_700.html,
+  form.html, form2.html, form_700.html, idx.html, h1.txt, h3.txt.
+- Tunel: chisel.exe, chisel.log, listener_out.log.
+- 15 paginas cuenta_<numero>.html con numeros de cuenta como 0000001, 1234567, 12345678 y 99999999 (parecen
+  paginas generadas por cada numero de cuenta probado; INFERIDO).
+Segun la imagen 2 (PHP decodificado, "analisis estatico saneado" por el autor): el script toma los parametros k
+(clave, redactada), a (consulta o aplica), cta, m, f (fecha, por defecto la de hoy), h (hora), au y br; con
+a=consulta usa el sobre ConsultaSdo y con a=aplica el de AplicaPago; hace POST con Content-Type text/xml, la
+cabecera SOAPAction y un limite de 30 s. El endpoint interno va redactado.
+Intellroom, pasivo: 80.78.23.240 es de Materialism s.r.l. (AS39287, Njalla), red RO-MATERIALISM-20050316
+80.78.16.0 a 80.78.31.255, Lund, Suecia; PTR 504e17f0.host.njalla.net. InternetDB: sin informacion. urlscan: 0.
+
+
+--------------------------------------------------------------------------------
+INDICADORES
+--------------------------------------------------------------------------------
+[BLOQUEAR + REVISAR el 2026-11-24]
+  80.78.23.240          Directorio abierto en :8080 segun el investigador. VPS de Njalla, reasignable. Confianza
+                        MEDIA: la IP solo sale de la captura del investigador.
+
+[DETECTAR -- en red]
+  Conexion saliente a 80.78.23.240 (en especial al 8080)
+  Salidas por 8443 con Upgrade: websocket y subprotocolo chisel-v3 (cliente Chisel; el post no dice en que host
+  esta el listener; la firma es conocimiento general de Chisel)
+
+[DETECTAR -- en endpoints]
+  attack228.py, enum_228.py, enum228b.py, ora_brute_full.py, ora_test.py, oracle_results.json, oratest_<epoch>.php,
+  portal_*.py y portal_*.html, captcha_portal.py, chisel.exe, chisel.log, listener_out.log, cuenta_<numero>.html
+
+[DETECTAR -- en servidores web y de integracion de un banco o pasarela]
+  PHP con los parametros k, a, cta, m, f, h, au y br que haga POST con SOAPAction
+  SOAPAction .../wsBnmxCNA/Service1/ConsultaSdo o AplicaPago desde un origen inesperado
+  Rafagas de autenticacion fallida contra Oracle, SSRS o WinRM desde un mismo origen
+
+[VIGILAR -- NO bloquear ciegamente]
+  AS39287 y 80.78.16.0/20 (Materialism s.r.l., Njalla): bloque con otros clientes
+  Chisel, http.server de Python y "Directory listing for /": comunes y legitimos
+
+Formato defanged en iocs.txt (80[.]78[.]23[.]240, hxxp).
+
+
+--------------------------------------------------------------------------------
+LO QUE NO ES UN IOC (no crear reglas sobre esto)
+--------------------------------------------------------------------------------
+- tempuri.org: espacio de nombres por defecto de .NET; solo wsBnmxCNA es especifico.
+- Nombres genericos (form.html, h1.txt, h3.txt, idx.html): pistas de caza junto al resto, no firmas.
+- "Banamex" como banco victima: inferencia de Intellroom; el investigador no lo nombra.
+- Las cifras del post (57 artefactos, 24 scripts): contexto.
+- El nombre de la familia o del actor: no existe; no inventar uno.
+
+
+--------------------------------------------------------------------------------
+EVALUACION DE LA FUENTE (Admiralty)
+--------------------------------------------------------------------------------
+- Afirmaciones del post (contenido del directorio, scripts, relevo SOAP): C3 (investigador de una academia de CTI,
+  con imagenes coherentes con su texto; sin muestras publicas ni forma independiente de comprobarlo).
+- La IP y el puerto: C3 (solo aparecen en su captura; sin corroboracion pasiva).
+- Victima (banco mexicano): D4 (inferencia de Intellroom a partir de un espacio de nombres).
+- Compromiso exitoso: sin evidencia; el propio investigador dice que no esta demostrado.
+
+
+--------------------------------------------------------------------------------
+MITRE ATT&CK (nivel tecnica; IDs verificados en attack.mitre.org el 2026-10-25; asignacion inferida)
+--------------------------------------------------------------------------------
+Recurso             T1583.003  Acquire Infrastructure: Virtual Private Server (VPS de Njalla)
+                    T1608.001  Stage Capabilities: Upload Malware (herramientas en un directorio expuesto)
+Acceso (intento)    T1190      Exploit Public-Facing Application (sondeo de ASP.NET y APIs)
+Ejecucion           T1059.006  Command and Scripting Interpreter: Python
+Credenciales        T1110      Brute Force (ataques de credenciales a Oracle, SSRS y otros)
+                    T1110.004  Brute Force: Credential Stuffing (credenciales fijas contra varios servicios)
+Movimiento          T1021.006  Remote Services: Windows Remote Management (comprobaciones de acceso)
+Comando y control   T1572      Protocol Tunneling (Chisel, tunel inverso en el 8443)
+(Validar con telemetria antes de convertir en regla.)
+
+
+--------------------------------------------------------------------------------
+ACCIONES RECOMENDADAS
+--------------------------------------------------------------------------------
+1. Bloquear la salida hacia 80.78.23.240 y REVISAR el bloqueo el 2026-11-24 (VPS reasignable).
+2. Cazar hacia atras en proxy, firewall y DNS cualquier conexion a esa IP y salidas por 8443 con firma Chisel.
+3. En bancos y pasarelas con servicios SOAP de operaciones como ConsultaSdo o AplicaPago: revisar los registros
+   por llamadas desde origenes inesperados y por scripts PHP que reciban k, a, cta, m, f, h, au y br.
+4. Revisar rafagas de autenticacion fallida contra Oracle, SSRS y WinRM de las ultimas semanas y rotar las
+   credenciales que hayan aparecido en intentos.
+5. Tratar los nombres de archivo como hipotesis de caza, no como firmas de bloqueo.
+6. Volver a mirar la IP por una via pasiva el 2026-11-24 y pedir al investigador los hashes de los archivos, que
+   el post no trae.
+
+
+--------------------------------------------------------------------------------
+LO QUE NO SE PUDO VERIFICAR NI SE PUBLICA
+--------------------------------------------------------------------------------
+- Cualquier afirmacion del investigador: contenido de los 57 archivos, credenciales y objetivos de los scripts.
+- Si el directorio sigue expuesto: no se contacto la IP ni se uso Hunt.io.
+- Hashes de los archivos: el post no los publica; no se descargo nada.
+- Que host escucha en el 8443.
+- La victima: banco, pais y servicio. El endpoint interno esta redactado por el autor.
+- Atribucion: ninguna. Sin actor, sin campana, sin familia.
+- La parte del listado que queda fuera de la imagen 1 (unas 16 de las 57 entradas).
+
+
+--------------------------------------------------------------------------------
+CORRELACION
+--------------------------------------------------------------------------------
+Misma FAMILIA de casos ya publicados: infraestructura de atacante expuesta como directorio abierto
+(Campaign/OpenDir_AD_Toolkit, Campaign/Erebus_C2_OpenDir, Campaign/OpenDir_Operador_SurAsia,
+Campaign/Pfcloud_OpenDir_Staging, Campaign/VShell_OpenDir_Migracion_Panel). Diferencia: este caso es de
+preparacion contra una plataforma bancaria y de pagos, con un relevo SOAP. Es correspondencia de modo de
+operacion, no de identidad.
+
+
+--------------------------------------------------------------------------------
+EVIDENCIA
+--------------------------------------------------------------------------------
+- 01_flujo_ataque.png / 02_modelo_diamante.png: diagramas branded (todo "segun el investigador").
+- 03_fuente_post_x_24102026.png: captura del post con banner de procedencia (URL, hora, SHA-256).
+- 04_ y 05_: las dos imagenes del post (listado y PHP decodificado), con banner de procedencia.
+- evidencia_recon_24102026.txt: lectura del post, conversion de la marca de tiempo y consultas pasivas, con hora UTC.
+- internetdb_*, rdap_ripe_*, ipinfo_*, ptr_*, urlscan_ip_*: salidas crudas (el RDAP va recortado, sin contactos
+  individuales).
+- evidencia.sha256: sumas de verificacion.
+- El JSON crudo del post y los originales de las imagenes se guardan solo en local.
+
+--------------------------------------------------------------------------------
+Intellroom Threat Intelligence. Analisis pasivo (post y imagenes del investigador, Shodan InternetDB, RDAP de
+RIPE, ipinfo, DNS inverso, urlscan, matriz MITRE ATT&CK). Sin contactar la IP ni descargar nada del atacante.
+Las ideas de deteccion son hipotesis: validar antes de desplegar. Redactado con apoyo de IA.

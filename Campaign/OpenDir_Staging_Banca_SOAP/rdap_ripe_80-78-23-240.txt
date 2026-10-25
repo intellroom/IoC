@@ -1,0 +1,284 @@
+UTC 2026-10-25T00:01:17Z
+{
+ "handle": "80.78.16.0 - 80.78.31.255",
+ "startAddress": "80.78.16.0",
+ "endAddress": "80.78.31.255",
+ "ipVersion": "v4",
+ "name": "RO-MATERIALISM-20050316",
+ "type": "ALLOCATED PA",
+ "country": "SE",
+ "parentHandle": "0.0.0.0 - 255.255.255.255",
+ "cidr0_cidrs": [
+  {
+   "v4prefix": "80.78.16.0",
+   "length": 20
+  }
+ ],
+ "status": [
+  "active"
+ ],
+ "entities": [
+  {
+   "handle": "MA27549-RIPE",
+   "vcardArray": [
+    "vcard",
+    [
+     [
+      "version",
+      {},
+      "text",
+      "4.0"
+     ],
+     [
+      "fn",
+      {},
+      "text",
+      "MATERIALISM"
+     ],
+     [
+      "kind",
+      {},
+      "text",
+      "group"
+     ]
+    ]
+   ],
+   "roles": [
+    "administrative",
+    "technical"
+   ],
+   "links": [
+    {
+     "value": "https://rdap.db.ripe.net/ip/80.78.23.240",
+     "rel": "self",
+     "href": "https://rdap.db.ripe.net/entity/MA27549-RIPE"
+    },
+    {
+     "value": "http://www.ripe.net/data-tools/support/documentation/terms",
+     "rel": "copyright",
+     "href": "http://www.ripe.net/data-tools/support/documentation/terms"
+    }
+   ],
+   "objectClassName": "entity"
+  },
+  {
+   "handle": "ORG-MS858-RIPE",
+   "vcardArray": [
+    "vcard",
+    [
+     [
+      "version",
+      {},
+      "text",
+      "4.0"
+     ],
+     [
+      "fn",
+      {},
+      "text",
+      "Materialism s.r.l."
+     ],
+     [
+      "kind",
+      {},
+      "text",
+      "org"
+     ]
+    ]
+   ],
+   "roles": [
+    "registrant"
+   ],
+   "links": [
+    {
+     "value": "https://rdap.db.ripe.net/ip/80.78.23.240",
+     "rel": "self",
+     "href": "https://rdap.db.ripe.net/entity/ORG-MS858-RIPE"
+    },
+    {
+     "value": "http://www.ripe.net/data-tools/support/documentation/terms",
+     "rel": "copyright",
+     "href": "http://www.ripe.net/data-tools/support/documentation/terms"
+    }
+   ],
+   "objectClassName": "entity"
+  },
+  {
+   "handle": "AR76926-RIPE",
+   "vcardArray": [
+    "vcard",
+    [
+     [
+      "version",
+      {},
+      "text",
+      "4.0"
+     ],
+     [
+      "fn",
+      {},
+      "text",
+      "Abuse-C Role"
+     ],
+     [
+      "kind",
+      {},
+      "text",
+      "group"
+     ]
+    ]
+   ],
+   "roles": [
+    "abuse"
+   ],
+   "entities": [],
+   "objectClassName": "entity"
+  }
+ ],
+ "links": [
+  {
+   "value": "https://rdap.db.ripe.net/ip/80.78.23.240",
+   "rel": "rdap-up",
+   "href": "https://rdap.db.ripe.net/ips/rirSearch1/rdap-up/80.78.16.0%20-%2080.78.31.255",
+   "type": "application/rdap+json"
+  },
+  {
+   "value": "https://rdap.db.ripe.net/ip/80.78.23.240",
+   "rel": "rdap-up rdap-active",
+   "href": "https://rdap.db.ripe.net/ips/rirSearch1/rdap-up/80.78.16.0%20-%2080.78.31.255?status=active",
+   "type": "application/rdap+json"
+  },
+  {
+   "value": "https://rdap.db.ripe.net/ip/80.78.23.240",
+   "rel": "rdap-down",
+   "href": "https://rdap.db.ripe.net/ips/rirSearch1/rdap-down/80.78.16.0%20-%2080.78.31.255",
+   "type": "application/rdap+json"
+  },
+  {
+   "value": "https://rdap.db.ripe.net/ip/80.78.23.240",
+   "rel": "rdap-top",
+   "href": "https://rdap.db.ripe.net/ips/rirSearch1/rdap-top/80.78.16.0%20-%2080.78.31.255",
+   "type": "application/rdap+json"
+  },
+  {
+   "value": "https://rdap.db.ripe.net/ip/80.78.23.240",
+   "rel": "rdap-top rdap-active",
+   "href": "https://rdap.db.ripe.net/ips/rirSearch1/rdap-top/80.78.16.0%20-%2080.78.31.255?status=active",
+   "type": "application/rdap+json"
+  },
+  {
+   "value": "https://rdap.db.ripe.net/ip/80.78.23.240",
+   "rel": "rdap-bottom",
+   "href": "https://rdap.db.ripe.net/ips/rirSearch1/rdap-bottom/80.78.16.0%20-%2080.78.31.255",
+   "type": "application/rdap+json"
+  },
+  {
+   "value": "https://rdap.db.ripe.net/ip/80.78.23.240",
+   "rel": "self",
+   "href": "https://rdap.db.ripe.net/ip/80.78.23.240",
+   "type": "application/rdap+json"
+  },
+  {
+   "value": "http://www.ripe.net/data-tools/support/documentation/terms",
+   "rel": "copyright",
+   "href": "http://www.ripe.net/data-tools/support/documentation/terms"
+  }
+ ],
+ "events": [
+  {
+   "eventAction": "registration",
+   "eventDate": "2026-02-27T12:11:48Z"
+  },
+  {
+   "eventAction": "last changed",
+   "eventDate": "2026-05-21T11:58:44Z"
+  }
+ ],
+ "rdapConformance": [
+  "geofeed1",
+  "rirSearch1",
+  "ips",
+  "cidr0",
+  "rdap_level_0",
+  "nro_rdap_profile_0",
+  "redacted"
+ ],
+ "notices": [
+  {
+   "title": "Filtered",
+   "description": [
+    "This output has been filtered."
+   ]
+  },
+  {
+   "title": "Whois Inaccuracy Reporting",
+   "description": [
+    "If you see inaccuracies in the results, please visit:"
+   ],
+   "links": [
+    {
+     "value": "https://rdap.db.ripe.net/ip/80.78.23.240",
+     "rel": "inaccuracy-report",
+     "href": "https://www.ripe.net/contact-form?topic=ripe_dbm&show_form=true",
+     "type": "text/html"
+    }
+   ]
+  },
+  {
+   "title": "Source",
+   "description": [
+    "Objects returned came from source",
+    "RIPE"
+   ]
+  },
+  {
+   "title": "Terms and Conditions",
+   "description": [
+    "This is the RIPE Database query service. The objects are in RDAP format."
+   ],
+   "links": [
+    {
+     "value": "https://rdap.db.ripe.net/ip/80.78.23.240",
+     "rel": "terms-of-service",
+     "href": "http://www.ripe.net/db/support/db-terms-conditions.pdf",
+     "type": "application/pdf"
+    }
+   ]
+  }
+ ],
+ "port43": "whois.ripe.net",
+ "objectClassName": "ip network",
+ "redacted": [
+  {
+   "name": {
+    "description": "Personal e-mail information"
+   },
+   "reason": {
+    "description": "Personal data"
+   },
+   "prePath": "$.entities[?(@.handle=='MA27549-RIPE')].vcardArray[1][?(@[0]=='e-mail')]",
+   "method": "removal"
+  },
+  {
+   "name": {
+    "description": "Personal e-mail information"
+   },
+   "reason": {
+    "description": "Personal data"
+   },
+   "prePath": "$.entities[?(@.handle=='ORG-MS858-RIPE')].vcardArray[1][?(@[0]=='e-mail')]",
+   "method": "removal"
+  },
+  {
+   "name": {
+    "description": "Personal e-mail information"
+   },
+   "reason": {
+    "description": "Personal data"
+   },
+   "prePath": "$.entities[?(@.handle=='AR76926-RIPE')].vcardArray[1][?(@[0]=='e-mail')]",
+   "method": "removal"
+  }
+ ],
+ "_nota_intellroom": "Recortado por Intellroom: se quitaron 3 contactos individuales y los correos, telefonos y direcciones de los contactos. El original queda solo en local."
+}

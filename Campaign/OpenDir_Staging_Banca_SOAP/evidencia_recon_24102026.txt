@@ -1,0 +1,68 @@
+================================================================================
+ EVIDENCIA CRUDA -- Directorio abierto con kit de ataque y relevo SOAP (post del 2026-10-24)
+ Intellroom Threat Intelligence -- TLP:CLEAR
+================================================================================
+Fuente     : https://x.com/Yusufcancakiir/status/2114054943724417088
+Origen     : post publico entregado a Intellroom para analisis (2026-10-24)
+Analista   : Intellroom CTI
+Metodo     : lectura del post (API publica de fxtwitter y navegador), descarga de las dos imagenes del post desde
+             pbs.twimg.com y consultas pasivas sobre la IP (Shodan InternetDB, RDAP de RIPE, ipinfo, DNS inverso,
+             urlscan) y verificacion de IDs en attack.mitre.org.
+             NO se contacto 80.78.23.240 ni se descargo nada del servidor.
+
+== [1] El post ==
+UTC 2026-10-25T00:00:46Z   GET https://api.fxtwitter.com/Yusufcancakiir/status/2114054943724417088  -> HTTP 200
+  Autor    : @Yusufcancakiir, cuenta verificada; perfil: "Threat Researcher | Co-Founder
+             @CTIAcademy"
+  Publicado: Sat Oct 24 18:02:30 +0000 2026 ; 37 me gusta, 7 reposts, 0 respuestas (a las 2026-10-25T00:00Z)
+  Texto    : se resume en la ficha (no se copia completo: es contenido del autor). 2 imagenes adjuntas.
+  JSON crudo del post: SOLO local (_solo_local).
+UTC 2026-10-25T00:05:57Z   Captura del post en un navegador, sin iniciar sesion
+  03_fuente_post_x_24102026.png ; SHA-256 del original d04bb1b66dafa593fc80d86f4e57b4741cc040f2091151a4998275283800cfd8
+
+== [2] Imagenes del post ==
+  Imagen 1: https://pbs.twimg.com/media/HVahtXmWoAAjjlK.jpg?name=orig  (83.330 bytes)
+     SHA-256 c114f84e428252aadfe49594fe8bf963e75ef0692540cba1d468908cdf2ef48f   -> 04_fuente_listado_directorio_imagen1.png
+     Navegador "Not Secure" en http://80.78.23.240:8080 ; titulo "Directory listing for /". Entradas visibles (41):
+       .font-unix/ .ICE-unix/ .X11-unix/ .XIM-unix/ attack228.py captcha_portal.py chisel.exe chisel.log crack/
+       cuenta_0000001.html cuenta_10000001.html cuenta_1000001.html cuenta_1000002.html cuenta_100001.html
+       cuenta_1000010.html cuenta_1001001.html cuenta_1234567.html cuenta_12345678.html cuenta_2000001.html
+       cuenta_2001001.html cuenta_3000001.html cuenta_5000001.html cuenta_7000001.html cuenta_99999999.html
+       enum228b.py enum_228.py form.html form2.html form_700.html h1.txt h3.txt idx.html listener_out.log
+       ora_brute_full.py ora_test.py oracle_results.json oratest_1792833639.php portal_700.html portal_debug.py
+       portal_fast.py portal_hit.py (el listado sigue mas abajo, fuera de la captura: faltan unas 16 de las 57)
+  Imagen 2: https://pbs.twimg.com/media/HVahtaIX0AA7M-0.jpg?name=orig  (70.794 bytes)
+     SHA-256 bf55f6507dd4c4abd45165bd1374199faba969bf789847bc8fb9cd9f535074d8   -> 05_fuente_php_decodificado_imagen2.png
+     Titulo "Decoded PHP - Sanitized static analysis". Lineas 04 a 26: toma k (comparada con un valor redactado),
+     a, cta, m (por defecto 0), f (por defecto date Ymd), h (por defecto date His), au y br (por defecto 1);
+     $url = [REDACTED INTERNAL ENDPOINT]; si a=='consulta' arma "SOAP Envelope: ConsultaSdo" y SOAPAction
+     http://tempuri.org/wsBnmxCNA/Service1/ConsultaSdo; si a=='aplica', "SOAP Envelope: AplicaPago" y
+     .../AplicaPago; POST con "Content-Type: text/xml; charset=utf-8" y SOAPAction; timeout 30.
+
+== [3] Marca de tiempo del nombre oratest_1792833639.php ==
+  epoch 1792833639 = 2026-10-24T09:20:39Z (python, datetime UTC). Que el nombre se haya generado al crear el
+  archivo es INFERIDO; no se puede comprobar.
+
+== [4] La IP 80.78.23.240, solo pasivo ==
+  ipinfo.io (2026-10-25T00:0xZ): Lund, Skane, SE ; AS39287 Materialism s.r.l. ; hostname 504e17f0.host.njalla.net
+                                                                                    ipinfo_80-78-23-240.txt
+  DNS inverso: 504e17f0.host.njalla.net.                                            ptr_80-78-23-240.txt
+  RDAP RIPE: RO-MATERIALISM-20050316, 80.78.16.0 - 80.78.31.255 (/20), SE ; organizacion Materialism s.r.l.
+     (se publica RECORTADO: sin los 3 contactos individuales ni correos, telefonos o direcciones de contactos)
+                                                                                    rdap_ripe_80-78-23-240.txt
+  Shodan InternetDB: {"detail":"No information available"}                          internetdb_80-78-23-240.txt
+  urlscan.io por IP: 0 resultados                                                   urlscan_ip_80-78-23-240.txt
+  Lectura: nada corrobora de forma independiente el listado; es un dato solo del investigador.
+
+== [5] Tecnicas ATT&CK verificadas en attack.mitre.org (2026-10-25) ==
+  T1583.003 Acquire Infrastructure: Virtual Private Server ; T1608.001 Stage Capabilities: Upload Malware ;
+  T1190 Exploit Public-Facing Application ; T1059.006 Command and Scripting Interpreter: Python ;
+  T1110 Brute Force ; T1110.004 Brute Force: Credential Stuffing ; T1021.006 Remote Services: Windows Remote
+  Management ; T1572 Protocol Tunneling. Se comprobo el titulo de cada pagina; la asignacion al caso es inferencia.
+
+== [6] Lo que NO se hizo ni se pudo obtener ==
+  - No se contacto 80.78.23.240 (ni se sondeo ningun puerto) ni se uso Hunt.io.
+  - No se descargo ningun archivo del servidor: los nombres salen de la imagen 1 del investigador.
+  - No se verifico ninguna afirmacion del post; no hay hashes de los archivos.
+  - No se conoce la parte del listado fuera de la imagen 1 (unas 16 de las 57 entradas).
+================================================================================
