@@ -1,0 +1,47 @@
+================================================================================
+  IOCs / ACCIONES -- MopsStealer: C2 del infostealer en Podaon SIA (Paises Bajos)
+================================================================================
+Defanged: mops[.]to = mops.to ; 45[.]91[.]202[.]47 = 45.91.202.47 ; hxxp = http
+
+INDICADORES PARA BLOQUEO RAPIDO
+
+[BLOQUEAR -- REVISAR el 2026-11-27]  confianza ALTA: C2 en ThreatFox y en el post de la fuente
+mops[.]to                     # dominio del C2, creado el 2026-09-27 (Tonic), NS de Cloudflare; dominio dedicado,
+                              # sin uso legitimo conocido: se puede bloquear entero, incluidos los subdominios
+45[.]91[.]202[.]47            # C2 en los puertos 408 y 1488 (ThreatFox). VPS de Podaon SIA, AS211381, Oude Meer (NL).
+                              # PTR 45-91-202-47.netherlands-3.vps.ac. VPS: PUEDE REASIGNARSE, por eso la fecha de revision
+45[.]91[.]202[.]146           # C2 en los puertos 408 y 1488 (ThreatFox). Mismo proveedor y misma convencion de PTR
+
+[BLOQUEAR -- REVISAR el 2026-11-27]  confianza MEDIA: hallazgo propio, no figura en ThreatFox
+89[.]105[.]213[.]118          # registro A de mops.to el 2026-10-28 01:17 UTC (el 2026-10-21 apuntaba a 45.91.202.47).
+                              # Mismo AS211381 Podaon SIA y PTR 89-105-213-118.netherlands-3.vps.ac. La une a la campana
+                              # solo el DNS actual del dominio: si mops.to vuelve a moverse, revisar antes
+
+[DETECTAR -- en red]
+hxxp://mops[.]to:408/task/Stealer            # URL del C2 (ThreatFox); el 2026-10-21 respondio 403 "Access denied" a urlscan
+Conexiones TCP salientes a los puertos 408 o 1488 hacia las IP de arriba    # puertos no estandar del C2
+Resolucion DNS de mops.to desde cualquier equipo                             # senal de infeccion: no hay motivo legitimo
+Conexiones WebSocket hacia mops.to           # ThreatFox etiqueta el dominio con "Websocket"; conducta sin verificar
+
+[DETECTAR -- en endpoints]  SHA-256 asociados a MopsStealer
+1c850a5b877770dd831c68e2b6c9681419e63533c2f04cf9bdfa8f7fa6756585   # DLL o EXE de 64 bits, etiqueta Fake-Git (MalwareBazaar y ThreatFox, 2026-10-21)
+a165f9c5edb52d73fad3f1ed75709a41cc164b096e391069f9f81825084de3c2   # etiqueta fake-git (solo ThreatFox, 2026-10-21); tipo de archivo sin verificar
+093295dc19020f1ac560c549fbe1241b582b5193ed9ad31afc12d8390b86f2d0   # etiqueta fake-git (solo ThreatFox, 2026-10-21); tipo de archivo sin verificar
+87cbf3ab4dd505c535f963915fffd6162154a0f8fbee8813157b8f81295875df   # script PowerShell (.ps1) (MalwareBazaar, 2026-10-20)
+3c110de70db7225573f6bd937a7704423bce6c03fad5fac3ea3fb5bacf130d50   # DLL o EXE (MalwareBazaar, 2026-09-26); anterior al registro de mops.to:
+                                                                    # su C2 no tiene por que ser este dominio
+RuntimeBroker.exe fuera de C:\Windows\System32 o lanzado por un proceso que no es svchost.exe   # ThreatFox etiqueta
+                                                                    # el dominio con "RuntimeBroker"; se infiere un disfraz, sin verificar
+
+[VIGILAR -- NO bloquear ciegamente]
+AS211381 / 45[.]91[.]202[.]0/24 / 89[.]105[.]213[.]0/24 (Podaon SIA)   # hosting con otros clientes: no bloquear el ASN ni los bloques
+*.netherlands-3.vps[.]ac                     # convencion de PTR del proveedor, compartida por todos sus VPS
+Repositorios de software descargados desde GitHub u otras forjas sin historial ni autor conocido   # vector segun la etiqueta fake-git
+
+[NO ES UN IOC -- no crear reglas sobre esto]
+gloria.ns.cloudflare.com, vicky.ns.cloudflare.com   # servidores de nombres compartidos de Cloudflare
+RuntimeBroker.exe en su ruta legitima         # proceso normal de Windows
+Puertos 135, 139, 445, 3389, 5985, 5986 y 3000 abiertos en los VPS   # servicios del propio servidor Windows, no del stealer
+CVE-2020-0796 en Shodan InternetDB            # inferido por version del servidor; no dice nada del stealer
+Certificado Sectigo de *.mops.to (2026-10-01)  # el certificado es contexto; el dominio ya va en BLOQUEAR
+threatfox.abuse.ch, bazaar.abuse.ch           # las fuentes

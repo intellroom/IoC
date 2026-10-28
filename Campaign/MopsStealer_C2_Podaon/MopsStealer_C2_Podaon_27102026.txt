@@ -1,0 +1,221 @@
+================================================================================
+  MOPSSTEALER: C2 DEL INFOSTEALER EN PODAON SIA (PAISES BAJOS)
+  mops.to, 45.91.202.47 y 45.91.202.146 (puertos 408 y 1488), mas una IP nueva
+================================================================================
+Fecha del analisis : 2026-10-27 (Chile) ; consultas entre 2026-10-28 01:17 y 01:23 UTC
+Origen             : post de X entregado por el analista de Intellroom (solo el texto; sin enlace ni cuenta del autor)
+Contrastado con    : ThreatFox y MalwareBazaar (abuse.ch), Malpedia y fuentes pasivas (DNS, WHOIS, RDAP de RIPE,
+                     RIPEstat, Shodan InternetDB, ipinfo, urlscan, crt.sh)
+TLP:CLEAR
+Confianza          : que mops.to y las dos IP son C2 de MopsStealer = ALTA (ThreatFox y el post coinciden) ;
+                     89.105.213.118 = MEDIA (hallazgo propio por DNS) ; vector de distribucion = BAJA (solo etiquetas) ;
+                     victimas en Chile = ninguna conocida
+
+
+--------------------------------------------------------------------------------
+RESUMEN
+--------------------------------------------------------------------------------
+MopsStealer es una familia de infostealer para Windows de aparicion reciente: MalwareBazaar tiene su primera muestra
+del 2026-09-26 y ThreatFox su primer IOC del 2026-10-18. Malpedia la registra sin descripcion, sin alias y sin
+reglas YARA, asi que casi no hay documentacion publica de lo que hace.
+
+Un post de X (recibido como texto, sin enlace) anuncia cinco C2 activos alojados en Podaon SIA, Paises Bajos:
+el dominio mops.to y dos IP, 45.91.202.47 y 45.91.202.146, cada una en los puertos 408 y 1488. Los cinco coinciden
+uno a uno con las entradas de ThreatFox, donde tres de los cuatro IP:puerto los reporto la cuenta de abuse.ch el
+25 y el 26-oct. ThreatFox suma una URL del C2 (http://mops.to:408/task/Stealer) y tres SHA-256; MalwareBazaar,
+tres muestras (una en comun con ThreatFox), con lo que la familia junta cinco hashes distintos.
+
+Hallazgo propio: el 2026-10-28 01:17 UTC mops.to ya no resuelve a 45.91.202.47, como el 2026-10-21 segun urlscan,
+sino a 89.105.213.118. Esa IP la anuncia el mismo sistema autonomo (AS211381, Podaon SIA) y sigue la misma convencion
+de DNS inverso (89-105-213-118.netherlands-3.vps.ac). No esta en ThreatFox ni en urlscan, y Shodan InternetDB no la
+conoce. Es la primera pieza de este caso que no viene de la fuente.
+
+Intellroom NO contacto mops.to ni ninguna de las IP, y NO descargo muestras. Todo sale de paginas publicas, de la
+captura que guardo urlscan el 2026-10-21 y de consultas pasivas.
+
+
+--------------------------------------------------------------------------------
+POR QUE IMPORTA
+--------------------------------------------------------------------------------
+Un infostealer roba lo que el equipo tiene guardado: contrasenas del navegador, cookies de sesion y, segun la
+familia, billeteras y datos de mensajeria. Una sesion robada salta el segundo factor. Las etiquetas de ThreatFox y de
+MalwareBazaar ("fake-git" y "Fake-Git") apuntan a repositorios falsos de software como via de entrega, que es como
+hoy llegan muchos stealers a desarrolladores y a quien baja herramientas gratis.
+
+La infraestructura se mueve: en una semana el dominio paso de una IP a otra dentro del mismo proveedor. Por eso el
+bloqueo del dominio rinde mas que el de cada IP, y las IP llevan fecha de revision.
+
+Relevancia para Chile: ni el post ni las fuentes mencionan Chile ni LATAM. No hay victimas chilenas conocidas. Se
+publica por ser infraestructura activa de una familia nueva, que un equipo defensor puede bloquear hoy.
+
+
+--------------------------------------------------------------------------------
+LINEA DE TIEMPO (horas UTC)
+--------------------------------------------------------------------------------
+2026-09-26 08:23  Primera muestra en MalwareBazaar (3c110de7..., DLL o EXE; reportada por abuse_ch). Es anterior al
+                  registro de mops.to: su C2 no tiene por que ser este dominio.
+2026-09-27 17:29  Se registra mops.to en Tonic (registro de .to).
+2026-10-01        Sectigo emite un certificado para mops.to y *.mops.to (crt.sh; la emision junto con los NS de
+                  Cloudflare sugiere el certificado universal de Cloudflare, INFERIDO).
+2026-10-02 17:30  Ultima modificacion del registro del dominio.
+2026-10-18 06:10  Primer IOC en ThreatFox: mops.to (etiquetas Loader, RuntimeBroker, Websocket; reportante wristhulk).
+2026-10-20 14:01  Muestra PS1 en MalwareBazaar (87cbf3ab..., reportante Tuxxin).
+2026-10-21 07:08  Muestra DLL o EXE de 64 bits en MalwareBazaar (1c850a5b..., etiqueta Fake-Git).
+2026-10-21 07:12  ThreatFox suma 3 SHA-256, 45.91.202.47:1488 y la URL http://mops.to:408/task/Stealer (anonimo,
+                  etiquetas fake-git y static-analysis).
+2026-10-21 12:24  urlscan escanea http://mops.to:408/task/Stealer: resuelve a 45.91.202.47 y responde 403 "Access denied".
+2026-10-25 06:08  ThreatFox: 45.91.202.146:1488 (abuse_ch).
+2026-10-26 13:23  ThreatFox: 45.91.202.47:408 y, a las 13:29, 45.91.202.146:408 (abuse_ch).
+2026-10-28 01:17  Intellroom: mops.to resuelve a 89.105.213.118 (NS de Cloudflare, sin proxy).
+Nota: el post no trae fecha; por su contenido es del 26 o 27-oct (INFERIDO).
+
+
+--------------------------------------------------------------------------------
+QUE SE OBSERVO
+--------------------------------------------------------------------------------
+Fuente (post): cinco C2 activos en Podaon SIA (bandera de Paises Bajos): mops.to, 45.91.202.47:408,
+45.91.202.47:1488, 45.91.202.146:408 y 45.91.202.146:1488, con enlace a ThreatFox y a MalwareBazaar.
+
+ThreatFox, familia win.mops_stealer (9 IOC al 2026-10-28 01:21 UTC):
+  4 IP:puerto (los del post), 1 dominio (mops.to), 1 URL (http://mops.to:408/task/Stealer) y 3 SHA-256.
+MalwareBazaar, firma MopsStealer (3 muestras): 1c850a5b... (64 bits, dll, exe, Fake-Git, stealer),
+  87cbf3ab... (ps1) y 3c110de7... (dll, exe).
+Malpedia, win.mops_stealer: "There is no description at this point", sin alias ni YARA; una sola referencia (la muestra
+  1c850a5b... de MalwareBazaar).
+
+Pasivo sobre la infraestructura:
+- mops.to: A 89.105.213.118 ; NS gloria y vicky.ns.cloudflare.com ; sin MX, TXT ni AAAA ; registro Tonic, creado el
+  2026-09-27, vence el 2028-09-27, DNSSEC sin firmar. La IP no es de Cloudflare: el dominio usa su DNS sin proxy.
+- 45.91.202.47: AS211381 Podaon SIA, Oude Meer (NL), PTR 45-91-202-47.netherlands-3.vps.ac. InternetDB ve 135, 139,
+  445, 3000 (Node.js con Express) y 5985: un VPS Windows. No ve los puertos 408 ni 1488.
+- 45.91.202.146: mismo proveedor; InternetDB ve 135, 445, 3000 (Node.js con Express), 3389, 5985, 5986 y 12255, con
+  certificado autofirmado. No ve los puertos 408 ni 1488.
+- 89.105.213.118: AS211381 Podaon SIA (RIPEstat: anuncia 89.105.213.0/24), PTR 89-105-213-118.netherlands-3.vps.ac.
+  El inetnum de RIPE (89.105.213.64/26) sigue registrado a Novoserve como "Avira Private Cloud", sin cambios desde
+  2019: el registro y el anuncio no coinciden (registro desactualizado, INFERIDO). InternetDB y urlscan: sin datos.
+- Las dos IP del post estan en 45.91.202.0/24, que anuncia AS211381; el bloque se registro en RIPE el 2024-08-29.
+- El puerto 3000 con Node.js y Express en las dos IP del post puede ser el panel del operador: INFERIDO, sin verificar.
+
+
+--------------------------------------------------------------------------------
+INDICADORES
+--------------------------------------------------------------------------------
+[BLOQUEAR + REVISAR el 2026-11-27]  confianza ALTA
+  mops.to               Dominio del C2. Dedicado: se puede bloquear entero.
+  45.91.202.47          C2 en 408 y 1488. VPS reasignable.
+  45.91.202.146         C2 en 408 y 1488. VPS reasignable.
+
+[BLOQUEAR + REVISAR el 2026-11-27]  confianza MEDIA
+  89.105.213.118        A actual de mops.to (hallazgo propio, 2026-10-28 01:17 UTC). No figura en ThreatFox.
+
+[DETECTAR -- en red]
+  http://mops.to:408/task/Stealer
+  Salidas TCP a 408 o 1488 hacia las IP de arriba ; resolucion DNS de mops.to ; WebSocket hacia mops.to
+
+[DETECTAR -- en endpoints]  SHA-256
+  1c850a5b877770dd831c68e2b6c9681419e63533c2f04cf9bdfa8f7fa6756585  DLL o EXE de 64 bits, Fake-Git
+  a165f9c5edb52d73fad3f1ed75709a41cc164b096e391069f9f81825084de3c2  fake-git (solo ThreatFox), tipo sin verificar
+  093295dc19020f1ac560c549fbe1241b582b5193ed9ad31afc12d8390b86f2d0  fake-git (solo ThreatFox), tipo sin verificar
+  87cbf3ab4dd505c535f963915fffd6162154a0f8fbee8813157b8f81295875df  PowerShell (.ps1)
+  3c110de70db7225573f6bd937a7704423bce6c03fad5fac3ea3fb5bacf130d50  DLL o EXE, del 2026-09-26
+  RuntimeBroker.exe fuera de C:\Windows\System32 (hipotesis a partir de la etiqueta de ThreatFox)
+
+[VIGILAR -- NO bloquear ciegamente]
+  AS211381, 45.91.202.0/24 y 89.105.213.0/24 (Podaon SIA): hosting con otros clientes
+  *.netherlands-3.vps.ac: convencion de PTR de todos los VPS del proveedor
+
+Formato defanged en iocs.txt (mops[.]to, 45[.]91[.]202[.]47, hxxp).
+
+
+--------------------------------------------------------------------------------
+LO QUE NO ES UN IOC (no crear reglas sobre esto)
+--------------------------------------------------------------------------------
+- gloria.ns.cloudflare.com y vicky.ns.cloudflare.com: servidores de nombres compartidos por millones de dominios.
+- RuntimeBroker.exe en su ruta legitima: proceso normal de Windows.
+- Los puertos de Windows abiertos en los VPS (135, 139, 445, 3389, 5985, 5986) y el 3000: son del servidor.
+- CVE-2020-0796 que lista InternetDB: inferido por la version del servidor; no dice nada del stealer.
+- El certificado Sectigo de *.mops.to: contexto; el dominio ya esta en la lista.
+- abuse_ch, wristhulk y Tuxxin: son los reportantes en abuse.ch, no actores.
+
+
+--------------------------------------------------------------------------------
+EVALUACION DE LA FUENTE (Admiralty)
+--------------------------------------------------------------------------------
+- El post: B2 en contenido (sus cinco C2 coinciden con ThreatFox), sin poder evaluar al autor porque no se recibio
+  la cuenta. El formato coincide con los avisos que publica abuse.ch, pero eso es INFERIDO.
+- ThreatFox y MalwareBazaar: A2 (plataformas de referencia; las entradas anonimas o de terceros no se revisaron una a
+  una porque las fichas individuales piden verificacion de navegador).
+- 89.105.213.118: B2 (DNS actual del dominio del C2, comprobable por cualquiera; sin confirmacion de que el stealer la
+  use hoy).
+- Vector de distribucion por repositorios falsos: C3 (solo etiquetas).
+
+
+--------------------------------------------------------------------------------
+MITRE ATT&CK (nivel tecnica; IDs verificados en attack.mitre.org el 2026-10-28 01:23 UTC; asignacion inferida)
+--------------------------------------------------------------------------------
+Recursos            T1583.001  Acquire Infrastructure: Domains (mops.to)
+                    T1583.003  Acquire Infrastructure: Virtual Private Server (VPS de Podaon SIA)
+                    T1608.001  Stage Capabilities: Upload Malware (repositorios falsos, segun la etiqueta)
+Ejecucion           T1204.002  User Execution: Malicious File
+                    T1059.001  Command and Scripting Interpreter: PowerShell (muestra .ps1)
+Evasion             T1036.005  Masquerading: Match Legitimate Resource Name or Location (etiqueta RuntimeBroker)
+Credenciales        T1555.003  Credentials from Password Stores: Credentials from Web Browsers (perfil de un stealer)
+Comando y control   T1071.001  Application Layer Protocol: Web Protocols (/task/Stealer por HTTP)
+                    T1571      Non-Standard Port (408 y 1488)
+Exfiltracion        T1041      Exfiltration Over C2 Channel (perfil de un stealer)
+(Validar con telemetria antes de convertir en regla.)
+
+
+--------------------------------------------------------------------------------
+ACCIONES RECOMENDADAS
+--------------------------------------------------------------------------------
+1. Bloquear mops.to (con subdominios) en DNS y proxy, y las IP 45.91.202.47, 45.91.202.146 y 89.105.213.118.
+   REVISAR el bloqueo de las IP el 2026-11-27.
+2. Cazar hacia atras en DNS, proxy y firewall: resoluciones de mops.to y salidas a 408 o 1488 hacia esas IP.
+3. Buscar los cinco SHA-256 en EDR y antivirus.
+4. Si un equipo resolvio mops.to: tratarlo como infectado. Aislarlo, cerrar las sesiones abiertas en todos los
+   servicios y cambiar las contrasenas guardadas en su navegador desde otro equipo limpio.
+5. Recordar a desarrolladores y equipos de TI que no ejecuten codigo de repositorios sin historial ni autor conocido.
+6. Volver a mirar mops.to por DNS el 2026-11-27: si se movio, sumar la IP nueva.
+
+
+--------------------------------------------------------------------------------
+LO QUE NO SE PUDO VERIFICAR NI SE PUBLICA
+--------------------------------------------------------------------------------
+- El autor y la fecha del post: se recibio solo el texto.
+- Que roba MopsStealer y como se comunica: no hay analisis publico; no se descargo ni ejecuto ninguna muestra.
+- El tipo de archivo de a165f9c5... y 093295dc...: no estan en MalwareBazaar.
+- Las fichas individuales de ThreatFox y MalwareBazaar (comentarios, referencias, nombres de archivo): piden
+  verificacion de navegador y no se resolvio.
+- Si los puertos 408 y 1488 siguen respondiendo: no se contacto el C2; InternetDB no los ve.
+- Si 89.105.213.118 sirve hoy el C2: solo consta que mops.to apunta ahi.
+- El repositorio falso concreto: las etiquetas no lo nombran.
+- Victimas: ninguna conocida.
+- Atribucion: ninguna. Sin actor ni campana nombrados.
+
+
+--------------------------------------------------------------------------------
+CORRELACION
+--------------------------------------------------------------------------------
+Misma FAMILIA de casos publicados de infostealers con C2 propio (Campaign/Phexia_macOS_Polygon_C2 y
+Campaign/Macfinger_ClickFix_macOS). Diferencias: MopsStealer es de Windows y su entrega, segun las etiquetas, son
+repositorios falsos, no ClickFix. Es correspondencia de tipo de amenaza, no de identidad.
+
+
+--------------------------------------------------------------------------------
+EVIDENCIA
+--------------------------------------------------------------------------------
+- 01_flujo_ataque.png / 02_modelo_diamante.png: diagramas branded (lo inferido va rotulado en la propia figura).
+- 03_fuente_post_texto_27102026.png: transcripcion del post recibido, con el SHA-256 del texto.
+- 04_fuente_threatfox_mopsstealer_27102026.png y 05_fuente_malwarebazaar_mopsstealer_27102026.png: capturas de las
+  paginas publicas, con banner de procedencia (URL, hora UTC, SHA-256 de la captura original).
+- 06_urlscan_mops_to_408_21102026.png: recorte de la captura que guardo urlscan del C2 el 2026-10-21.
+- evidencia_recon_27102026.txt: todas las consultas con su hora UTC y las tablas leidas de abuse.ch.
+- rdap_ripe_*.json: RDAP de RIPE de las tres IP, recortado a las organizaciones (no habia personas).
+- evidencia.sha256: sumas de verificacion.
+- Los volcados HTML de abuse.ch, el texto recibido y las capturas originales quedan solo en local.
+
+--------------------------------------------------------------------------------
+Intellroom Threat Intelligence. Analisis pasivo (ThreatFox, MalwareBazaar, Malpedia, DNS, WHOIS, RDAP de RIPE,
+RIPEstat, Shodan InternetDB, ipinfo, urlscan, crt.sh, matriz MITRE ATT&CK). Sin contactar el C2 ni descargar
+muestras. Las ideas de deteccion son hipotesis: validar antes de desplegar. Redactado con apoyo de IA.

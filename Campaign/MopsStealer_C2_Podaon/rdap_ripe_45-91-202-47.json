@@ -1,0 +1,65 @@
+{
+ "consulta": "https://rdap.db.ripe.net/ip/45.91.202.47",
+ "nota": "Extracto: se omiten las entidades sin rol de organizacion; no habia contactos de personas en la respuesta.",
+ "handle": "45.91.202.0 - 45.91.202.127",
+ "name": "NET-3-34",
+ "country": "NL",
+ "type": "ASSIGNED PA",
+ "startAddress": "45.91.202.0",
+ "endAddress": "45.91.202.127",
+ "events": [
+  {
+   "eventAction": "registration",
+   "eventDate": "2024-08-29T14:48:18Z"
+  },
+  {
+   "eventAction": "last changed",
+   "eventDate": "2024-08-29T14:48:18Z"
+  }
+ ],
+ "remarks": [],
+ "entities": [
+  {
+   "handle": "ORG-PS469-RIPE",
+   "roles": [
+    "registrant"
+   ],
+   "fn": [
+    "Podaon SIA"
+   ],
+   "email": []
+  },
+  {
+   "handle": "PS25001-RIPE",
+   "roles": [
+    "administrative"
+   ],
+   "fn": [
+    "Podaon SIA"
+   ],
+   "email": []
+  },
+  {
+   "handle": "PSN68-RIPE",
+   "roles": [
+    "technical"
+   ],
+   "fn": [
+    "Podaon SIA - NOC"
+   ],
+   "email": []
+  },
+  {
+   "handle": "AR69429-RIPE",
+   "roles": [
+    "abuse"
+   ],
+   "fn": [
+    "Abuse-C Role"
+   ],
+   "email": [
+    "abuse@podaon.com"
+   ]
+  }
+ ]
+}

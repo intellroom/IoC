@@ -1,0 +1,48 @@
+{
+ "consulta": "https://rdap.db.ripe.net/ip/89.105.213.118",
+ "nota": "Extracto: se omiten las entidades sin rol de organizacion; no habia contactos de personas en la respuesta.",
+ "handle": "89.105.213.64 - 89.105.213.127",
+ "name": "NLISPAVIRACLOUD01",
+ "country": "NL",
+ "type": "ASSIGNED PA",
+ "startAddress": "89.105.213.64",
+ "endAddress": "89.105.213.127",
+ "events": [
+  {
+   "eventAction": "registration",
+   "eventDate": "2011-10-26T08:49:00Z"
+  },
+  {
+   "eventAction": "last changed",
+   "eventDate": "2019-07-03T12:42:13Z"
+  }
+ ],
+ "remarks": [
+  "Avira Private Cloud"
+ ],
+ "entities": [
+  {
+   "handle": "NRA29-RIPE",
+   "roles": [
+    "administrative",
+    "technical"
+   ],
+   "fn": [
+    "Novoserve Role Account"
+   ],
+   "email": []
+  },
+  {
+   "handle": "AR36511-RIPE",
+   "roles": [
+    "abuse"
+   ],
+   "fn": [
+    "Abuse-C Role"
+   ],
+   "email": [
+    "abuse@server-panel.net"
+   ]
+  }
+ ]
+}

@@ -18,6 +18,12 @@ https://github.com/intellroom/IoC#macfinger_clickfix_macos
 
 Ordenadas de la más reciente a la más antigua.
 
+### MopsStealer_C2_Podaon
+
+**2026-10-27** · C2 activos de **MopsStealer**, infostealer nuevo para Windows (MalwareBazaar desde el 26-09-2026, ThreatFox desde el 18-10-2026, Malpedia sin descripción): el dominio `mops[.]to` y `45[.]91[.]202[.]47` y `45[.]91[.]202[.]146` en los puertos 408 y 1488, en Podaon SIA (AS211381, Países Bajos), más cinco SHA-256. Hallazgo propio: `mops[.]to` ya apunta a `89[.]105[.]213[.]118`, en el mismo sistema autónomo. Entrega por repositorios falsos según las etiquetas de abuse.ch. Sin víctimas chilenas conocidas
+
+[Carpeta](Campaign/MopsStealer_C2_Podaon) · [iocs.txt](Campaign/MopsStealer_C2_Podaon/iocs.txt)
+
 ### OpenDir_Staging_Banca_SOAP
 
 **2026-10-24** · Directorio abierto (`80[.]78[.]23[.]240:8080`, VPS de Njalla en Suecia) que un investigador (@Yusufcancakiir) halló con Hunt.io: 57 artefactos de preparación de ataque a una plataforma bancaria y de pagos (24 scripts Python contra Oracle, SSRS, WinRM y ASP.NET, Chisel con listener en el 8443 y dos PHP en Base64 que reenvían SOAP `ConsultaSdo` y `AplicaPago`). Único indicador de red: la IP, sin corroboración independiente; el investigador no demuestra un compromiso. El post no menciona Chile

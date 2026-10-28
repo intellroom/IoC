@@ -1,0 +1,123 @@
+================================================================================
+ EVIDENCIA CRUDA -- MopsStealer: C2 en Podaon SIA (analisis del 2026-10-27, Chile)
+ Intellroom Threat Intelligence -- TLP:CLEAR
+================================================================================
+Origen     : post de X entregado a Intellroom como texto (sin enlace ni cuenta del autor)
+Analista   : Intellroom CTI
+Metodo     : lectura de las paginas publicas de ThreatFox, MalwareBazaar y Malpedia; DNS (resolutor 1.1.1.1), WHOIS,
+             RDAP de RIPE, RIPEstat, Shodan InternetDB, ipinfo, urlscan (busqueda y captura guardada) y crt.sh;
+             verificacion de IDs en attack.mitre.org.
+             NO se contacto mops.to, 45.91.202.47, 45.91.202.146 ni 89.105.213.118, y no se descargo ninguna muestra.
+Horas      : UTC. El 2026-10-28 UTC es todavia el 2026-10-27 en Chile.
+
+== [1] El post (texto recibido) ==
+  SHA-256 del texto, tal como se recibio en UTF-8: 4d15e8594f81bca9085430ccf33f315dc858f78925d096420111f6d64b6343a6
+  Contenido: cinco C2 activos de MopsStealer en Podaon SIA (Paises Bajos): mops .to (con un espacio, defang del
+  autor), 45.91.202.47:408, 45.91.202.47:1488, 45.91.202.146:408 y 45.91.202.146:1488; enlaces a
+  threatfox.abuse.ch/browse/malware/win.mops_stealer/ y bazaar.abuse.ch/browse/signature/MopsStealer/.
+  Transcripcion en 03_fuente_post_texto_27102026.png. El texto recibido queda solo en local.
+
+== [2] ThreatFox, familia win.mops_stealer ==
+UTC 2026-10-28T01:21:47Z  captura de https://threatfox.abuse.ch/browse/malware/win.mops_stealer/ (navegador sin cabeza,
+                          sin sesion) -> 04_fuente_threatfox_mopsstealer_27102026.png
+                          SHA-256 de la captura original 1a4b9bb375c0b37fbcd00d809b8ec90f62ed07c9ba2eec82dbfdcc65dbaa367c
+UTC 2026-10-28T01:21:5xZ  volcado del DOM (25.161 bytes) SHA-256 809ebc3a23a0380bc95b1d3a7d821062acc7cfc56c9c85fbfe81ce24acf58a30
+  Malware: MopsStealer ; First seen 2026-10-18 06:10:04 UTC ; Last seen 2026-10-26 13:29:50 UTC ; 9 IOC
+  Date (UTC)           IOC                                                                 Tags                                Reporter   Ficha
+  2026-10-26 13:29:50  45.91.202.146:408                                                   MopsStealer                         abuse_ch   /ioc/1990773/
+  2026-10-26 13:23:29  45.91.202.47:408                                                    MopsStealer                         abuse_ch   /ioc/1990763/
+  2026-10-25 06:08:16  45.91.202.146:1488                                                  MopsStealer                         abuse_ch   /ioc/1984459/
+  2026-10-21 07:12:40  1c850a5b877770dd831c68e2b6c9681419e63533c2f04cf9bdfa8f7fa6756585    fake-git MopsStealer static-analysis Anonymous /ioc/1977306/
+  2026-10-21 07:12:40  a165f9c5edb52d73fad3f1ed75709a41cc164b096e391069f9f81825084de3c2    fake-git MopsStealer static-analysis Anonymous /ioc/1977305/
+  2026-10-21 07:12:39  093295dc19020f1ac560c549fbe1241b582b5193ed9ad31afc12d8390b86f2d0    fake-git MopsStealer static-analysis Anonymous /ioc/1977307/
+  2026-10-21 07:12:38  45.91.202.47:1488                                                   fake-git MopsStealer static-analysis Anonymous /ioc/1977309/
+  2026-10-21 07:12:38  hxxp://mops[.]to:408/task/Stealer                                   fake-git MopsStealer static-analysis Anonymous /ioc/1977308/
+  2026-10-18 06:10:04  mops[.]to                                                           Loader RuntimeBroker Websocket      wristhulk  /ioc/1971817/
+  Las fichas individuales (/ioc/<id>/) piden verificacion de navegador: no se abrieron.
+
+== [3] MalwareBazaar, firma MopsStealer ==
+UTC 2026-10-28T01:21:48Z  captura de https://bazaar.abuse.ch/browse/signature/MopsStealer/
+                          -> 05_fuente_malwarebazaar_mopsstealer_27102026.png
+                          SHA-256 de la captura original 6681f171fc265d4f7fd3b1d5d420be8a07d17cc92fff9d39c8c33f8f1b04cbbd
+UTC 2026-10-28T01:21:5xZ  volcado del DOM (21.061 bytes) SHA-256 46f384de811fe1837cc4a52c5afac549b802875f439a4dba6c96d35b8f64d2af
+  Firstseen 2026-09-26 08:23:53 UTC ; Lastseen 2026-10-21 07:08:19 UTC ; 3 muestras
+  2026-10-21 07:08:19  1c850a5b877770dd831c68e2b6c9681419e63533c2f04cf9bdfa8f7fa6756585  64 dll exe Fake-Git MopsStealer stealer  Anonymous
+  2026-10-20 14:01:30  87cbf3ab4dd505c535f963915fffd6162154a0f8fbee8813157b8f81295875df  MopsStealer ps1                         Tuxxin
+  2026-09-26 08:23:53  3c110de70db7225573f6bd937a7704423bce6c03fad5fac3ea3fb5bacf130d50  dll exe MopsStealer                     abuse_ch
+  La ficha de la muestra (/sample/<sha256>/) pide verificacion de navegador: no se abrio.
+
+== [4] Malpedia ==
+UTC 2026-10-28T01:19Z  https://malpedia.caad.fkie.fraunhofer.de/details/win.mops_stealer -> HTTP 200
+  "There is no description at this point." ; sin alias ; sin YARA ; una referencia: la muestra 1c850a5b... de
+  MalwareBazaar, fechada el 2026-10-21 (fuente abuse.ch).
+
+== [5] DNS de mops.to (resolutor 1.1.1.1) ==
+UTC 2026-10-28T01:17:14Z
+  A     89.105.213.118
+  AAAA  (vacio)
+  NS    gloria.ns.cloudflare.com. vicky.ns.cloudflare.com.
+  MX    (vacio)
+  TXT   (vacio)
+  SOA   gloria.ns.cloudflare.com. dns.cloudflare.com. 2418583265 10000 2400 604800 1800
+UTC 2026-10-28T01:17:50Z  api.hackertarget.com/hostsearch/?q=mops.to -> mops.to,89.105.213.118
+
+== [6] WHOIS de mops.to (whois.tonicregistry.to) ==
+UTC 2026-10-28T01:18:41Z
+  Domain Name: mops.to ; Registrar: Tonic (IANA ID 6763001) ; Registrar Abuse Contact Email: hostmaster@tonic.to
+  Creation Date: 2026-09-27T17:29:17.311Z ; Updated Date: 2026-10-02T17:30:14.238Z ; Registry Expiry Date: 2028-09-27T17:29:17.311Z
+  Domain Status: clientTransferProhibited ; Name Server: gloria.ns.cloudflare.com, vicky.ns.cloudflare.com ; DNSSEC: unsigned
+  (La consulta previa a whois.iana.org para el TLD .to trae contactos personales del registro del TLD: no se publica.)
+
+== [7] Certificados (crt.sh, %.mops.to) ==
+UTC 2026-10-28T01:17:4xZ  2 entradas (precertificado y certificado):
+  not_before 2026-10-01T00:00:00 ; *.mops.to, mops.to ; emisor C=GB, O=Sectigo Limited, CN=Sectigo Public Server Authentication...
+
+== [8] Las IP, solo pasivo ==
+45.91.202.47
+  UTC 2026-10-28T01:17:14Z  PTR 45-91-202-47.netherlands-3.vps.ac.
+  UTC 2026-10-28T01:17:15Z  Shodan InternetDB: {"cpes":["cpe:/a:nodejs:node.js","cpe:/a:expressjs:express"],
+                            "hostnames":["45-91-202-47.netherlands-3.vps.ac"],"ip":"45.91.202.47","ports":[135,139,445,3000,5985],
+                            "tags":[],"vulns":["CVE-2020-0796"]}
+  UTC 2026-10-28T01:17:16Z  ipinfo.io: Oude Meer, North Holland, NL ; AS211381 Podaon SIA
+  UTC 2026-10-28T01:17:52Z  RDAP RIPE: 45.91.202.0 - 45.91.202.127, NET-3-34, NL, ASSIGNED PA ; Podaon SIA
+                            (ORG-PS469-RIPE) ; abuso abuse@podaon.com ; registro 2024-08-29 -> rdap_ripe_45-91-202-47.json
+45.91.202.146
+  UTC 2026-10-28T01:17:27Z  PTR 45-91-202-146.netherlands-3.vps.ac.
+  UTC 2026-10-28T01:17:27Z  Shodan InternetDB: {"cpes":["cpe:/a:nodejs:node.js","cpe:/a:expressjs:express"],
+                            "hostnames":["45-91-202-146.netherlands-3.vps.ac"],"ip":"45.91.202.146",
+                            "ports":[135,445,3000,3389,5985,5986,12255],"tags":["self-signed"],"vulns":["CVE-2020-0796"]}
+  UTC 2026-10-28T01:17:28Z  ipinfo.io: Oude Meer, North Holland, NL ; AS211381 Podaon SIA
+  UTC 2026-10-28T01:17:53Z  RDAP RIPE: 45.91.202.128 - 45.91.202.255, NET-3-34, NL ; Podaon SIA ; abuso abuse@podaon.com
+                            -> rdap_ripe_45-91-202-146.json
+89.105.213.118
+  UTC 2026-10-28T01:18:07Z  PTR 89-105-213-118.netherlands-3.vps.ac.
+  UTC 2026-10-28T01:18:07Z  Shodan InternetDB: {"detail":"No information available"}
+  UTC 2026-10-28T01:18:08Z  ipinfo.io: Oude Meer, North Holland, NL ; AS211381 Podaon SIA
+  UTC 2026-10-28T01:18:28Z  RDAP RIPE: 89.105.213.64 - 89.105.213.127, NLISPAVIRACLOUD01, NL, ASSIGNED PA ; "Avira Private
+                            Cloud" ; mantenedor nl-novoserve-1-mnt ; abuso abuse@server-panel.net ; registro 2011-10-26,
+                            ultimo cambio 2019-07-03 -> rdap_ripe_89-105-213-118.json
+RIPEstat (prefijo anunciado y sistema autonomo)
+  UTC 2026-10-28T01:22:20Z  45.91.202.47   -> 45.91.202.0/24  AS211381 PODAON Podaon SIA
+  UTC 2026-10-28T01:22:23Z  45.91.202.146  -> 45.91.202.0/24  AS211381 PODAON Podaon SIA
+  UTC 2026-10-28T01:22:26Z  89.105.213.118 -> 89.105.213.0/24 AS211381 PODAON Podaon SIA
+  Lectura: las tres IP salen a internet por el mismo sistema autonomo. El inetnum de 89.105.213.64/26 sigue a nombre
+  de Novoserve desde 2019: registro desactualizado o reasignacion sin actualizar (INFERIDO).
+  Los RDAP publicados van recortados a las organizaciones; las respuestas no traian contactos de personas.
+
+== [9] urlscan ==
+UTC 2026-10-28T01:17:32Z  busqueda domain:mops.to -> total 2
+  2026-10-21T12:24:36.632Z  01a15e6b-947a-721f-822d-a56e3e5e2df0  hxxp://mops[.]to:408/task/Stealer  IP 45.91.202.47  HTTP 403  publico
+  2026-10-25T03:58:57.279Z  01a17136-1395-731f-b519-62918189e44b  hxxp://mops[.]to/                  sin IP ni respuesta (escaneo fallido)
+UTC 2026-10-28T01:18:11Z  busqueda ip:"45.91.202.47"   -> total 1 (el escaneo del 21-oct)
+UTC 2026-10-28T01:17:28Z  busqueda ip:"45.91.202.146"  -> total 0
+UTC 2026-10-28T01:18:15Z  busqueda ip:"89.105.213.118" -> total 0
+UTC 2026-10-28T01:18:44Z  captura guardada por urlscan del escaneo 01a15e6b... (https://urlscan.io/screenshots/<id>.png):
+                          texto "Access denied" sobre fondo blanco ; SHA-256 9fe33e87691514ba37f4c0d4407d8576761d444f721b77310f5e7b47b506d737
+                          -> 06_urlscan_mops_to_408_21102026.png (recorte). El detalle del resultado pide iniciar sesion.
+
+== [10] Tecnicas ATT&CK verificadas en attack.mitre.org (2026-10-28T01:23:22Z) ==
+  T1583.001 Acquire Infrastructure: Domains ; T1583.003 Acquire Infrastructure: Virtual Private Server ;
+  T1608.001 Stage Capabilities: Upload Malware ; T1204.002 User Execution: Malicious File ;
+  T1059.001 Command and Scripting Interpreter: PowerShell ; T1036.005 Masquerading: Match Legitimate Resource Name or
+  Location ; T1555.003 Credentials from Password Stores: Credentials from Web Browsers ;
+  T1071.001 Application Layer Protocol: Web Protocols ; T1571 Non-Standard Port ; T1041 Exfiltration Over C2 Channel
