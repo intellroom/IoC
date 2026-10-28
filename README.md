@@ -20,7 +20,7 @@ Ordenadas de la más reciente a la más antigua.
 
 ### MopsStealer_C2_Podaon
 
-**2026-10-27** · C2 activos de **MopsStealer**, infostealer nuevo para Windows (MalwareBazaar desde el 26-09-2026, ThreatFox desde el 18-10-2026, Malpedia sin descripción): el dominio `mops[.]to` y `45[.]91[.]202[.]47` y `45[.]91[.]202[.]146` en los puertos 408 y 1488, en Podaon SIA (AS211381, Países Bajos), más cinco SHA-256. Hallazgo propio: `mops[.]to` ya apunta a `89[.]105[.]213[.]118`, en el mismo sistema autónomo. Entrega por repositorios falsos según las etiquetas de abuse.ch. Sin víctimas chilenas conocidas
+**2026-10-27** · C2 activos de **MopsStealer**, infostealer nuevo para Windows (MalwareBazaar desde el 26-09-2026, ThreatFox desde el 18-10-2026, Malpedia sin descripción): el dominio `mops[.]to` y `45[.]91[.]202[.]47` y `45[.]91[.]202[.]146` en los puertos 408 y 1488, en Podaon SIA (empresa de Letonia, AS211381; IP en Países Bajos), más cinco SHA-256. Hallazgo propio: `mops[.]to` ya apunta a `89[.]105[.]213[.]118`, en el mismo sistema autónomo. Entrega por repositorios falsos según las etiquetas de abuse.ch. Sin víctimas chilenas conocidas
 
 [Carpeta](Campaign/MopsStealer_C2_Podaon) · [iocs.txt](Campaign/MopsStealer_C2_Podaon/iocs.txt)
 

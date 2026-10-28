@@ -21,7 +21,7 @@ Horas      : UTC. El 2026-10-28 UTC es todavia el 2026-10-27 en Chile.
 UTC 2026-10-28T01:21:47Z  captura de https://threatfox.abuse.ch/browse/malware/win.mops_stealer/ (navegador sin cabeza,
                           sin sesion) -> 04_fuente_threatfox_mopsstealer_27102026.png
                           SHA-256 de la captura original 1a4b9bb375c0b37fbcd00d809b8ec90f62ed07c9ba2eec82dbfdcc65dbaa367c
-UTC 2026-10-28T01:21:5xZ  volcado del DOM (25.161 bytes) SHA-256 809ebc3a23a0380bc95b1d3a7d821062acc7cfc56c9c85fbfe81ce24acf58a30
+UTC 2026-10-28T01:21:51Z  volcado del DOM (25.161 bytes; hora del archivo) SHA-256 809ebc3a23a0380bc95b1d3a7d821062acc7cfc56c9c85fbfe81ce24acf58a30
   Malware: MopsStealer ; First seen 2026-10-18 06:10:04 UTC ; Last seen 2026-10-26 13:29:50 UTC ; 9 IOC
   Date (UTC)           IOC                                                                 Tags                                Reporter   Ficha
   2026-10-26 13:29:50  45.91.202.146:408                                                   MopsStealer                         abuse_ch   /ioc/1990773/
@@ -39,15 +39,16 @@ UTC 2026-10-28T01:21:5xZ  volcado del DOM (25.161 bytes) SHA-256 809ebc3a23a0380
 UTC 2026-10-28T01:21:48Z  captura de https://bazaar.abuse.ch/browse/signature/MopsStealer/
                           -> 05_fuente_malwarebazaar_mopsstealer_27102026.png
                           SHA-256 de la captura original 6681f171fc265d4f7fd3b1d5d420be8a07d17cc92fff9d39c8c33f8f1b04cbbd
-UTC 2026-10-28T01:21:5xZ  volcado del DOM (21.061 bytes) SHA-256 46f384de811fe1837cc4a52c5afac549b802875f439a4dba6c96d35b8f64d2af
+UTC 2026-10-28T01:21:52Z  volcado del DOM (21.061 bytes; hora del archivo) SHA-256 46f384de811fe1837cc4a52c5afac549b802875f439a4dba6c96d35b8f64d2af
   Firstseen 2026-09-26 08:23:53 UTC ; Lastseen 2026-10-21 07:08:19 UTC ; 3 muestras
-  2026-10-21 07:08:19  1c850a5b877770dd831c68e2b6c9681419e63533c2f04cf9bdfa8f7fa6756585  64 dll exe Fake-Git MopsStealer stealer  Anonymous
+  2026-10-21 07:08:19  1c850a5b877770dd831c68e2b6c9681419e63533c2f04cf9bdfa8f7fa6756585  etiquetas: 64 dll exe Fake-Git MopsStealer stealer  Anonymous
   2026-10-20 14:01:30  87cbf3ab4dd505c535f963915fffd6162154a0f8fbee8813157b8f81295875df  MopsStealer ps1                         Tuxxin
   2026-09-26 08:23:53  3c110de70db7225573f6bd937a7704423bce6c03fad5fac3ea3fb5bacf130d50  dll exe MopsStealer                     abuse_ch
   La ficha de la muestra (/sample/<sha256>/) pide verificacion de navegador: no se abrio.
 
 == [4] Malpedia ==
-UTC 2026-10-28T01:19Z  https://malpedia.caad.fkie.fraunhofer.de/details/win.mops_stealer -> HTTP 200
+UTC 2026-10-28T01:38:45Z  https://malpedia.caad.fkie.fraunhofer.de/details/win.mops_stealer -> HTTP 200, 690.986 bytes
+                          volcado SHA-256 a6c29526d7c2fa220b1a77d8251e52b5cb4c0d2be731a8c2dcb06745c3c4152c (solo local)
   "There is no description at this point." ; sin alias ; sin YARA ; una referencia: la muestra 1c850a5b... de
   MalwareBazaar, fechada el 2026-10-21 (fuente abuse.ch).
 
@@ -69,8 +70,8 @@ UTC 2026-10-28T01:18:41Z
   (La consulta previa a whois.iana.org para el TLD .to trae contactos personales del registro del TLD: no se publica.)
 
 == [7] Certificados (crt.sh, %.mops.to) ==
-UTC 2026-10-28T01:17:4xZ  2 entradas (precertificado y certificado):
-  not_before 2026-10-01T00:00:00 ; *.mops.to, mops.to ; emisor C=GB, O=Sectigo Limited, CN=Sectigo Public Server Authentication...
+UTC 2026-10-28T01:17:35Z  2 entradas (precertificado y certificado):
+  not_before 2026-10-01T00:00:00 (inicio de validez, no hora de emision) ; *.mops.to, mops.to ; emisor C=GB, O=Sectigo Limited, CN=Sectigo Public Server Authentication...
 
 == [8] Las IP, solo pasivo ==
 45.91.202.47
@@ -95,13 +96,16 @@ UTC 2026-10-28T01:17:4xZ  2 entradas (precertificado y certificado):
   UTC 2026-10-28T01:18:08Z  ipinfo.io: Oude Meer, North Holland, NL ; AS211381 Podaon SIA
   UTC 2026-10-28T01:18:28Z  RDAP RIPE: 89.105.213.64 - 89.105.213.127, NLISPAVIRACLOUD01, NL, ASSIGNED PA ; "Avira Private
                             Cloud" ; mantenedor nl-novoserve-1-mnt ; abuso abuse@server-panel.net ; registro 2011-10-26,
-                            ultimo cambio 2019-07-03 -> rdap_ripe_89-105-213-118.json
+                            ultimo cambio 2019-07-03 ; el contacto de abuso tiene domicilio en Riga (Letonia), como Podaon SIA
+                            -> rdap_ripe_89-105-213-118.json
 RIPEstat (prefijo anunciado y sistema autonomo)
   UTC 2026-10-28T01:22:20Z  45.91.202.47   -> 45.91.202.0/24  AS211381 PODAON Podaon SIA
   UTC 2026-10-28T01:22:23Z  45.91.202.146  -> 45.91.202.0/24  AS211381 PODAON Podaon SIA
   UTC 2026-10-28T01:22:26Z  89.105.213.118 -> 89.105.213.0/24 AS211381 PODAON Podaon SIA
-  Lectura: las tres IP salen a internet por el mismo sistema autonomo. El inetnum de 89.105.213.64/26 sigue a nombre
-  de Novoserve desde 2019: registro desactualizado o reasignacion sin actualizar (INFERIDO).
+  Lectura: las tres IP salen a internet por el mismo sistema autonomo. El inetnum de 89.105.213.64/26 (registrado en
+  2011, ultimo cambio en 2019) lleva el mantenedor de Novoserve pero un contacto de abuso en Riga: registro
+  desactualizado o arriendo de direcciones sin actualizar (INFERIDO). La organizacion Podaon SIA tiene domicilio en
+  Riga (Letonia); las IP se ubican en Paises Bajos.
   Los RDAP publicados van recortados a las organizaciones; las respuestas no traian contactos de personas.
 
 == [9] urlscan ==
@@ -111,13 +115,19 @@ UTC 2026-10-28T01:17:32Z  busqueda domain:mops.to -> total 2
 UTC 2026-10-28T01:18:11Z  busqueda ip:"45.91.202.47"   -> total 1 (el escaneo del 21-oct)
 UTC 2026-10-28T01:17:28Z  busqueda ip:"45.91.202.146"  -> total 0
 UTC 2026-10-28T01:18:15Z  busqueda ip:"89.105.213.118" -> total 0
-UTC 2026-10-28T01:18:44Z  captura guardada por urlscan del escaneo 01a15e6b... (https://urlscan.io/screenshots/<id>.png):
+UTC 2026-10-28T01:18:44Z  (hora del archivo) captura guardada por urlscan del escaneo 01a15e6b... (https://urlscan.io/screenshots/<id>.png):
                           texto "Access denied" sobre fondo blanco ; SHA-256 9fe33e87691514ba37f4c0d4407d8576761d444f721b77310f5e7b47b506d737
                           -> 06_urlscan_mops_to_408_21102026.png (recorte). El detalle del resultado pide iniciar sesion.
 
-== [10] Tecnicas ATT&CK verificadas en attack.mitre.org (2026-10-28T01:23:22Z) ==
+== [10] Tecnicas ATT&CK verificadas en attack.mitre.org (2026-10-28T01:38:48Z; titulos guardados en el registro local) ==
   T1583.001 Acquire Infrastructure: Domains ; T1583.003 Acquire Infrastructure: Virtual Private Server ;
   T1608.001 Stage Capabilities: Upload Malware ; T1204.002 User Execution: Malicious File ;
   T1059.001 Command and Scripting Interpreter: PowerShell ; T1036.005 Masquerading: Match Legitimate Resource Name or
   Location ; T1555.003 Credentials from Password Stores: Credentials from Web Browsers ;
   T1071.001 Application Layer Protocol: Web Protocols ; T1571 Non-Standard Port ; T1041 Exfiltration Over C2 Channel
+
+== [11] Busqueda de 89.105.213.118 en ThreatFox ==
+UTC 2026-10-28T01:39:08Z  https://threatfox.abuse.ch/browse.php?search=ioc%3A89.105.213.118 -> pagina de verificacion de
+                          navegador ("Checking your browser"); no se resolvio. Lo unico comprobado es que la IP no esta
+                          entre los 9 IOC de la familia win.mops_stealer (seccion [2]).
+UTC 2026-10-28T01:39:16Z  busqueda ioc:89.105.213 -> misma verificacion.
